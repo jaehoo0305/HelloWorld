@@ -1,0 +1,429 @@
+fileFormatVersion: 2
+guid: 55cd6f1169b1fc041bc155e5800ea481
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6709310424069103657
+    second: T_ENV_grass_village_BC_0
+  - first:
+      213: -5746516089075460564
+    second: T_ENV_grass_village_BC_1
+  - first:
+      213: 5530954416650971232
+    second: T_ENV_grass_village_BC_2
+  - first:
+      213: 4915982998468465599
+    second: T_ENV_grass_village_BC_3
+  - first:
+      213: -5857822010185260744
+    second: T_ENV_grass_village_BC_4
+  - first:
+      213: 3911590022394144537
+    second: T_ENV_grass_village_BC_5
+  - first:
+      213: -2088384019097729488
+    second: T_ENV_grass_village_BC_6
+  - first:
+      213: 8187005083320557301
+    second: T_ENV_grass_village_BC_7
+  - first:
+      213: -469223564375184717
+    second: T_ENV_grass_village_BC_8
+  - first:
+      213: -5520883393119021997
+    second: T_ENV_grass_village_BC_9
+  - first:
+      213: 7790690344318308958
+    second: T_ENV_grass_village_BC_10
+  - first:
+      213: 5258756987422947840
+    second: T_ENV_grass_village_BC_11
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: T_ENV_grass_village_BC_0
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 0
+        width: 106
+        height: 443
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 920e67288424c1d50800000000000000
+      internalID: 6709310424069103657
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: T_ENV_grass_village_BC_1
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 0
+        width: 56
+        height: 484
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c26179630164040b0800000000000000
+      internalID: -5746516089075460564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: T_ENV_grass_village_BC_2
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 144
+        height: 467
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 068eb59dcb5e1cc40800000000000000
+      internalID: 5530954416650971232
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: T_ENV_grass_village_BC_3
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 0
+        width: 56
+        height: 490
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb39299bd74193440800000000000000
+      internalID: 4915982998468465599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: T_ENV_grass_village_BC_4
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 0
+        width: 36
+        height: 408
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8316175fae5d4bea0800000000000000
+      internalID: -5857822010185260744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: T_ENV_grass_village_BC_5
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 371
+        width: 6
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 917e3cf9662c84630800000000000000
+      internalID: 3911590022394144537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: T_ENV_grass_village_BC_6
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 0
+        width: 45
+        height: 473
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 036c313acc19403e0800000000000000
+      internalID: -2088384019097729488
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: T_ENV_grass_village_BC_7
+      rect:
+        serializedVersion: 2
+        x: 439
+        y: 0
+        width: 53
+        height: 305
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fe93a52fb51e9170800000000000000
+      internalID: 8187005083320557301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: T_ENV_grass_village_BC_8
+      rect:
+        serializedVersion: 2
+        x: 455
+        y: 283
+        width: 11
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3baac2d77abfc79f0800000000000000
+      internalID: -469223564375184717
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: T_ENV_grass_village_BC_9
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 0
+        width: 95
+        height: 268
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35499ca0ec1e163b0800000000000000
+      internalID: -5520883393119021997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: T_ENV_grass_village_BC_10
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 0
+        width: 46
+        height: 221
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e52982067971e1c60800000000000000
+      internalID: 7790690344318308958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: T_ENV_grass_village_BC_11
+      rect:
+        serializedVersion: 2
+        x: 353
+        y: 0
+        width: 46
+        height: 227
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00ab2733e9bdaf840800000000000000
+      internalID: 5258756987422947840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      T_ENV_grass_village_BC_0: 6709310424069103657
+      T_ENV_grass_village_BC_1: -5746516089075460564
+      T_ENV_grass_village_BC_10: 7790690344318308958
+      T_ENV_grass_village_BC_11: 5258756987422947840
+      T_ENV_grass_village_BC_2: 5530954416650971232
+      T_ENV_grass_village_BC_3: 4915982998468465599
+      T_ENV_grass_village_BC_4: -5857822010185260744
+      T_ENV_grass_village_BC_5: 3911590022394144537
+      T_ENV_grass_village_BC_6: -2088384019097729488
+      T_ENV_grass_village_BC_7: 8187005083320557301
+      T_ENV_grass_village_BC_8: -469223564375184717
+      T_ENV_grass_village_BC_9: -5520883393119021997
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

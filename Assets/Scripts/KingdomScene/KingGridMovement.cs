@@ -7,8 +7,8 @@ using System.Collections.Generic;
 public class KingGridMovement : MonoBehaviour
 {
     [Header("Grid Settings")]
-    public float cellSize = 1f;         // 그리드 한 칸의 크기
-    public float moveSpeed = 8f;        // 이동 속도
+    public float cellSize;              // 그리드 한 칸의 크기
+    public float moveSpeed;             // 이동 속도
 
     [Header("Input Buffering")]
     public float bufferWindow = 0.2f;   // 입력이 버퍼에 머무는 시간 (초)
