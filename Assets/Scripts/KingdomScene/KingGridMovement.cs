@@ -1,36 +1,38 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // 새로운 Input System을 위해 추가
-using UnityEngine.InputSystem.Controls; // KeyControl 형식을 사용하기 위해 추가
-using System.Collections;
-using System.Collections.Generic; // 리스트 사용을 위해 추가
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
+using System.Collections.Generic;
 
-public class GridMovement : MonoBehaviour
+public class KingGridMovement : MonoBehaviour
 {
+    [Header("Components")]
+    private GridSensor sensor;        // 분리된 센서 컴포넌트
+
     [Header("Grid Settings")]
     public float cellSize;       // 그리드 한 칸의 크기
     public float moveSpeed;      // 이동 속도
 
-    [Header("Obstacle Settings")]
-    public LayerMask obstacleLayer;   // 장애물로 판정할 레이어
-    public float checkRadius = 0.4f;  // 장애물 감지 범위
-    public float yCheckOffset = 0.5f; // 감지 높이 보정 (캐릭터 허리 높이 정도가 적당)
-
     [Header("Input Buffering")]
-    public float bufferWindow = 0.2f; // 입력이 버퍼에 머무는 시간
-    private Vector2Int? bufferedInput; // 예약된 입력 방향
-    private float bufferTimer;        // 버퍼 타이머
+    public float bufferWindow = 0.2f; // 입력 버퍼 시간
+    private Vector2Int? bufferedInput;
+    private float bufferTimer;
 
     [Header("State")]
-    private Vector3 targetPosition;   // 다음에 이동할 목표 월드 좌표
-    private bool isMoving = false;    // 현재 이동 중인지 확인
-    private Vector2Int currentGridPos; // 현재 그리드 좌표 (x, z)
+    private Vector3 targetPosition;   // 목표 월드 좌표
+    private bool isMoving = false;    // 이동 중 여부
+    private Vector2Int currentGridPos; // 현재 그리드 좌표
 
-    // 입력된 방향들을 순서대로 저장하는 리스트
+    // 입력 스택 (최신 입력 우선순위 관리)
     private List<Vector2Int> inputStack = new List<Vector2Int>();
+
+    void Awake()
+    {
+        // 동일한 오브젝트에 있는 GridSensor를 가져옵니다.
+        sensor = GetComponent<GridSensor>();
+    }
 
     void Start()
     {
-        // 시작 위치를 그리드에 맞게 정렬
         SnapToGrid();
         targetPosition = transform.position;
     }
@@ -38,16 +40,14 @@ public class GridMovement : MonoBehaviour
     void Update()
     {
         UpdateInputStack();
-
-        if (bufferTimer > 0)
-        {
-            bufferTimer -= Time.deltaTime;
-            if (bufferTimer <= 0) bufferedInput = null;
-        }
+        HandleBuffer();
 
         if (!isMoving)
         {
+            // 이동 중이 아닐 때 다음 이동 결정
             ProcessNextMovement();
+            // 이동 중이 아닐 때만 상호작용 가능
+            HandleInteraction();
         }
         else
         {
@@ -71,7 +71,6 @@ public class GridMovement : MonoBehaviour
         {
             bufferedInput = dir;
             bufferTimer = bufferWindow;
-
             if (!inputStack.Contains(dir)) inputStack.Add(dir);
         }
 
@@ -80,40 +79,70 @@ public class GridMovement : MonoBehaviour
             inputStack.Remove(dir);
         }
 
+        // 키 상태 강제 동기화
         bool isPressed = mainKey.isPressed || arrowKey.isPressed;
         if (!isPressed && inputStack.Contains(dir)) inputStack.Remove(dir);
         else if (isPressed && !inputStack.Contains(dir)) inputStack.Add(dir);
     }
 
+    private void HandleBuffer()
+    {
+        if (bufferTimer > 0)
+        {
+            bufferTimer -= Time.deltaTime;
+            if (bufferTimer <= 0) bufferedInput = null;
+        }
+    }
+
     private void ProcessNextMovement()
     {
         Vector2Int moveDir = Vector2Int.zero;
-        bool hasValidInput = false;
+        bool hasInput = false;
 
+        // 1순위: 버퍼된 입력이 있고 해당 방향이 이동 가능한가?
         if (bufferedInput.HasValue)
         {
-            moveDir = bufferedInput.Value;
-            if (CanMove(currentGridPos + moveDir))
+            Vector2Int nextPos = currentGridPos + bufferedInput.Value;
+            if (sensor.IsWalkable(GridToWorld(nextPos)))
             {
+                moveDir = bufferedInput.Value;
                 bufferedInput = null;
                 bufferTimer = 0;
-                hasValidInput = true;
-            }
-        }
-        else if (inputStack.Count > 0)
-        {
-            moveDir = inputStack[inputStack.Count - 1];
-            if (CanMove(currentGridPos + moveDir))
-            {
-                hasValidInput = true;
+                hasInput = true;
             }
         }
 
-        if (hasValidInput)
+        // 2순위: 현재 누르고 있는 키 중 최신 입력이 이동 가능한가?
+        if (!hasInput && inputStack.Count > 0)
+        {
+            moveDir = inputStack[inputStack.Count - 1];
+            if (sensor.IsWalkable(GridToWorld(currentGridPos + moveDir)))
+            {
+                hasInput = true;
+            }
+        }
+
+        if (hasInput)
         {
             currentGridPos += moveDir;
             targetPosition = GridToWorld(currentGridPos);
             isMoving = true;
+        }
+    }
+
+    private void HandleInteraction()
+    {
+        // 스페이스바를 누르면 현재 바라보는 방향(최신 입력 방향)의 상호작용체 확인
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && inputStack.Count > 0)
+        {
+            Vector2Int facingDir = inputStack[inputStack.Count - 1];
+            Collider interactable = sensor.GetInteractable(GridToWorld(currentGridPos + facingDir));
+
+            if (interactable != null)
+            {
+                Debug.Log($"[상호작용] 대상: {interactable.name}");
+                // 예: interactable.GetComponent<IInteractable>()?.OnInteract();
+            }
         }
     }
 
@@ -125,13 +154,13 @@ public class GridMovement : MonoBehaviour
         {
             transform.position = targetPosition;
             isMoving = false;
+            // 멈춤 없이 즉시 다음 이동 확인
             ProcessNextMovement();
         }
     }
 
     private Vector3 GridToWorld(Vector2Int gridPos)
     {
-        // Y값은 현재 캐릭터의 발 위치가 아니라 약간 위쪽(yCheckOffset)을 기준으로 감지하게 설정 가능
         return new Vector3(gridPos.x * cellSize, transform.position.y, gridPos.y * cellSize);
     }
 
@@ -140,35 +169,5 @@ public class GridMovement : MonoBehaviour
         currentGridPos.x = Mathf.RoundToInt(transform.position.x / cellSize);
         currentGridPos.y = Mathf.RoundToInt(transform.position.z / cellSize);
         transform.position = GridToWorld(currentGridPos);
-    }
-
-    private bool CanMove(Vector2Int targetGridPos)
-    {
-        // 감지할 중앙 위치 계산 (높이 보정 포함)
-        Vector3 checkPos = GridToWorld(targetGridPos);
-        checkPos.y += yCheckOffset;
-
-        // 해당 위치에 장애물이 있는지 체크
-        bool isBlocked = Physics.CheckSphere(checkPos, checkRadius, obstacleLayer);
-
-        return !isBlocked;
-    }
-
-    // 씬 뷰에서 감지 범위를 항상 확인하기 위한 디버그 코드
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = isMoving ? Color.yellow : Color.green;
-        Vector3 currentPos = transform.position;
-        currentPos.y += yCheckOffset;
-        Gizmos.DrawWireSphere(currentPos, checkRadius);
-
-        // 현재 입력이 있다면 다음 갈 곳을 빨간색으로 표시
-        if (inputStack.Count > 0)
-        {
-            Gizmos.color = Color.red;
-            Vector3 nextPos = GridToWorld(currentGridPos + inputStack[inputStack.Count - 1]);
-            nextPos.y += yCheckOffset;
-            Gizmos.DrawWireSphere(nextPos, checkRadius);
-        }
     }
 }
