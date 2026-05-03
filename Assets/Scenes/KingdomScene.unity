@@ -764,6 +764,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneGate
   destinationSceneName: KingdomUIScene
+  targetFacility: 1
+  facilityData: {fileID: 11400000, guid: 97b8aacef5db4cc4a9accad93e2d283a, type: 2}
 --- !u!1001 &1234865638
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1417,6 +1419,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneGate
   destinationSceneName: KingdomUIScene
+  targetFacility: 0
+  facilityData: {fileID: 11400000, guid: 97b8aacef5db4cc4a9accad93e2d283a, type: 2}
 --- !u!64 &1909702344
 MeshCollider:
   m_ObjectHideFlags: 0

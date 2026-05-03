@@ -24,7 +24,7 @@ public class GridSensor : MonoBehaviour
         return !(isObstacle || isEnter);
     }
 
-    // 진입할 씬 이름 가져오기
+    // 진입할 씬 이름 가져오기 및 상점 데이터 세팅
     public string GetEntrySceneName(Vector3 worldPos)
     {
         Vector3 checkPos = worldPos;
@@ -34,7 +34,14 @@ public class GridSensor : MonoBehaviour
         if (hitColliders.Length > 0)
         {
             SceneGate gate = hitColliders[0].GetComponent<SceneGate>();
-            return gate != null ? gate.destinationSceneName : null;
+            if (gate != null)
+            {
+                // [핵심 추가] 씬을 이동하기 전에 해당 게이트가 가진 상점 정보를 
+                // ScriptableObject(FacilityDataSO)에 먼저 기록합니다.
+                gate.PrepareTransition();
+
+                return gate.destinationSceneName;
+            }
         }
         return null;
     }
