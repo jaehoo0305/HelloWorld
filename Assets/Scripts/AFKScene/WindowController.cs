@@ -1,107 +1,85 @@
 using System;
 using System.Collections;
-using System.IO;
 using System.Runtime.InteropServices;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class WindowController : MonoBehaviour
+public class TransparentWindowController : MonoBehaviour
 {
+    // --- Windows API 선언부 ---
     [DllImport("user32.dll")]
-    private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-
-    [DllImport("user32.dll")]
-    private static extern int SetWindowLong(IntPtr hwnd, int nIndex, uint dwNewLong);
+    private static extern IntPtr GetActiveWindow();
 
     [DllImport("user32.dll")]
-    private static extern int SetWindowPos(IntPtr hwnd, IntPtr hwndInsertAfter, int x, int y, int cx, int cy, uint uflags);
+    private static extern int SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
-    [DllImport("user32.dll")]
-    private static extern bool SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
+    // --- 윈도우 상수 정의 ---
+    private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);    // 항상 최상단
+    private static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2); // 최상단 해제
 
-    [DllImport("Dwmapi.dll")]
-    private static extern uint DwmExtendFrameIntoClientArea(IntPtr hwnd, ref MARGINS margins);
-
-    private struct MARGINS { public int cxLeftWidth, cxRightWidth, cxTopHeight, cxBottomHeight; }
-
-    private const int GWL_STYLE = -16;
-    private const int GWL_EXSTYLE = -20;
-    private const uint WS_POPUP = 0x80000000;
-    private const uint WS_VISIBLE = 0x10000000;
-    private const uint WS_EX_LAYERED = 0x00080000;
-    private const uint WS_EX_TRANSPARENT = 0x00000020;
-    private const uint LWA_COLORKEY = 0x00000001;
+    private const uint SWP_NOMOVE = 0x0002;   // 위치 고정
+    private const uint SWP_NOSIZE = 0x0001;   // 크기 고정
+    private const uint SWP_SHOWWINDOW = 0x0040;
 
     private IntPtr _hwnd;
-    private Camera _mainCamera;
+    private bool _isInitialized = false;
 
-    private void Awake()
+    [Header("Window Settings")]
+    [Tooltip("Top")]
+    public bool alwaysOnTop = true;
+
+    [Tooltip("Width")]
+    public int windowWidth;
+
+    [Tooltip("length")]
+    public int windowHeight;
+
+    void Awake()
     {
-        _mainCamera = Camera.main;
-        _mainCamera.clearFlags = CameraClearFlags.SolidColor;
-
-        // 1. 카메라 배경색을 완전 투명한 검은색(0, 0, 0, 0)으로 설정
-        _mainCamera.backgroundColor = new Color(0f, 0f, 0f, 0f);
-    }
-
-    private void Start()
-    {
-#if !UNITY_EDITOR
-        // 해상도를 시스템 최대 크기로 설정
-        Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, false);
-        Application.runInBackground = true;
-        StartCoroutine(InitializeWindow());
+#if UNITY_EDITOR
+        return;
 #endif
+        Screen.fullScreen = false;
+        Screen.SetResolution(windowWidth, windowHeight, FullScreenMode.Windowed);
+
+        // 윈도우가 해상도 변경 처리를 마칠 시간을 줍니다.
+        Invoke("InitializeWindow", 0.5f);
     }
 
-    private IEnumerator InitializeWindow()
+    private void InitializeWindow()
     {
-        yield return new WaitForSeconds(1f);
-
-        // 창 핸들 찾기
-        _hwnd = FindWindow("UnityWndClass", Application.productName);
-        if (_hwnd == IntPtr.Zero)
-            _hwnd = FindWindow(null, Application.productName);
-
-        if (_hwnd == IntPtr.Zero) yield break;
-
-        // 2. DWM 프레임 확장 (알파 채널 투명을 윈도우와 합성하기 위해 필수)
-        var margins = new MARGINS { cxLeftWidth = -1 };
-        DwmExtendFrameIntoClientArea(_hwnd, ref margins);
-
-        // 윈도우 스타일 설정
-        SetWindowLong(_hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-        SetWindowLong(_hwnd, GWL_EXSTYLE, WS_EX_LAYERED);
-
-        // 3. 검은색(0x00000000)을 컬러키로 지정하여 투명 처리
-        SetLayeredWindowAttributes(_hwnd, 0x00000000, 255, LWA_COLORKEY);
-
-        // 항상 위로 설정
-        SetWindowPos(_hwnd, new IntPtr(-1), 0, 0,
-                     Display.main.systemWidth, Display.main.systemHeight,
-                     0x0020);
+        _hwnd = GetActiveWindow();
+        if (_hwnd != IntPtr.Zero)
+        {
+            ApplyAlwaysOnTop();
+            _isInitialized = true;
+        }
     }
 
-    private void Update()
+    public void ApplyAlwaysOnTop()
     {
-#if !UNITY_EDITOR
         if (_hwnd == IntPtr.Zero) return;
 
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-        Vector3 worldMousePos = _mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, -_mainCamera.transform.position.z));
-        worldMousePos.z = 0;
+        IntPtr targetLayer = alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST;
+        SetWindowPos(_hwnd, targetLayer, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+    }
 
-        // 캐릭터가 있는 곳만 클릭을 받도록 설정 (나머지는 클릭 통과)
-        bool isOverCharacter = Physics2D.OverlapPoint(worldMousePos) != null;
-        SetClickThrough(_hwnd, !isOverCharacter);
+    // 창 밖을 클릭했다가 다시 돌아올 때나 포커스가 바뀔 때 설정을 보장합니다.
+    void OnApplicationFocus(bool hasFocus)
+    {
+#if !UNITY_EDITOR
+        if (hasFocus && alwaysOnTop && _isInitialized)
+        {
+            ApplyAlwaysOnTop();
+        }
 #endif
     }
 
-    private void SetClickThrough(IntPtr hwnd, bool through)
+    // 인스펙터에서 체크박스를 실시간으로 누를 때 즉시 반영되도록 합니다.
+    void OnValidate()
     {
-        if (through)
-            SetWindowLong(hwnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_TRANSPARENT);
-        else
-            SetWindowLong(hwnd, GWL_EXSTYLE, WS_EX_LAYERED);
+        if (Application.isPlaying && _isInitialized)
+        {
+            ApplyAlwaysOnTop();
+        }
     }
 }
