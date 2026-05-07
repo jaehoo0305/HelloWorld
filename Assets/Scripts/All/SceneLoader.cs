@@ -13,6 +13,9 @@ public class SceneLoader : MonoBehaviour
     public static event Action<float> OnProgress; // 로딩 중 (예: 프로그레스 바)
     public static event Action OnLoadCompleted; // 로딩 완료 시 (예: 페이드 인)
 
+    // 중복 로딩 방지를 위한 플래그
+    private bool isLoading = false;
+
     private void Awake()
     {
         if (Instance == null)
@@ -29,11 +32,17 @@ public class SceneLoader : MonoBehaviour
     // 2. 유지보수 비용 제로 (이름 기반 로딩)
     public void LoadScene(string sceneName)
     {
+        // 이미 로딩 중이라면 중복 호출을 방지하기 위해 리턴
+        if (isLoading) return;
+
         StartCoroutine(LoadSceneAsync(sceneName));
     }
 
     private IEnumerator LoadSceneAsync(string sceneName)
     {
+        // 로딩 시작 상태로 변경
+        isLoading = true;
+
         // 로딩 시작 이벤트 전파
         OnLoadStarted?.Invoke();
 
@@ -59,6 +68,9 @@ public class SceneLoader : MonoBehaviour
 
         // 로딩 완료 이벤트 전파
         OnLoadCompleted?.Invoke();
+
+        // 로딩 완료 후 상태 해제
+        isLoading = false;
     }
 }
 
@@ -75,6 +87,7 @@ public class LoadingScreenManager : MonoBehaviour
 
     private void OnDisable()
     {
+        // 이벤트 구독 해제
         SceneLoader.OnLoadStarted -= ShowUI;
         SceneLoader.OnLoadCompleted -= HideUI;
     }
