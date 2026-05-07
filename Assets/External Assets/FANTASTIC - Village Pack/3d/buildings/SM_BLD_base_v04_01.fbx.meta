@@ -3,7 +3,12 @@ guid: 25fb1c4765b8e4f4884209cee34fc7e1
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_stonebrick_02
+    second: {fileID: 2100000, guid: 26863c0be226dfb478f3a26a6b366214, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

@@ -3,7 +3,12 @@ guid: 0d1f1277dba5f86499e5b802257663a7
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_CLR_yellow_E
+    second: {fileID: 2100000, guid: de52d50b50f8f4940bed9facc66615e6, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
