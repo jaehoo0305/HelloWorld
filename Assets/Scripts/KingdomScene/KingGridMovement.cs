@@ -2,44 +2,101 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using System.Collections.Generic;
+using System.Linq;
 
 public class KingGridMovement : MonoBehaviour
 {
     [Header("Components")]
-    private GridSensor sensor;        // 분리된 센서 컴포넌트
+    private GridSensor sensor;
+    [SerializeField] private FacilityDataSO facilityData; // 상점 데이터 참조
 
     [Header("Grid Settings")]
-    public float cellSize;       // 그리드 한 칸의 크기
-    public float moveSpeed;      // 이동 속도
+    public float cellSize = 1f;
+    public float moveSpeed = 8f;
 
     [Header("Input Buffering")]
-    public float bufferWindow = 0.2f; // 입력이 버퍼에 머무는 시간
-    private Vector2Int? bufferedInput; // 예약된 입력 방향
-    private float bufferTimer;        // 버퍼 타이머
+    public float bufferWindow = 0.2f;
+    private Vector2Int? bufferedInput;
+    private float bufferTimer;
 
     [Header("State")]
-    private Vector3 targetPosition;   // 목표 월드 좌표
-    private bool isMoving = false;    // 현재 이동 중인지 확인
-    private Vector2Int currentGridPos; // 현재 그리드 좌표 (x, z)
+    private Vector3 targetPosition;
+    private bool isMoving = false;
+    private Vector2Int currentGridPos;
 
-    // 입력 스택 (최신 입력 방향 유지)
     private List<Vector2Int> inputStack = new List<Vector2Int>();
 
     void Awake()
     {
-        // 동일 오브젝트의 GridSensor 참조
         sensor = GetComponent<GridSensor>();
     }
 
     void Start()
     {
-        // 현재 위치를 그리드에 맞게 정렬
-        SnapToGrid();
+        // 씬 시작 시 상점에서 돌아오는 중인지 확인합니다.
+        if (facilityData != null && facilityData.isReturning)
+        {
+            SetPositionToRandomGate();
+        }
+        else
+        {
+            SnapToGrid();
+        }
+
         targetPosition = transform.position;
+    }
+
+    /// <summary>
+    /// 현재 씬 내의 같은 건물 타입 문들 중 하나를 랜덤하게 골라 플레이어를 배치합니다.
+    /// </summary>
+    private void SetPositionToRandomGate()
+    {
+        // 현재 씬에 있는 모든 SceneGate를 찾습니다.
+        SceneGate[] allGates = Object.FindObjectsByType<SceneGate>(FindObjectsSortMode.None);
+
+        // 방금 머물렀던 상점 타입과 일치하는 게이트들만 필터링합니다.
+        var validGates = allGates.Where(g => g.targetFacility == facilityData.currentFacility).ToList();
+
+        if (validGates.Count > 0)
+        {
+            // 랜덤하게 하나의 문을 선택합니다.
+            int randomIndex = Random.Range(0, validGates.Count);
+            SceneGate selectedGate = validGates[randomIndex];
+
+            // 선택된 게이트의 퇴장 방향 데이터를 가져옵니다.
+            Vector2Int exitDir = selectedGate.GetExitDirectionVector();
+
+            // 게이트의 위치에서 퇴장 방향으로 cellSize만큼 떨어진 위치를 스폰 지점으로 계산합니다.
+            Vector3 spawnPos = selectedGate.transform.position;
+            spawnPos.x += exitDir.x * cellSize;
+            spawnPos.z += exitDir.y * cellSize;
+            spawnPos.y = transform.position.y; // Y축은 캐릭터 높이 유지
+
+            transform.position = spawnPos;
+
+            // 그리드 좌표 갱신 및 복귀 플래그 초기화
+            SnapToGrid();
+            facilityData.isReturning = false;
+
+            Debug.Log($"[Spawn] {facilityData.currentFacility}의 {validGates.Count}개 문 중 랜덤 스폰 완료.");
+        }
+        else
+        {
+            SnapToGrid();
+            facilityData.isReturning = false;
+        }
     }
 
     void Update()
     {
+        // 씬 로딩 중에는 조작을 완전히 차단합니다.
+        if (SceneLoader.Instance != null && SceneLoader.Instance.IsLoading)
+        {
+            inputStack.Clear();
+            bufferedInput = null;
+            return;
+        }
+
         UpdateInputStack();
         HandleBuffer();
 
@@ -77,7 +134,6 @@ public class KingGridMovement : MonoBehaviour
             inputStack.Remove(dir);
         }
 
-        // 입력 상태 보정
         bool isPressed = mainKey.isPressed || arrowKey.isPressed;
         if (!isPressed && inputStack.Contains(dir)) inputStack.Remove(dir);
         else if (isPressed && !inputStack.Contains(dir)) inputStack.Add(dir);
@@ -97,7 +153,6 @@ public class KingGridMovement : MonoBehaviour
         Vector2Int moveDir = Vector2Int.zero;
         bool inputDetected = false;
 
-        // 1. 입력 방향 결정 (버퍼 우선)
         if (bufferedInput.HasValue)
         {
             moveDir = bufferedInput.Value;
@@ -114,29 +169,25 @@ public class KingGridMovement : MonoBehaviour
             Vector2Int nextGridPos = currentGridPos + moveDir;
             Vector3 nextWorldPos = GridToWorld(nextGridPos);
 
-            // [로직 변경] 이동 가능 여부를 따지기 전에 씬 진입점(Enter)인지 먼저 체크
+            // 다음 칸이 입구인지 확인
             string nextScene = sensor.GetEntrySceneName(nextWorldPos);
 
             if (!string.IsNullOrEmpty(nextScene))
             {
-                // 입구라면 물리적으로 이동하지 않고 씬 전환만 수행
-                // Enter 레이어는 IsWalkable에서 false를 반환하므로 캐릭터는 문 앞에 멈춤
                 SceneLoader.Instance.LoadScene(nextScene);
-
-                // 버퍼 비우기
                 bufferedInput = null;
                 bufferTimer = 0;
                 return;
             }
 
-            // 입구가 아닐 경우에만 이동 가능 여부(IsWalkable)를 확인
+            // 이동 가능 여부 확인
             if (sensor.IsWalkable(nextWorldPos))
             {
                 bufferedInput = null;
                 bufferTimer = 0;
 
                 currentGridPos = nextGridPos;
-                targetPosition = nextWorldPos;
+                targetPosition = GridToWorld(currentGridPos);
                 isMoving = true;
             }
         }
@@ -150,7 +201,6 @@ public class KingGridMovement : MonoBehaviour
         {
             transform.position = targetPosition;
             isMoving = false;
-            // 멈춤 없이 다음 입력 처리
             ProcessNextMovement();
         }
     }
@@ -162,8 +212,11 @@ public class KingGridMovement : MonoBehaviour
 
     private void SnapToGrid()
     {
-        currentGridPos.x = Mathf.RoundToInt(transform.position.x / cellSize);
-        currentGridPos.y = Mathf.RoundToInt(transform.position.z / cellSize);
-        transform.position = GridToWorld(currentGridPos);
+        if (cellSize > 0)
+        {
+            currentGridPos.x = Mathf.RoundToInt(transform.position.x / cellSize);
+            currentGridPos.y = Mathf.RoundToInt(transform.position.z / cellSize);
+            transform.position = GridToWorld(currentGridPos);
+        }
     }
 }

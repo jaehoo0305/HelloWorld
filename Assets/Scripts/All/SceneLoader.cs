@@ -13,8 +13,8 @@ public class SceneLoader : MonoBehaviour
     public static event Action<float> OnProgress; // 로딩 중 (예: 프로그레스 바)
     public static event Action OnLoadCompleted; // 로딩 완료 시 (예: 페이드 인)
 
-    // 중복 로딩 방지를 위한 플래그
-    private bool isLoading = false;
+    // 외부에서 로딩 여부를 확인할 수 있도록 프로퍼티 (KingGridMovement 등에서 사용)
+    public bool IsLoading { get; private set; } = false;
 
     private void Awake()
     {
@@ -33,7 +33,7 @@ public class SceneLoader : MonoBehaviour
     public void LoadScene(string sceneName)
     {
         // 이미 로딩 중이라면 중복 호출을 방지하기 위해 리턴
-        if (isLoading) return;
+        if (IsLoading) return;
 
         StartCoroutine(LoadSceneAsync(sceneName));
     }
@@ -41,7 +41,7 @@ public class SceneLoader : MonoBehaviour
     private IEnumerator LoadSceneAsync(string sceneName)
     {
         // 로딩 시작 상태로 변경
-        isLoading = true;
+        IsLoading = true;
 
         // 로딩 시작 이벤트 전파
         OnLoadStarted?.Invoke();
@@ -70,10 +70,11 @@ public class SceneLoader : MonoBehaviour
         OnLoadCompleted?.Invoke();
 
         // 로딩 완료 후 상태 해제
-        isLoading = false;
+        IsLoading = false;
     }
 }
 
+// 로딩 화면 UI를 제어하는 매니저 클래스
 public class LoadingScreenManager : MonoBehaviour
 {
     [SerializeField] private GameObject loadingUI;
@@ -87,11 +88,18 @@ public class LoadingScreenManager : MonoBehaviour
 
     private void OnDisable()
     {
-        // 이벤트 구독 해제
+        // 이벤트 구독 해제 (메모리 누수 방지)
         SceneLoader.OnLoadStarted -= ShowUI;
         SceneLoader.OnLoadCompleted -= HideUI;
     }
 
-    private void ShowUI() => loadingUI.SetActive(true);
-    private void HideUI() => loadingUI.SetActive(false);
+    private void ShowUI()
+    {
+        if (loadingUI != null) loadingUI.SetActive(true);
+    }
+
+    private void HideUI()
+    {
+        if (loadingUI != null) loadingUI.SetActive(false);
+    }
 }

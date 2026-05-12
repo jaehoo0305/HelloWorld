@@ -529,9 +529,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FacilityUIManager
   facilityData: {fileID: 11400000, guid: 97b8aacef5db4cc4a9accad93e2d283a, type: 2}
   uiCameraTransform: {fileID: 503469743}
-  rotationSpeed: 10
-  movementSpeed: 8
+  rotationSpeed: 7.5
+  movementSpeed: 6
   cameraRadius: 10
+  inputCooldown: 0.25
+  sHoldExitTime: 2
+  exitSceneName: KingdomScene
 --- !u!4 &289753035
 Transform:
   m_ObjectHideFlags: 0
