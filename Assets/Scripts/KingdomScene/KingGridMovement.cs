@@ -78,7 +78,7 @@ public class KingGridMovement : MonoBehaviour
             SnapToGrid();
             facilityData.isReturning = false;
 
-            Debug.Log($"[Spawn] {facilityData.currentFacility}의 {validGates.Count}개 문 중 랜덤 스폰 완료.");
+            Debug.Log($"[Spawn] {facilityData.currentFacility}, {validGates.Count}");
         }
         else
         {
