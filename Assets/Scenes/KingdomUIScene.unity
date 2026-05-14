@@ -620,7 +620,7 @@ MonoBehaviour:
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   inactiveColor: {r: 0.33333334, g: 0.33333334, b: 0.33333334, a: 0.8}
   visualTransitionSpeed: 15
-  inputCooldown: 0.15
+  inputCooldown: 0.2
   sHoldExitTime: 2
   exitSceneName: KingdomScene
 --- !u!4 &289753035
