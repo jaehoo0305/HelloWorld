@@ -628,6 +628,7 @@ MonoBehaviour:
   downArrow: {fileID: 1819431600}
   arrowShowDuration: 2
   arrowFadeSpeed: 5
+  idleTimeout: 2.5
   inputCooldown: 0.2
   sHoldExitTime: 2
   exitSceneName: KingdomScene
