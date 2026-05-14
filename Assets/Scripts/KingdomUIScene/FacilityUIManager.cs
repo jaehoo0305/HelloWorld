@@ -1,10 +1,11 @@
 using UnityEngine;
-using UnityEngine.UI; // Image 컴포넌트 사용을 위해 필요
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// 상점 UI의 원형 궤도 카메라 이동 및 아이콘 하이라이트 효과를 관리하는 매니저입니다.
+/// Manages camera orbit, facility highlighting, and priority-based arrow UI.
+/// Supports active input feedback and idle state visibility.
 /// </summary>
 public class FacilityUIManager : MonoBehaviour
 {
@@ -17,83 +18,108 @@ public class FacilityUIManager : MonoBehaviour
     [SerializeField] private float movementSpeed = 8f;
     [SerializeField] private float cameraRadius = 10f;
 
-    [Header("UI Visual Effect Settings")]
-    [SerializeField] private Image[] facilityIcons; // 8개의 아이콘을 순서대로 할당
+    [Header("Facility Icon Settings")]
+    [SerializeField] private Image[] facilityIcons;
     [SerializeField] private Color activeColor = Color.white;
     [SerializeField] private Color inactiveColor = new Color(0.5f, 0.5f, 0.5f, 0.8f);
-    [SerializeField] private float visualTransitionSpeed = 15f; // 색상 전환 속도 (높을수록 빠름)
+    [SerializeField] private float visualTransitionSpeed = 15f;
 
-    [Header("Inupt Settings")]
+    [Header("Arrow UI Settings (A, D, S)")]
+    [SerializeField] private Image leftArrow;
+    [SerializeField] private Image rightArrow;
+    [SerializeField] private Image downArrow;
+    [SerializeField] private float arrowShowDuration = 2.0f;
+    [SerializeField] private float arrowFadeSpeed = 5.0f;
+
+    [Header("Idle UI Settings")]
+    [SerializeField] private float idleTimeout = 5.0f; // Seconds of inactivity (excluding A, S, D)
+
+    [Header("Input Settings")]
     [SerializeField] private float inputCooldown = 0.5f;
     [SerializeField] private float sHoldExitTime = 1.5f;
     [SerializeField] private string exitSceneName = "KingdomScene";
 
-    // 상수 정의
+    // Constants
     private const int TotalFacilityCount = 8;
     private const float AngleStep = 360f / TotalFacilityCount;
     private const float PrecisionThreshold = 0.001f;
+    private const float MouseMoveThreshold = 0.1f;
 
     private int _targetIndex = 0;
-    private int _currentActiveIndex = 0; // 현재 강조되어야 할 아이콘 인덱스
+    private int _currentActiveIndex = 0;
     private Vector3 _targetPosition;
     private float _targetYRotation;
 
     private float _lastInputTime = -10f;
     private float _sHoldTimer = 0f;
 
+    // Arrow specific states
+    private float _leftArrowTimer = 0f;
+    private float _rightArrowTimer = 0f;
+
+    // Idle detection
+    private float _idleTimer = 0f;
+    private Vector2 _lastMousePos;
+
     private void Start()
     {
         if (facilityData == null || uiCameraTransform == null)
         {
-            Debug.LogError("FacilityUIManager: Where is camera or DataSO?");
+            Debug.LogError("FacilityUIManager: Essential references are missing.");
             return;
         }
 
-        if (facilityIcons == null || facilityIcons.Length != TotalFacilityCount)
+        if (Mouse.current != null)
         {
-            Debug.LogWarning("FacilityUIManager: Facility Icon List is 8!");
+            _lastMousePos = Mouse.current.position.ReadValue();
         }
 
-        // 이전 씬에서 넘어온 데이터를 기반으로 인덱스 초기화
+        // Initialize arrows to transparent
+        SetImageAlpha(leftArrow, 0f);
+        SetImageAlpha(rightArrow, 0f);
+        SetImageAlpha(downArrow, 0f);
+
         _targetIndex = facilityData.CurrentIndex;
         _currentActiveIndex = (_targetIndex % TotalFacilityCount + TotalFacilityCount) % TotalFacilityCount;
 
-        // 초기 상태 즉시 적용
         UpdateTargetTransform();
         uiCameraTransform.position = _targetPosition;
         uiCameraTransform.rotation = Quaternion.Euler(0, _targetYRotation, 0);
 
-        // 초기 아이콘 색상 강제 설정
         InitializeIconColors();
 
-        Debug.Log($"[FacilityUI] {facilityData.currentFacility} Started");
+        Debug.Log($"[FacilityUI] System Initialized for {facilityData.currentFacility}");
     }
 
     private void Update()
     {
         HandleInput();
+        UpdateIdleDetection();
+        UpdateArrowVisuals();
         MoveAndRotateCameraSmoothly();
-        UpdateIconColorsSmoothly(); // 매 프레임 색상을 부드럽게 변경
+        UpdateIconColorsSmoothly();
     }
 
     private void HandleInput()
     {
         if (Keyboard.current == null) return;
 
-        // --- 좌우 이동 관리 (쿨타임 적용) ---
+        // Navigation (A, D)
         if (Time.time >= _lastInputTime + inputCooldown)
         {
             if (Keyboard.current.aKey.wasPressedThisFrame)
             {
                 ApplyNavigation(-1);
+                TriggerArrow(ref _leftArrowTimer, ref _rightArrowTimer);
             }
             else if (Keyboard.current.dKey.wasPressedThisFrame)
             {
                 ApplyNavigation(1);
+                TriggerArrow(ref _rightArrowTimer, ref _leftArrowTimer);
             }
         }
 
-        // --- 퇴장 로직 (S 키 홀드) ---
+        // Exit (S Hold)
         if (Keyboard.current.sKey.isPressed)
         {
             _sHoldTimer += Time.deltaTime;
@@ -108,22 +134,114 @@ public class FacilityUIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Tracks inactivity, specifically ignoring A, S, and D keyboard inputs.
+    /// </summary>
+    private void UpdateIdleDetection()
+    {
+        bool isAnyActivity = false;
+
+        // 1. Check Keyboard activity EXCLUDING A, S, D
+        if (Keyboard.current != null && Keyboard.current.anyKey.wasPressedThisFrame)
+        {
+            // If the key pressed is NOT A, S, or D, count as activity
+            if (!Keyboard.current.aKey.wasPressedThisFrame &&
+                !Keyboard.current.sKey.wasPressedThisFrame &&
+                !Keyboard.current.dKey.wasPressedThisFrame)
+            {
+                isAnyActivity = true;
+            }
+        }
+
+        // 2. Check Mouse Click
+        if (Mouse.current != null && (Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame))
+        {
+            isAnyActivity = true;
+        }
+
+        // 3. Check Mouse Movement
+        if (Mouse.current != null)
+        {
+            Vector2 currentMousePos = Mouse.current.position.ReadValue();
+            if (Vector2.Distance(currentMousePos, _lastMousePos) > MouseMoveThreshold)
+            {
+                isAnyActivity = true;
+                _lastMousePos = currentMousePos;
+            }
+        }
+
+        if (isAnyActivity)
+        {
+            _idleTimer = 0f;
+        }
+        else
+        {
+            _idleTimer += Time.deltaTime;
+        }
+    }
+
+    private void TriggerArrow(ref float activeTimer, ref float inactiveTimer)
+    {
+        activeTimer = arrowShowDuration;
+        inactiveTimer = 0f;
+        _lastInputTime = Time.time;
+    }
+
+    /// <summary>
+    /// Updates alpha for each arrow based on a priority system:
+    /// Active Input > Idle State > Hidden
+    /// </summary>
+    private void UpdateArrowVisuals()
+    {
+        bool isIdle = _idleTimer >= idleTimeout;
+        bool isSPressed = Keyboard.current != null && Keyboard.current.sKey.isPressed;
+
+        // Update timers
+        if (_leftArrowTimer > 0) _leftArrowTimer -= Time.deltaTime;
+        if (_rightArrowTimer > 0) _rightArrowTimer -= Time.deltaTime;
+
+        // Check if there is ANY active specific input being processed
+        bool hasActiveSpecificInput = (_leftArrowTimer > 0 || _rightArrowTimer > 0 || isSPressed);
+
+        // Calculate Target Alphas using priority logic
+        // Priority 1: Current specific input (A, S, D)
+        // Priority 2: Idle state (Show all 3) - Only if Priority 1 is not active for OTHER arrows
+        float leftTarget = (_leftArrowTimer > 0 || (isIdle && !hasActiveSpecificInput)) ? 1.0f : 0.0f;
+        float rightTarget = (_rightArrowTimer > 0 || (isIdle && !hasActiveSpecificInput)) ? 1.0f : 0.0f;
+        float downTarget = (isSPressed || (isIdle && !hasActiveSpecificInput)) ? 1.0f : 0.0f;
+
+        // Apply Lerp for smooth transition
+        LerpAlpha(leftArrow, leftTarget);
+        LerpAlpha(rightArrow, rightTarget);
+        LerpAlpha(downArrow, downTarget);
+    }
+
+    private void LerpAlpha(Image img, float targetAlpha)
+    {
+        if (img == null) return;
+        Color color = img.color;
+        color.a = Mathf.MoveTowards(color.a, targetAlpha, Time.deltaTime * arrowFadeSpeed);
+        img.color = color;
+    }
+
+    private void SetImageAlpha(Image img, float alpha)
+    {
+        if (img == null) return;
+        Color color = img.color;
+        color.a = alpha;
+        img.color = color;
+    }
+
     private void ApplyNavigation(int direction)
     {
         _targetIndex += direction;
         UpdateTargetTransform();
-        _lastInputTime = Time.time;
     }
 
     private void ExitToKingdomScene()
     {
-        Debug.Log("[FacilityUI] KingdomScene Exit");
-
-        if (facilityData != null)
-        {
-            facilityData.isReturning = true;
-        }
-
+        Debug.Log("[FacilityUI] Exiting.");
+        if (facilityData != null) facilityData.isReturning = true;
         SceneManager.LoadScene(exitSceneName);
     }
 
@@ -131,27 +249,19 @@ public class FacilityUIManager : MonoBehaviour
     {
         _targetYRotation = _targetIndex * AngleStep;
 
-        // 궤도 위치 계산
         float radian = _targetYRotation * Mathf.Deg2Rad;
         float x = Mathf.Sin(radian) * cameraRadius;
         float z = Mathf.Cos(radian) * cameraRadius;
 
-        // 미세 오차 보정
         if (Mathf.Abs(x) < PrecisionThreshold) x = 0f;
         if (Mathf.Abs(z) < PrecisionThreshold) z = 0f;
 
         _targetPosition = new Vector3(x, 0, z);
 
-        // 현재 인덱스 계산 및 데이터 갱신
         _currentActiveIndex = (_targetIndex % TotalFacilityCount + TotalFacilityCount) % TotalFacilityCount;
         facilityData.SetFacility((FacilityType)_currentActiveIndex);
-
-        Debug.Log($"[FacilityUI] Target is {_currentActiveIndex} ({facilityData.currentFacility}) Changed.");
     }
 
-    /// <summary>
-    /// 시작 시 아이콘 색상을 초기화합니다.
-    /// </summary>
     private void InitializeIconColors()
     {
         if (facilityIcons == null) return;
@@ -162,21 +272,13 @@ public class FacilityUIManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 아이콘의 색상을 목표 색상으로 부드럽게 선형 보간합니다.
-    /// </summary>
     private void UpdateIconColorsSmoothly()
     {
         if (facilityIcons == null) return;
-
         for (int i = 0; i < facilityIcons.Length; i++)
         {
             if (facilityIcons[i] == null) continue;
-
-            // 목표 색상 결정
             Color targetColor = (i == _currentActiveIndex) ? activeColor : inactiveColor;
-
-            // 현재 색상에서 목표 색상으로 선형 보간 이동
             facilityIcons[i].color = Color.Lerp(facilityIcons[i].color, targetColor, Time.deltaTime * visualTransitionSpeed);
         }
     }
