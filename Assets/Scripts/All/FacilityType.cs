@@ -1,11 +1,11 @@
 public enum FacilityType
 {
+    Library,
     Bank,
-    Blacksmith,
+    Market,
     Center,
     Church,
-    Library,
-    Market,
+    Barracks,
+    Blacksmith,
     PowerStation,
-    TrainingGround
 }
