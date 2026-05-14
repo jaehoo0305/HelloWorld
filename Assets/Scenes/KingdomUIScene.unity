@@ -312,7 +312,7 @@ GameObject:
   - component: {fileID: 260315426}
   - component: {fileID: 260315425}
   m_Layer: 5
-  m_Name: BuildingName
+  m_Name: FacilityName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -449,7 +449,7 @@ GameObject:
   - component: {fileID: 268438448}
   - component: {fileID: 268438447}
   m_Layer: 5
-  m_Name: BuildingLv
+  m_Name: FacilityLv
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -608,7 +608,19 @@ MonoBehaviour:
   rotationSpeed: 7.5
   movementSpeed: 6
   cameraRadius: 10
-  inputCooldown: 0.25
+  facilityIcons:
+  - {fileID: 1111183327}
+  - {fileID: 1665869710}
+  - {fileID: 1288786331}
+  - {fileID: 783337180}
+  - {fileID: 1270697375}
+  - {fileID: 874734279}
+  - {fileID: 1066119430}
+  - {fileID: 348011228}
+  activeColor: {r: 1, g: 1, b: 1, a: 1}
+  inactiveColor: {r: 0.33333334, g: 0.33333334, b: 0.33333334, a: 0.8}
+  visualTransitionSpeed: 15
+  inputCooldown: 0.15
   sHoldExitTime: 2
   exitSceneName: KingdomScene
 --- !u!4 &289753035
@@ -1305,7 +1317,7 @@ GameObject:
   - component: {fileID: 874517926}
   - component: {fileID: 874517925}
   m_Layer: 5
-  m_Name: BuildingIconList
+  m_Name: FacilityIconList
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
