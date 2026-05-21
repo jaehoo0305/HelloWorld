@@ -17,6 +17,8 @@ MonoBehaviour:
     - 70dbbb251e512c9428fbab03e87d9fe8
     - cedaee5a88814b843abad97c39480ac0
     - 2080beb6e104de34bb0941b8f4d451a4
+    - f7874dfd505f69446a85ef1b236c2e3f
+    - 8c9cfa26abfee488c85f1582747f6a02
     values:
     - goDatas_byGlobalId:
         keys: []
@@ -62,6 +64,47 @@ MonoBehaviour:
         - colorIndex: 1
           iconNameOrGuid: Folder Icon
           isIconRecursive: 1
+          isColorRecursive: 0
+        - colorIndex: 1
+          iconNameOrGuid: Folder Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-2-f7874dfd505f69446a85ef1b236c2e3f-520107095-0
+        - globalObjectIdString: GlobalObjectId_V1-2-f7874dfd505f69446a85ef1b236c2e3f-1504715839-0
+        - globalObjectIdString: GlobalObjectId_V1-2-f7874dfd505f69446a85ef1b236c2e3f-408370317-0
+        values:
+        - colorIndex: 1
+          iconNameOrGuid: Folder Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 1
+          iconNameOrGuid: Folder Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 1
+          iconNameOrGuid: Folder Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-1820003206-0
+        - globalObjectIdString: GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-367402739-0
+        - globalObjectIdString: GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-773383348-0
+        - globalObjectIdString: GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-369569567-0
+        values:
+        - colorIndex: 1
+          iconNameOrGuid: Folder Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 1
+          iconNameOrGuid: Folder Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 1
+          iconNameOrGuid: Folder Icon
+          isIconRecursive: 0
           isColorRecursive: 0
         - colorIndex: 1
           iconNameOrGuid: Folder Icon
