@@ -14,6 +14,9 @@ public class FacilityCameraController : MonoBehaviour
     [SerializeField] private float movementSpeed = 8f;
     [SerializeField] private float cameraRadius = 10f;
 
+    // 외부(줌 컨트롤러 등)에서 카메라 반지름 값을 읽어갈 수 있도록 프로퍼티 추가
+    public float CameraRadius => cameraRadius;
+
     private const float AngleStep = 360f / FacilityManager.TotalFacilityCount;
     private const float PrecisionThreshold = 0.001f;
 
