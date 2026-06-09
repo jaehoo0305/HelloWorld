@@ -19,6 +19,7 @@ MonoBehaviour:
     - 2080beb6e104de34bb0941b8f4d451a4
     - f7874dfd505f69446a85ef1b236c2e3f
     - 8c9cfa26abfee488c85f1582747f6a02
+    - 4d6446dd21d350b4fa8dba957aad5c47
     values:
     - goDatas_byGlobalId:
         keys: []
@@ -125,8 +126,22 @@ MonoBehaviour:
           iconNameOrGuid: Folder Icon
           isIconRecursive: 0
           isColorRecursive: 0
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-2-4d6446dd21d350b4fa8dba957aad5c47-958391710-0
+        - globalObjectIdString: GlobalObjectId_V1-2-4d6446dd21d350b4fa8dba957aad5c47-1202009613-0
+        values:
+        - colorIndex: 1
+          iconNameOrGuid: Folder Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 1
+          iconNameOrGuid: Folder Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
   bookmarks: []
   bookmarkedScenePaths:
   - Assets/Scenes/AFKScene.unity
   - Assets/Scenes/KingdomScene.unity
   - Assets/Scenes/KingdomUIScene.unity
+  - Assets/Scenes/DungeonScene.unity
