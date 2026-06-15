@@ -58,7 +58,19 @@ public class FacilityManager : MonoBehaviour
     public void ExitToKingdomScene()
     {
         if (facilityData != null) facilityData.isReturning = true;
-        SceneManager.LoadScene(exitSceneName);
+
+        // 1. 이미 씬에 살아있는 SceneLoader 싱글톤이 있다면 고급 로딩(비동기) 사용
+        if (SceneLoader.Instance != null)
+        {
+            Debug.Log($"[FacilityManager] SceneLoader를 통해 '{exitSceneName}'(으)로 이동합니다.");
+            SceneLoader.Instance.LoadScene(exitSceneName);
+        }
+        // 2. 만약 해당 씬만 단독으로 테스트 중이라 SceneLoader가 없다면 기본 로딩 사용
+        else
+        {
+            Debug.LogWarning($"[FacilityManager] SceneLoader를 찾을 수 없어 기본 모드로 '{exitSceneName}'(으)로 이동합니다.");
+            SceneManager.LoadScene(exitSceneName);
+        }
     }
 
     private void UpdateData()
