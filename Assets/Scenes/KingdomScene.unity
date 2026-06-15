@@ -4411,7 +4411,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GridMovement
   facilityData: {fileID: 11400000, guid: 97b8aacef5db4cc4a9accad93e2d283a, type: 2}
   cellSize: 2.5
-  moveSpeed: 25
+  moveSpeed: 12.5
   bufferWindow: 0.2
 --- !u!114 &1412063960
 MonoBehaviour:
