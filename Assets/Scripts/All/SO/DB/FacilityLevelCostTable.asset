@@ -12,4 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: FacilityLevelCostTable
   m_EditorClassIdentifier: Assembly-CSharp::FacilityLevelCostTableSO
-  levelCosts: []
+  levelCosts:
+  - targetLevel: 1
+    requiredElectricity: 1
+    requiredBitcoin: 10
+    buildTimeInSeconds: 25
+  - targetLevel: 2
+    requiredElectricity: 100
+    requiredBitcoin: 50
+    buildTimeInSeconds: 300
+  - targetLevel: 3
+    requiredElectricity: 10000
+    requiredBitcoin: 250
+    buildTimeInSeconds: 3600
+  - targetLevel: 4
+    requiredElectricity: 1000000
+    requiredBitcoin: 1250
+    buildTimeInSeconds: 43200
+  - targetLevel: 5
+    requiredElectricity: 100000000
+    requiredBitcoin: 6250
+    buildTimeInSeconds: 518400
