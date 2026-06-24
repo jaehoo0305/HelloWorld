@@ -13042,7 +13042,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ', 0 Lv'
+  m_text: ', Lv. 0'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 136220fccf1e0bd46ab4399778f724c9, type: 2}
   m_sharedMaterial: {fileID: 5314098040895187269, guid: 136220fccf1e0bd46ab4399778f724c9, type: 2}
@@ -51505,7 +51505,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 949617097}
-  - component: {fileID: 949617096}
+  - component: {fileID: 949617098}
   m_Layer: 0
   m_Name: TestGeneratorResourceManager
   m_TagString: Untagged
@@ -51513,20 +51513,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &949617096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 949617095}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75af268ad951e5344a19bec8886620f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GeneratorResourceManager
-  generatorLevel: 1
-  currentElectricity: 0
 --- !u!4 &949617097
 Transform:
   m_ObjectHideFlags: 0
@@ -51542,6 +51528,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &949617098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 949617095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c61a84d33aed9d408c969885f63e0a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GeneratorResourceManager
+  generatorLevel: 1
+  currentElectricity: 0
 --- !u!1 &951137711 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3863872738091951704, guid: ddf048caef8336541925c6a5415543a3, type: 3}
