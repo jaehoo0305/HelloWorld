@@ -1,8 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events; // 이벤트 바인딩을 위한 네임스페이스 추가
 
 public class OnOffButton : MonoBehaviour
 {
+    [System.Serializable]
+    public class BoolEvent : UnityEvent<bool> { } // 인스펙터 노출용 커스텀 불리언 이벤트
+
     [Header("UI Component")]
     public Button toggleButton;
     public Image buttonImage;
@@ -12,11 +16,15 @@ public class OnOffButton : MonoBehaviour
     public Sprite offSprite;
 
     [Header("Save Settings")]
-    [Tooltip("각 버튼을 구분할 고유한 저장 키 이름")]
+    [Tooltip("각 버튼의 On/Off 데이터를 개별 분리하여 저장할 레지스트리 키")]
     public string saveKey = "Default_OnOff_Key";
 
-    [Tooltip("처음 게임을 실행했을 때의 기본 상태값 설정")]
+    [Tooltip("처음 게임을 실행했을 때 적용될 기본 값 (켜짐/꺼짐 상태)")]
     public bool defaultState = true;
+
+    [Header("Event Triggers")]
+    [Tooltip("버튼의 On/Off 값이 바뀔 때 연동되어 실행될 기능들을 인스펙터에서 등록하세요.")]
+    public BoolEvent onValueChanged;
 
     private bool isOn = true;
 
@@ -25,13 +33,13 @@ public class OnOffButton : MonoBehaviour
         if (toggleButton == null) toggleButton = GetComponent<Button>();
         if (buttonImage == null) buttonImage = GetComponent<Image>();
 
-        // 1. 시작 시 PlayerPrefs에서 저장된 값 불러오기 (저장된 값이 없다면 defaultState 값 사용)
+        // 1. 시작 시 PlayerPrefs에서 저장된 값 로드
         LoadState();
 
-        // 2. 불러온 상태에 맞춰 UI 비주얼 갱신
+        // 2. 불러온 값에 맞추어 UI 비주얼 스피드 교체
         UpdateVisual();
 
-        // 3. 불러온 상태에 따른 초기 로직 실행 (예: 시작하자마자 항상 위 옵션 등을 강제 적용)
+        // 3. 불러온 직후 최초 1회 이벤트를 발송하여 윈도우 상태 강제 동기화
         ExecuteLogic();
 
         toggleButton.onClick.AddListener(ChangeState);
@@ -41,7 +49,7 @@ public class OnOffButton : MonoBehaviour
     {
         isOn = !isOn;
 
-        // 4. 상태 변경 시 즉시 PlayerPrefs에 저장
+        // 4. 상태 변경 즉시 PlayerPrefs에 영구 저장
         SaveState();
 
         UpdateVisual();
@@ -57,27 +65,23 @@ public class OnOffButton : MonoBehaviour
     {
         if (isOn)
         {
-            Debug.Log($"{saveKey} : Onn");
+            Debug.Log($"[OnOffButton] {saveKey} : Enabled (ON)");
         }
         else
         {
-            Debug.Log($"{saveKey} : Off");
+            Debug.Log($"[OnOffButton] {saveKey} : Disabled (OFF)");
         }
+
+        // 인스펙터 상에서 연결한 스크립트의 Dynamic bool 함수로 상태값 전달
+        onValueChanged?.Invoke(isOn);
     }
 
-    /// <summary>
-    /// PlayerPrefs를 통해 현재 상태를 기기에 저장합니다.
-    /// </summary>
     private void SaveState()
     {
-        // bool 값을 정수(1 또는 0)로 변환하여 저장합니다.
         PlayerPrefs.SetInt(saveKey, isOn ? 1 : 0);
-        PlayerPrefs.Save(); // 디스크에 물리적으로 데이터 반영
+        PlayerPrefs.Save();
     }
 
-    /// <summary>
-    /// PlayerPrefs로부터 이전 상태를 불러옵니다.
-    /// </summary>
     private void LoadState()
     {
         int defaultValue = defaultState ? 1 : 0;
