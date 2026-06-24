@@ -9,42 +9,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 198151c5f948c1440bf1532a18816bec, type: 3}
   m_Name: FacilityDatabase
   m_EditorClassIdentifier: Assembly-CSharp::FacilityDatabaseSO
   facilities:
   - facilityType: 0
     facilityName: "\uB3C4\uC11C\uAD00"
-    description: "\uBAA8\uB4E0 \uD1B5\uACC4\uC640 \uC774\uBCA4\uD2B8, \uC804\uC801
-      \uADF8\uB9AC\uACE0 \uC7A5\uBE44\uAC00 \uAE30\uB85D\uB41C\uB2E4."
-    initialUnlockType: 0
-    levelUpDescriptions:
-    - "\uBAA8\uB4E0 \uD1B5\uACC4\uC640 \uC774\uBCA4\uD2B8, \uC804\uC801 \uADF8\uB9AC\uACE0
+    description: "\uBAA8\uB4E0 \uD1B5\uACC4, \uC774\uBCA4\uD2B8, \uC804\uC801 \uADF8\uB9AC\uACE0
       \uC7A5\uBE44\uAC00 \uAE30\uB85D\uB41C\uB2E4."
+    initialUnlockType: 0
+    levelUpDescriptions: []
     subFeatures: []
   - facilityType: 1
     facilityName: "\uC740\uD589"
     description: "\uC608\uAE08 \uBC0F \uB300\uCD9C\uC744 \uD558\uAC70\uB098 \uB2E4\uC591\uD55C
       \uBCF4\uD5D8\uC5D0 \uAC00\uC785\uD55C\uB2E4."
     initialUnlockType: 2
-    levelUpDescriptions:
-    - "\uB274\uC2A4\uAC00 \uD574\uAE08\uB41C\uB2E4."
-    - "\uC608\uAE08\uC774 \uD574\uAE08\uB41C\uB2E4."
-    - "\uBCF4\uD5D8\uC774 \uD574\uAE08\uB41C\uB2E4."
-    - "\uB300\uCD9C\uC774 \uD574\uAE08\uB41C\uB2E4."
-    - "\uAC24\uB7EC\uB9AC\uAC00 \uD574\uAE08\uB41C\uB2E4."
+    levelUpDescriptions: []
     subFeatures: []
   - facilityType: 2
     facilityName: "\uB9C8\uCF13"
     description: "\uBE44\uD2B8\uCF54\uC778\uC744 \uAE30\uBC18\uC73C\uB85C \uC5EC\uB7EC
       \uD22C\uC790 \uC885\uBAA9\uC744 \uC6B4\uC6A9\uD55C\uB2E4."
     initialUnlockType: 2
-    levelUpDescriptions:
-    - "\uC8FC\uC2DD \uD22C\uC790\uAC00 \uD574\uAE08\uB41C\uB2E4."
-    - "\uC8FC\uC2DD \uD22C\uC790 \uC885\uBAA9\uC774 \uB298\uC5B4\uB09C\uB2E4."
-    - "\uACF5\uB9E4\uB3C4\uAC00 \uD574\uAE08\uB41C\uB2E4."
-    - "\uC635\uC158 \uD22C\uC790\uAC00 \uD574\uAE08\uB41C\uB2E4."
-    - "\uC0AC\uCE58\uD488 \uAD6C\uB9E4\uAC00 \uD574\uAE08\uB41C\uB2E4."
+    levelUpDescriptions: []
     subFeatures: []
   - facilityType: 3
     facilityName: "\uD68C\uAD00"
@@ -52,55 +40,21 @@ MonoBehaviour:
       \uC11C\uC7AC\uB97C \uD1B5\uD574 \uBC29\uCE58 \uBAA8\uB4DC\uC5D0 \uC9C4\uC785\uD558\uAC70\uB098
       \uC6D0\uC815\uC744 \uB5A0\uB0A0 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
     initialUnlockType: 0
-    levelUpDescriptions:
-    - "\uB2E4\uB978 \uBAA8\uB4E0 \uAC74\uBB3C\uC758 \uB808\uBCA8\uC5C5 \uC0C1\uD55C\uC774
-      1\uB808\uBCA8\uC774 \uB41C\uB2E4."
-    - "\uB2E4\uB978 \uBAA8\uB4E0 \uAC74\uBB3C\uC758 \uB808\uBCA8\uC5C5 \uC0C1\uD55C\uC774
-      2\uB808\uBCA8\uC774 \uB41C\uB2E4."
-    - "\uB2E4\uB978 \uBAA8\uB4E0 \uAC74\uBB3C\uC758 \uB808\uBCA8\uC5C5 \uC0C1\uD55C\uC774
-      3\uB808\uBCA8\uC774 \uB41C\uB2E4."
-    - "\uB2E4\uB978 \uBAA8\uB4E0 \uAC74\uBB3C\uC758 \uB808\uBCA8\uC5C5 \uC0C1\uD55C\uC774
-      4\uB808\uBCA8\uC774 \uB41C\uB2E4."
-    - "\uB2E4\uB978 \uBAA8\uB4E0 \uAC74\uBB3C\uC758 \uB808\uBCA8\uC5C5 \uC0C1\uD55C\uC774
-      5\uB808\uBCA8\uC774 \uB41C\uB2E4."
+    levelUpDescriptions: []
     subFeatures: []
   - facilityType: 4
     facilityName: "\uAD50\uD68C"
     description: "\uC2AC\uB86F\uC5D0 \uC601\uC6C5\uC744 \uBC30\uCE58\uD558\uACE0,
       \uC804\uB825\uC744 \uC18C\uBAA8\uD574 \uACFC\uC5F4\uC744 \uCE58\uB8CC\uD55C\uB2E4."
     initialUnlockType: 1
-    levelUpDescriptions:
-    - "\uC2AC\uB86F\uC774 \uD55C \uCE78 \uD574\uAE08\uB41C\uB2E4."
-    - "\uACFC\uC5F4 \uB0C9\uAC01 \uC131\uB2A5\uC774 \uC99D\uAC00\uD55C\uB2E4."
-    - "\uC2AC\uB86F\uC774 \uD55C \uCE78 \uD574\uAE08\uB41C\uB2E4."
-    - "\uB0C9\uAC01 \uBE44\uC6A9\uC774 \uAC10\uC18C\uD55C\uB2E4."
-    - "\uC2AC\uB86F\uC774 \uD55C \uCE78 \uD574\uAE08\uB41C\uB2E4."
-    subFeatures:
-    - featureName: "\uB0C9\uAC011"
-      unlockRequiredLevel: 1
-      buttonIdentifier: Cooling1
-    - featureName: "\uB0C9\uAC012"
-      unlockRequiredLevel: 3
-      buttonIdentifier: Cooling2
-    - featureName: "\uB0C9\uAC013"
-      unlockRequiredLevel: 5
-      buttonIdentifier: Cooling3
+    levelUpDescriptions: []
+    subFeatures: []
   - facilityType: 5
     facilityName: "\uD6C8\uB828\uC18C"
     description: "\uC601\uC6C5\uC758 \uC2A4\uD0AC\uC774\uB098 \uD328\uC2DC\uBE0C\uB97C
       \uAC15\uD654\uD55C\uB2E4."
     initialUnlockType: 2
-    levelUpDescriptions:
-    - "\uC601\uC6C5\uC758 \uC2A4\uD0AC, \uD328\uC2DC\uBE0C\uC758 \uB808\uBCA8\uC5C5
-      \uC0C1\uD55C\uC774 1\uB808\uBCA8\uC774 \uB41C\uB2E4."
-    - "\uC601\uC6C5\uC758 \uC2A4\uD0AC, \uD328\uC2DC\uBE0C\uC758 \uB808\uBCA8\uC5C5
-      \uC0C1\uD55C\uC774 2\uB808\uBCA8\uC774 \uB41C\uB2E4."
-    - "\uC601\uC6C5\uC758 \uC2A4\uD0AC, \uD328\uC2DC\uBE0C\uC758 \uB808\uBCA8\uC5C5
-      \uC0C1\uD55C\uC774 3\uB808\uBCA8\uC774 \uB41C\uB2E4."
-    - "\uC601\uC6C5\uC758 \uC2A4\uD0AC, \uD328\uC2DC\uBE0C\uC758 \uB808\uBCA8\uC5C5
-      \uC0C1\uD55C\uC774 4\uB808\uBCA8\uC774 \uB41C\uB2E4."
-    - "\uC601\uC6C5\uC758 \uC2A4\uD0AC, \uD328\uC2DC\uBE0C\uC758 \uB808\uBCA8\uC5C5
-      \uC0C1\uD55C\uC774 5\uB808\uBCA8\uC774 \uB41C\uB2E4."
+    levelUpDescriptions: []
     subFeatures: []
   - facilityType: 6
     facilityName: "\uB300\uC7A5\uAC04"
@@ -108,12 +62,7 @@ MonoBehaviour:
       \uBC14\uAFB8\uACE0 \uCD94\uAC00\uD558\uACE0 \uC9C0\uC6B0\uAC70\uB098 \uC7A5\uBE44\uB97C
       \uD569\uC131\uD558\uC5EC \uAC15\uD654\uD55C\uB2E4."
     initialUnlockType: 2
-    levelUpDescriptions:
-    - "\uC7A5\uBE44 \uD569\uC131\uC774 \uD574\uAE08\uB41C\uB2E4."
-    - "\uC218\uC2DD\uC5B4 \uB9AC\uB864\uC774 \uD574\uAE08\uB41C\uB2E4."
-    - "\uC218\uC2DD\uC5B4 \uCD94\uAC00\uAC00 \uD574\uAE08\uB41C\uB2E4."
-    - "\uC218\uC2DD\uC5B4 \uC81C\uAC70\uAC00 \uD574\uAE08\uB41C\uB2E4."
-    - "\uC7A5\uBE44 \uAC01\uC131\uC774 \uD574\uAE08\uB41C\uB2E4."
+    levelUpDescriptions: []
     subFeatures: []
   - facilityType: 7
     facilityName: "\uBC1C\uC804\uC18C"
@@ -121,7 +70,5 @@ MonoBehaviour:
       \uB610\uD55C \uC804\uAE30 \uC0DD\uC0B0\uB7C9\uC744 \uAC15\uD654\uD560 \uC218
       \uC788\uB2E4."
     initialUnlockType: 0
-    levelUpDescriptions:
-    - "\uC790\uB3D9\uC73C\uB85C \uC804\uAE30\uB97C \uC0DD\uC0B0\uD558\uBA70 \uB610\uD55C
-      \uC804\uAE30 \uC0DD\uC0B0\uB7C9\uC744 \uAC15\uD654\uD560 \uC218 \uC788\uB2E4."
+    levelUpDescriptions: []
     subFeatures: []

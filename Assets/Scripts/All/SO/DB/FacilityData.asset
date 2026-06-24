@@ -13,3 +13,6 @@ MonoBehaviour:
   m_Name: FacilityData
   m_EditorClassIdentifier: Assembly-CSharp::FacilityDataSO
   currentFacility: 0
+  exitDirection: {x: 0, y: 0}
+  isReturning: 0
+  facilityList: []

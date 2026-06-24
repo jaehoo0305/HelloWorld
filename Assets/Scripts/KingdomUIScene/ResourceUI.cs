@@ -5,7 +5,7 @@ using TMPro;
 /// GeneratorResourceManager의 데이터를 실시간으로 읽어와 TMP UI에 반영하는 뷰(View) 스크립트입니다.
 /// 가로 화면(MainUICanvas)과 월드 화면(PowerStationUICanvas)에 각각 부착하여 개별 설정이 가능합니다.
 /// </summary>
-public class GeneratorResourceUI : MonoBehaviour
+public class ResourceUI : MonoBehaviour
 {
     [Header("전력 표시 (MainUICanvas용)")]
     [Tooltip("현재 보유 중인 총 전력량을 표시할 텍스트 컴포넌트입니다. (CurrentEle)")]
@@ -95,6 +95,6 @@ public class GeneratorResourceUI : MonoBehaviour
         }
 
         // 1000 미만인 경우 소수점 첫째 자리까지만 깔끔하게 정수/실수 표시
-        return value.ToString("F1");
+        return ((long)value).ToString();
     }
 }

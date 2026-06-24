@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 8e3a696bfe6748a4a8946ebdd95e2c82, type: 3}
   m_Name: FacilityLevelCostTable
   m_EditorClassIdentifier: Assembly-CSharp::FacilityLevelCostTableSO
   levelCosts:
@@ -24,7 +24,7 @@ MonoBehaviour:
   - targetLevel: 3
     requiredElectricity: 10000
     requiredBitcoin: 250
-    buildTimeInSeconds: 3600
+    buildTimeInSeconds: 0
   - targetLevel: 4
     requiredElectricity: 1000000
     requiredBitcoin: 1250
