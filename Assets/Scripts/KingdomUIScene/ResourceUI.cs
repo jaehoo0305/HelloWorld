@@ -40,7 +40,7 @@ public class ResourceUI : MonoBehaviour
         if (currentElectricityText != null)
         {
             double currentEle = GeneratorResourceManager.Instance.CurrentElectricity;
-            currentElectricityText.text = FormatNumber(currentEle);
+            currentElectricityText.text = ((long)currentEle).ToString("F0");
         }
 
         // 2. 초당 생산량 업데이트 (ResourceEle)
@@ -95,6 +95,6 @@ public class ResourceUI : MonoBehaviour
         }
 
         // 1000 미만인 경우 소수점 첫째 자리까지만 깔끔하게 정수/실수 표시
-        return ((long)value).ToString();
+        return (value).ToString(("F1"));
     }
 }

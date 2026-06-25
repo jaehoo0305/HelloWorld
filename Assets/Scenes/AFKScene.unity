@@ -873,6 +873,143 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &807139976
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 807139977}
+  - component: {fileID: 807139979}
+  - component: {fileID: 807139978}
+  m_Layer: 5
+  m_Name: ElectricityPerSecond
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &807139977
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 807139976}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2017275199}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -7, y: -12.200001}
+  m_SizeDelta: {x: 115, y: 35}
+  m_Pivot: {x: 1, y: 0.5}
+--- !u!114 &807139978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 807139976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 0
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 136220fccf1e0bd46ab4399778f724c9, type: 2}
+  m_sharedMaterial: {fileID: 5314098040895187269, guid: 136220fccf1e0bd46ab4399778f724c9, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 11
+  m_fontSizeBase: 11
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 4
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &807139979
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 807139976}
+  m_CullTransparentMesh: 1
 --- !u!1 &810309817
 GameObject:
   m_ObjectHideFlags: 0
@@ -920,7 +1057,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WindowController
   alwaysOnTop: 1
-  showInTaskbar: 1
   windowWidth: 400
   windowHeight: 400
 --- !u!114 &810309821
@@ -941,14 +1077,11 @@ MonoBehaviour:
     positionB: {x: 160, y: 0}
   menuButtons:
   - rectTransform: {fileID: 2123704055}
-    positionA: {x: -80, y: 30}
-    positionB: {x: 80, y: 30}
-  - rectTransform: {fileID: 0}
-    positionA: {x: -80, y: -15}
-    positionB: {x: 80, y: -15}
+    positionA: {x: -80, y: 20}
+    positionB: {x: 80, y: 20}
   - rectTransform: {fileID: 466364561}
-    positionA: {x: -80, y: -60}
-    positionB: {x: 80, y: -60}
+    positionA: {x: -80, y: -20}
+    positionB: {x: 80, y: -20}
   duration: 0.3
   movementCurve:
     serializedVersion: 2
@@ -984,11 +1117,46 @@ MonoBehaviour:
   m_GameObject: {fileID: 810309817}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 906b809c84577554a8729c12ff4c3898, type: 3}
+  m_Script: {fileID: 11500000, guid: 55a27d07dedb74b41a472a92615ec26d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Test
-  logUIText: {fileID: 2080428458}
-  maxLogLines: 15
+  m_EditorClassIdentifier: Assembly-CSharp::AFKActivityDetector
+  detectionRules:
+  - ruleName: 
+    targetState: 0
+    processKeyword: 
+    titleKeyword: 
+  - ruleName: 
+    targetState: 0
+    processKeyword: 
+    titleKeyword: 
+  - ruleName: 
+    targetState: 0
+    processKeyword: 
+    titleKeyword: 
+  - ruleName: 
+    targetState: 0
+    processKeyword: 
+    titleKeyword: 
+  - ruleName: 
+    targetState: 0
+    processKeyword: 
+    titleKeyword: 
+  checkInterval: 1
+  onDragonStateChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &828181147
 GameObject:
   m_ObjectHideFlags: 0
@@ -1696,6 +1864,7 @@ GameObject:
   - component: {fileID: 2017275199}
   - component: {fileID: 2017275201}
   - component: {fileID: 2017275200}
+  - component: {fileID: 2017275202}
   m_Layer: 5
   m_Name: ElectricityUI
   m_TagString: Untagged
@@ -1717,6 +1886,7 @@ RectTransform:
   m_Children:
   - {fileID: 1365828399}
   - {fileID: 487715968}
+  - {fileID: 807139977}
   m_Father: {fileID: 1723706937}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -1762,6 +1932,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2017275198}
   m_CullTransparentMesh: 1
+--- !u!114 &2017275202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2017275198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d0faa1da8ae6f949929b4e2760aee32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceUI
+  currentElectricityText: {fileID: 487715969}
+  electricityPerSecondText: {fileID: 807139978}
+  generatorLevelText: {fileID: 0}
+  bitcoinText: {fileID: 0}
 --- !u!1 &2080428457
 GameObject:
   m_ObjectHideFlags: 0

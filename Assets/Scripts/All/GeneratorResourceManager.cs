@@ -3,11 +3,35 @@ using UnityEngine;
 
 /// <summary>
 /// 게임의 핵심 재화인 전기를 관리하고 생산하며, 발전기의 레벨과 전력량 수치를 총괄하는 매니저 클래스입니다.
+/// 싱글톤 패턴이 적용되어 씬이 전환되어도 파괴되지 않고 누적 연산을 지속합니다.
 /// </summary>
 public class GeneratorResourceManager : MonoBehaviour
 {
-    // 싱글톤 인스턴스
-    public static GeneratorResourceManager Instance { get; private set; }
+    // --- 싱글톤 구조 업그레이드 (Lazy Initialization) ---
+    public static GeneratorResourceManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                // 현재 씬에 이미 존재하는지 탐색
+#if UNITY_2023_1_OR_NEWER
+                _instance = FindFirstObjectByType<GeneratorResourceManager>();
+#else
+                _instance = FindObjectOfType<GeneratorResourceManager>();
+#endif
+                // 존재하지 않는다면 자동으로 생성하여 방치씬 등에서 단독 실행 시 오류를 철저히 방지합니다.
+                if (_instance == null)
+                {
+                    GameObject go = new GameObject("GeneratorResourceManager");
+                    _instance = go.AddComponent<GeneratorResourceManager>();
+                    DontDestroyOnLoad(go);
+                }
+            }
+            return _instance;
+        }
+    }
+    private static GeneratorResourceManager _instance;
 
     [Header("발전기 설정")]
     [SerializeField] private int generatorLevel = 1;
@@ -25,19 +49,26 @@ public class GeneratorResourceManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
+        // 중복 생성 방지 및 씬 전환 시 파괴 방지 설정
+        if (_instance == null)
         {
-            Instance = this;
+            _instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else
+        else if (_instance != this)
         {
             Destroy(gameObject);
+            return;
         }
+
+        // 데이터를 기기 저장소로부터 안전하게 불러옵니다.
+        // 나중에 보안 요소 필요
+        LoadData();
     }
 
     private void Update()
     {
+        // 매 프레임 초당 생산 속도(EPS) 비례 전기를 안전하게 적립합니다.
         if (ElectricityPerSecond > 0)
         {
             AddElectricity(ElectricityPerSecond * Time.deltaTime);
@@ -56,7 +87,6 @@ public class GeneratorResourceManager : MonoBehaviour
 
     /// <summary>
     /// 전력을 차감해야 하는 외부 시스템을 위한 범용 소비 메서드입니다.
-    /// 외부에서 시설 업그레이드 등을 개별 구현할 때 이 함수를 호출하여 전기를 소비할 수 있습니다.
     /// </summary>
     public bool TryConsumeElectricity(double amount)
     {
@@ -66,6 +96,7 @@ public class GeneratorResourceManager : MonoBehaviour
         {
             currentElectricity -= amount;
             OnElectricityChanged?.Invoke();
+            SaveData(); // 재화 소모 발생 시 즉시 저장
             return true;
         }
         return false;
@@ -115,6 +146,7 @@ public class GeneratorResourceManager : MonoBehaviour
             generatorLevel++;
             OnElectricityChanged?.Invoke();
             OnGeneratorUpgraded?.Invoke();
+            SaveData(); // 레벨업 성공 시 즉시 저장
             return true;
         }
         return false;
@@ -128,5 +160,40 @@ public class GeneratorResourceManager : MonoBehaviour
         if (seconds <= 0) return;
         double offlineEarned = ElectricityPerSecond * seconds;
         AddElectricity(offlineEarned);
+    }
+
+    // --- PlayerPrefs 영구 저장 및 오프라인 생산 시스템 ---
+
+    /// <summary>
+    /// 현재 누적된 전력 및 레벨, 그리고 종료 시간을 로컬 기기에 저장합니다.
+    /// </summary>
+    public void SaveData()
+    {
+        PlayerPrefs.SetInt("GeneratorLevel", generatorLevel);
+        PlayerPrefs.SetString("CurrentElectricity", currentElectricity.ToString());
+        PlayerPrefs.SetString("LastQuitTime", DateTime.UtcNow.ToBinary().ToString());
+        PlayerPrefs.Save();
+    }
+
+    /// <summary>
+    /// 이전 누적 데이터와 오프라인 방치 보상을 자동으로 연산하여 적용합니다.
+    /// </summary>
+    public void LoadData()
+    {
+        //함수 위치만 남기고 나중에 개발한다.
+    }
+
+    // 포커스를 일시적으로 잃거나 게임을 끌 때 데이터를 항상 동기화 저장합니다.
+    private void OnApplicationQuit()
+    {
+        SaveData();
+    }
+
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+        {
+            SaveData();
+        }
     }
 }

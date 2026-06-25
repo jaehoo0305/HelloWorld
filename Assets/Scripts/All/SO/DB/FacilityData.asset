@@ -12,7 +12,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56bb61ba84b3d364c849c9d042030310, type: 3}
   m_Name: FacilityData
   m_EditorClassIdentifier: Assembly-CSharp::FacilityDataSO
-  currentFacility: 0
+  facilityDatabase: {fileID: 11400000, guid: 49976b1ceb70e0b49aa145849751533b, type: 2}
+  currentFacility: 7
   exitDirection: {x: 0, y: 0}
   isReturning: 0
-  facilityList: []
+  facilityList:
+  - facilityType: 0
+    unlockType: 0
+    isUnlocked: 1
+    level: 1
+  - facilityType: 1
+    unlockType: 2
+    isUnlocked: 0
+    level: 0
+  - facilityType: 2
+    unlockType: 2
+    isUnlocked: 0
+    level: 0
+  - facilityType: 3
+    unlockType: 0
+    isUnlocked: 1
+    level: 1
+  - facilityType: 4
+    unlockType: 1
+    isUnlocked: 0
+    level: 0
+  - facilityType: 5
+    unlockType: 2
+    isUnlocked: 0
+    level: 0
+  - facilityType: 6
+    unlockType: 2
+    isUnlocked: 0
+    level: 0
+  - facilityType: 7
+    unlockType: 0
+    isUnlocked: 1
+    level: 1
