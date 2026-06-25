@@ -64,7 +64,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _MoreWhiteLevel: 10
-    - _NormalMultiply: 14
+    - _NormalMultiply: -5
     - _QueueControl: 0
     - _QueueOffset: 0
     - _SaturationMultiply: 1
