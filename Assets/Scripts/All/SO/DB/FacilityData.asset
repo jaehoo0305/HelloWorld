@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: FacilityData
   m_EditorClassIdentifier: Assembly-CSharp::FacilityDataSO
   facilityDatabase: {fileID: 11400000, guid: 49976b1ceb70e0b49aa145849751533b, type: 2}
-  currentFacility: 7
-  exitDirection: {x: 0, y: 0}
+  currentFacility: 1
+  exitDirection: {x: 0, y: -1}
   isReturning: 0
   facilityList:
   - facilityType: 0
