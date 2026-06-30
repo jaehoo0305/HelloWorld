@@ -12,7 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9e14b56e1a720b4a8a84944bf471c29, type: 3}
   m_Name: Passive_1
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.PassiveDataSO
-  serialNumber: 0
-  passiveName: 
-  desc: 
-  passiveType: 0
+  serialNumber: 10000
+  passiveName: "\uC911\uB825 \uC694\uB3D9"
+  levels:
+  - level: 1
+    levelDesc: 
+    keys: []
+    values: []
+  - level: 3
+    levelDesc: 
+    keys: []
+    values: []
+  - level: 3
+    levelDesc: 
+    keys: []
+    values: []
+  - level: 4
+    levelDesc: 
+    keys: []
+    values: []
+  - level: 5
+    levelDesc: 
+    keys: []
+    values: []

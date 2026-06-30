@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 295b897f2fe8b814fac47b352f01ee1e, type: 3}
   m_Name: Isa
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.CharacterDataSO
-  serialNumber: 0
-  characterName: 
-  positionType: 0
-  maxHP: 100
-  attack: 0
-  defense: 0
-  defenseCap: 0.75
-  speed: 0
+  serialNumber: 1000
+  characterName: Isa
+  positionType: 1
+  maxHP: 85
+  attack: 25
+  defense: 5
+  defenseCap: 0.8
+  speed: 8
   critRate: 0.05
   actionCountPerRound: 1
-  passiveSkill: {fileID: 0}
-  learnableSkills: []
+  passiveSkill: {fileID: 11400000, guid: 520cf043a12235649b9c90fc314b9035, type: 2}
+  learnableSkills:
+  - {fileID: 0}

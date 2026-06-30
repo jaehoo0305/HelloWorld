@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d56dacde33ba3ae4f96aea75841cf4fb, type: 3}
+  m_Name: Skill_Main1
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.SkillDataSO
+  serialNumber: 10001
+  skillName: "\uC911\uB825 \uC751\uCD95"
+  targetType: 0
+  requiredSP: 1
+  isEndsTurn: 1
+  levels:
+  - level: 1
+    levelDesc: "\uC2ED\uC790 \uBC29\uD5A5{straight:1} \uC911 \uD55C \uACF3\uC73C\uB85C
+      {range:7}\uCE78 \uAC70\uB9AC\uAE4C\uC9C0 \uD22C\uC0AC\uCCB4\uB97C \uB0A0\uB824
+      \uD53C\uD574(Dmg {dmg:80}%)\uB97C \uC900\uB2E4."
+    keys:
+    - straight
+    - range
+    - dmg
+    values:
+    - 1
+    - 7
+    - 80
+  - level: 2
+    levelDesc: "\uC2ED\uC790 \uBC29\uD5A5{straight:1} \uC911 \uD55C \uACF3\uC73C\uB85C
+      {range:8}\uCE78 \uAC70\uB9AC\uAE4C\uC9C0 \uD22C\uC0AC\uCCB4\uB97C \uB0A0\uB824
+      \uD53C\uD574(Dmg {dmg:80}%)\uB97C \uC900\uB2E4."
+    keys:
+    - straight
+    - range
+    - dmg
+    values:
+    - 1
+    - 8
+    - 80
+  - level: 3
+    levelDesc: "\uC2ED\uC790 \uBC29\uD5A5{straight:1} \uC911 \uD55C \uACF3\uC73C\uB85C
+      {range:9}\uCE78 \uAC70\uB9AC\uAE4C\uC9C0 \uD22C\uC0AC\uCCB4\uB97C \uB0A0\uB824
+      \uD53C\uD574(Dmg {dmg:80}%)\uB97C \uC900\uB2E4."
+    keys:
+    - straight
+    - range
+    - dmg
+    values:
+    - 1
+    - 9
+    - 80
+  - level: 4
+    levelDesc: "\uC2ED\uC790 \uBC29\uD5A5{straight:1} \uC911 \uD55C \uACF3\uC73C\uB85C
+      {range:10}\uCE78 \uAC70\uB9AC\uAE4C\uC9C0 \uD22C\uC0AC\uCCB4\uB97C \uB0A0\uB824
+      \uD53C\uD574(Dmg {dmg:80}%)\uB97C \uC900\uB2E4."
+    keys:
+    - straight
+    - range
+    - dmg
+    values:
+    - 1
+    - 10
+    - 80
+  - level: 5
+    levelDesc: "\uC2ED\uC790 \uBC29\uD5A5{straight:1} \uC911 \uD55C \uACF3\uC73C\uB85C
+      {range:11}\uCE78 \uAC70\uB9AC\uAE4C\uC9C0 \uD22C\uC0AC\uCCB4\uB97C \uB0A0\uB824
+      \uD53C\uD574(Dmg {dmg:90}%)\uB97C \uC900\uB2E4."
+    keys:
+    - straight
+    - range
+    - dmg
+    values:
+    - 1
+    - 11
+    - 90
+  isUltimate: 1
+  enhancedSkillAsset: {fileID: 0}
+  enhanceConditionDesc: 
+  enhanceLogicKey: 
