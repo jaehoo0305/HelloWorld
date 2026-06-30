@@ -25,9 +25,13 @@ namespace DungeonCombat.Data
         [Min(1)]
         [SerializeField] private int actionCountPerRound = 1; // 보스일 경우 한 라운드 행동 횟수 증가
 
-        [Header("[ 보유 패시브 & 스킬 풀 ]")]
-        [SerializeField] private PassiveDataSO passiveSkill; // 보완된 패시브 데이터 참조 (이름, 설명, 로직 타입을 통틀어 관리)
-        [SerializeField] private List<SkillDataSO> learnableSkills = new List<SkillDataSO>();
+        [Header("[ 보유 패시브 & 고유 스킬 ]")]
+        [SerializeField] private PassiveDataSO passiveSkill; // 캐릭터 고유 패시브 데이터 참조
+        [SerializeField] private SkillDataSO uniqueSkill1;   // 캐릭터 필수 고유 스킬 1 (예: 중력 응축)
+        [SerializeField] private SkillDataSO uniqueSkill2;   // 캐릭터 필수 고유 스킬 2 (예: 궤도 섭동)
+
+        [Header("[ 일반 스킬 풀 ]")]
+        [SerializeField] private List<SkillDataSO> learnableSkills = new List<SkillDataSO>(); // 전투 중 획득 가능한 일반 스킬 목록
 
         // 외부 접근용 프로퍼티
         public int SerialNumber => serialNumber;
@@ -41,6 +45,8 @@ namespace DungeonCombat.Data
         public float CritRate => critRate;
         public int ActionCountPerRound => actionCountPerRound;
         public PassiveDataSO PassiveSkill => passiveSkill;
+        public SkillDataSO UniqueSkill1 => uniqueSkill1;
+        public SkillDataSO UniqueSkill2 => uniqueSkill2;
         public IReadOnlyList<SkillDataSO> LearnableSkills => learnableSkills;
     }
-}   
+}
