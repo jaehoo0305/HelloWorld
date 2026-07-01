@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 295b897f2fe8b814fac47b352f01ee1e, type: 3}
-  m_Name: Isa
+  m_Name: Silvia
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.CharacterDataSO
-  serialNumber: 1000
-  characterName: "\uC544\uC774\uC0AC"
-  positionType: 1
-  maxHP: 85
-  attack: 30
+  serialNumber: 1001
+  characterName: "\uC2E4\uBE44\uC544"
+  positionType: 2
+  maxHP: 70
+  attack: 25
   defense: 0
   defenseCap: 0.8
-  speed: 6
+  speed: 8
   critRate: 0.05
   actionCountPerRound: 1
-  passiveSkill: {fileID: 11400000, guid: 520cf043a12235649b9c90fc314b9035, type: 2}
-  uniqueSkill1: {fileID: 11400000, guid: b9d39d3e8dc8e184f8245d60fa0de8d1, type: 2}
-  uniqueSkill2: {fileID: 11400000, guid: e232c207a6bca2a4d8af2a99356b4e00, type: 2}
+  passiveSkill: {fileID: 11400000, guid: 487354bfa813884489fe1043fa9d74a0, type: 2}
+  uniqueSkill1: {fileID: 11400000, guid: 9a0c73333384be84d8e9eeec3f1f87bb, type: 2}
+  uniqueSkill2: {fileID: 11400000, guid: eeb8219b97d0c0746821eb486951ffcb, type: 2}
   learnableSkills:
   - {fileID: 11400000, guid: f49b80e345d1f3b4da806371752aa178, type: 2}
   - {fileID: 11400000, guid: 3558692dd5504c7499397bc3e3f02453, type: 2}

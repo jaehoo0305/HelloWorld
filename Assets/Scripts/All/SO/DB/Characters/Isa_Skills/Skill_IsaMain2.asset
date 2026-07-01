@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d56dacde33ba3ae4f96aea75841cf4fb, type: 3}
-  m_Name: Skill_Main2
+  m_Name: Skill_IsaMain2
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.SkillDataSO
   serialNumber: 10002
   skillName: "\uADA4\uB3C4 \uC12D\uB3D9"

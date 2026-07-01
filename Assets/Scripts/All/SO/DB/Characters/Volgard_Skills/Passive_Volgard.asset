@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9e14b56e1a720b4a8a84944bf471c29, type: 3}
+  m_Name: Passive_Volgard
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.PassiveDataSO
+  serialNumber: 10020
+  passiveName: "\uC790\uC5C5\uC790\uB4DD"
+  levels:
+  - level: 1
+    levelDesc: "\uC815\uBA74\uC73C\uB85C \uBC1B\uB294 \uB370\uBBF8\uC9C0\uAC00 {front_defence:20}%
+      \uAC10\uC18C\uB418\uACE0 1\uD134 \uB3D9\uC548 \uACF5\uACA9\uC744 \uBC1B\uC558\uB358
+      \uBC29\uD5A5\uC774 \uD45C\uC2DC\uB418\uBA70 \uD574\uB2F9 \uBC29\uD5A5\uC73C\uB85C
+      \uC2A4\uD0AC \uC0AC\uC6A9\uC2DC SP\uB97C {addsp:1}\uAC1C \uC5BB\uB294\uB2E4."
+    keys:
+    - front_defence
+    - addsp
+    values:
+    - 20
+    - 1
+  - level: 2
+    levelDesc: "\uC815\uBA74\uC73C\uB85C \uBC1B\uB294 \uB370\uBBF8\uC9C0\uAC00 {front_defence:25}%
+      \uAC10\uC18C\uB418\uACE0 1\uD134 \uB3D9\uC548 \uACF5\uACA9\uC744 \uBC1B\uC558\uB358
+      \uBC29\uD5A5\uC774 \uD45C\uC2DC\uB418\uBA70 \uD574\uB2F9 \uBC29\uD5A5\uC73C\uB85C
+      \uC2A4\uD0AC \uC0AC\uC6A9\uC2DC SP\uB97C {addsp:1}\uAC1C \uC5BB\uB294\uB2E4."
+    keys:
+    - front_defence
+    - addsp
+    values:
+    - 25
+    - 1
+  - level: 3
+    levelDesc: "\uC815\uBA74\uC73C\uB85C \uBC1B\uB294 \uB370\uBBF8\uC9C0\uAC00 {front_defence:30}%
+      \uAC10\uC18C\uB418\uACE0 1\uD134 \uB3D9\uC548 \uACF5\uACA9\uC744 \uBC1B\uC558\uB358
+      \uBC29\uD5A5\uC774 \uD45C\uC2DC\uB418\uBA70 \uD574\uB2F9 \uBC29\uD5A5\uC73C\uB85C
+      \uC2A4\uD0AC \uC0AC\uC6A9\uC2DC SP\uB97C {addsp:2}\uAC1C \uC5BB\uB294\uB2E4."
+    keys:
+    - front_defence
+    - addsp
+    values:
+    - 30
+    - 2
+  - level: 4
+    levelDesc: "\uC815\uBA74\uC73C\uB85C \uBC1B\uB294 \uB370\uBBF8\uC9C0\uAC00 {front_defence:40}%
+      \uAC10\uC18C\uB418\uACE0 1\uD134 \uB3D9\uC548 \uACF5\uACA9\uC744 \uBC1B\uC558\uB358
+      \uBC29\uD5A5\uC774 \uD45C\uC2DC\uB418\uBA70 \uD574\uB2F9 \uBC29\uD5A5\uC73C\uB85C
+      \uC2A4\uD0AC \uC0AC\uC6A9\uC2DC SP\uB97C {addsp:2}\uAC1C \uC5BB\uB294\uB2E4."
+    keys:
+    - front_defence
+    - addsp
+    values:
+    - 40
+    - 2
+  - level: 5
+    levelDesc: "\uC815\uBA74\uC73C\uB85C \uBC1B\uB294 \uB370\uBBF8\uC9C0\uAC00 {front_defence:50}%
+      \uAC10\uC18C\uB418\uACE0 1\uD134 \uB3D9\uC548 \uACF5\uACA9\uC744 \uBC1B\uC558\uB358
+      \uBC29\uD5A5\uC774 \uD45C\uC2DC\uB418\uBA70 \uD574\uB2F9 \uBC29\uD5A5\uC73C\uB85C
+      \uC2A4\uD0AC \uC0AC\uC6A9\uC2DC SP\uB97C {addsp:3}\uAC1C \uC5BB\uB294\uB2E4."
+    keys:
+    - front_defence
+    - addsp
+    values:
+    - 50
+    - 3

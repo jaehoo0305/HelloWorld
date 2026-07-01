@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d56dacde33ba3ae4f96aea75841cf4fb, type: 3}
+  m_Name: Skill_Silvia3
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.SkillDataSO
+  serialNumber: 10015
+  skillName: "\uC740\uBE5B \uAD11\uD718"
+  targetType: 2
+  requiredSP: 3
+  isEndsTurn: 1
+  levels:
+  - level: 1
+    levelDesc: "\uC544\uAD70 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uC5EC 2\uD134\uB3D9\uC548
+      \uCD5C\uB300 \uCCB4\uB825\uC758 {mhp_heal:15}%\uB97C \uB098\uB204\uC5B4 \uD68C\uBCF5\uD558\uACE0
+      \uBC29\uC5B4\uB825\uC744 {defence:15}% \uC99D\uAC00\uC2DC\uD0A8\uB2E4. \uC740\uCD1D
+      \uC2A4\uD0DD\uC744 {grace:1}\uAC1C \uC313\uB294\uB2E4."
+    keys:
+    - mhp_heal
+    - defence
+    - grace
+    values:
+    - 15
+    - 15
+    - 1
+  - level: 2
+    levelDesc: "\uC544\uAD70 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uC5EC 2\uD134\uB3D9\uC548
+      \uCD5C\uB300 \uCCB4\uB825\uC758 {mhp_heal:16}%\uB97C \uB098\uB204\uC5B4 \uD68C\uBCF5\uD558\uACE0
+      \uBC29\uC5B4\uB825\uC744 {defence:16}% \uC99D\uAC00\uC2DC\uD0A8\uB2E4. \uC740\uCD1D
+      \uC2A4\uD0DD\uC744 {grace:1}\uAC1C \uC313\uB294\uB2E4."
+    keys:
+    - mhp_heal
+    - defence
+    - grace
+    values:
+    - 16
+    - 16
+    - 1
+  - level: 3
+    levelDesc: "\uC544\uAD70 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uC5EC 2\uD134\uB3D9\uC548
+      \uCD5C\uB300 \uCCB4\uB825\uC758 {mhp_heal:17}%\uB97C \uB098\uB204\uC5B4 \uD68C\uBCF5\uD558\uACE0
+      \uBC29\uC5B4\uB825\uC744 {defence:17}% \uC99D\uAC00\uC2DC\uD0A8\uB2E4. \uC740\uCD1D
+      \uC2A4\uD0DD\uC744 {grace:1}\uAC1C \uC313\uB294\uB2E4."
+    keys:
+    - mhp_heal
+    - defence
+    - grace
+    values:
+    - 17
+    - 17
+    - 1
+  - level: 4
+    levelDesc: "\uC544\uAD70 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uC5EC 2\uD134\uB3D9\uC548
+      \uCD5C\uB300 \uCCB4\uB825\uC758 {mhp_heal:18}%\uB97C \uB098\uB204\uC5B4 \uD68C\uBCF5\uD558\uACE0
+      \uBC29\uC5B4\uB825\uC744 {defence:18}% \uC99D\uAC00\uC2DC\uD0A8\uB2E4. \uC740\uCD1D
+      \uC2A4\uD0DD\uC744 {grace:1}\uAC1C \uC313\uB294\uB2E4."
+    keys:
+    - mhp_heal
+    - defence
+    - grace
+    values:
+    - 18
+    - 18
+    - 1
+  - level: 5
+    levelDesc: "\uC544\uAD70 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uC5EC 2\uD134\uB3D9\uC548
+      \uCD5C\uB300 \uCCB4\uB825\uC758 {mhp_heal:20}%\uB97C \uB098\uB204\uC5B4 \uD68C\uBCF5\uD558\uACE0
+      \uBC29\uC5B4\uB825\uC744 {defence:20}% \uC99D\uAC00\uC2DC\uD0A8\uB2E4. \uC740\uCD1D
+      \uC2A4\uD0DD\uC744 {grace:1}\uAC1C \uC313\uB294\uB2E4."
+    keys:
+    - mhp_heal
+    - defence
+    - grace
+    values:
+    - 20
+    - 20
+    - 1
+  isUltimate: 0
+  enhancedSkillAsset: {fileID: 0}
+  enhanceConditionDesc: 
+  enhanceLogicKey: 
