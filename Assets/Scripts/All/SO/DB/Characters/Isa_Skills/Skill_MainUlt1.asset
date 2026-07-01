@@ -12,12 +12,142 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d56dacde33ba3ae4f96aea75841cf4fb, type: 3}
   m_Name: Skill_MainUlt1
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.SkillDataSO
-  serialNumber: 0
-  skillName: 
-  targetType: 0
-  requiredSP: 0
+  serialNumber: 100011
+  skillName: "\uC9C8\uB7C9 \uCD95\uD1F4"
+  targetType: 1
+  requiredSP: 16
   isEndsTurn: 1
-  levels: []
+  levels:
+  - level: 1
+    levelDesc: "\uC911\uB825\uC7A5 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uACE0 \uB098\uBA38\uC9C0
+      \uC911\uB825\uC7A5\uC744 \uBAA8\uB450 \uD76C\uC0DD\uD55C\uB2E4. {duration:3}\uD134
+      \uB3D9\uC548 \uC9C0\uC815\uD55C \uC911\uB825\uC7A5\uC744 \uC911\uC2EC \uAE30\uC900\uC73C\uB85C
+      {range:3}x{range:3} \uD06C\uAE30 \uBC94\uC704\uB85C \uBAA8\uB450\uB97C \uB04C\uC5B4\uB2F9\uAE30\uBA70
+      \uCD5C\uCD08 \uD53C\uD574(Dmg {dmg:250}% + \uD76C\uC0DD \uC911\uB825\uC7A5
+      \uB2F9 {sac_dmg:10}%)\uB97C \uC900\uB2E4. \uC911\uC2EC\uC5D0 \uAC00\uAE4C\uC6B8\uC218\uB85D
+      \uD134 \uC2DC\uC791 \uC2DC {slow:1}\uD134 \uB454\uD654\uC640 \uD53C\uD574(Dmg
+      {dot_dmg:10}% + \uD76C\uC0DD \uC911\uB825\uC7A5 \uB2F9 {sac_dot_dmg:1}%)\uB97C
+      \uC900\uB2E4."
+    keys:
+    - duration
+    - range
+    - dmg
+    - sac_dmg
+    - slow
+    - dot_dmg
+    - sac_dot_dmg
+    values:
+    - 3
+    - 3
+    - 250
+    - 10
+    - 1
+    - 10
+    - 1
+  - level: 2
+    levelDesc: "\uC911\uB825\uC7A5 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uACE0 \uB098\uBA38\uC9C0
+      \uC911\uB825\uC7A5\uC744 \uBAA8\uB450 \uD76C\uC0DD\uD55C\uB2E4. {duration:3}\uD134
+      \uB3D9\uC548 \uC9C0\uC815\uD55C \uC911\uB825\uC7A5\uC744 \uC911\uC2EC \uAE30\uC900\uC73C\uB85C
+      {range:4}x{range:4} \uD06C\uAE30 \uBC94\uC704\uB85C \uBAA8\uB450\uB97C \uB04C\uC5B4\uB2F9\uAE30\uBA70
+      \uCD5C\uCD08 \uD53C\uD574(Dmg {dmg:250}% + \uD76C\uC0DD \uC911\uB825\uC7A5
+      \uB2F9 {sac_dmg:10}%)\uB97C \uC900\uB2E4. \uC911\uC2EC\uC5D0 \uAC00\uAE4C\uC6B8\uC218\uB85D
+      \uD134 \uC2DC\uC791 \uC2DC {slow:1}\uD134 \uB454\uD654\uC640 \uD53C\uD574(Dmg
+      {dot_dmg:10}% + \uD76C\uC0DD \uC911\uB825\uC7A5 \uB2F9 {sac_dot_dmg:1}%)\uB97C
+      \uC900\uB2E4."
+    keys:
+    - duration
+    - range
+    - dmg
+    - sac_dmg
+    - slow
+    - dot_dmg
+    - sac_dot_dmg
+    values:
+    - 3
+    - 4
+    - 250
+    - 10
+    - 1
+    - 10
+    - 1
+  - level: 3
+    levelDesc: "\uC911\uB825\uC7A5 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uACE0 \uB098\uBA38\uC9C0
+      \uC911\uB825\uC7A5\uC744 \uBAA8\uB450 \uD76C\uC0DD\uD55C\uB2E4. {duration:4}\uD134
+      \uB3D9\uC548 \uC9C0\uC815\uD55C \uC911\uB825\uC7A5\uC744 \uC911\uC2EC \uAE30\uC900\uC73C\uB85C
+      {range:4}x{range:4} \uD06C\uAE30 \uBC94\uC704\uB85C \uBAA8\uB450\uB97C \uB04C\uC5B4\uB2F9\uAE30\uBA70
+      \uCD5C\uCD08 \uD53C\uD574(Dmg {dmg:250}% + \uD76C\uC0DD \uC911\uB825\uC7A5
+      \uB2F9 {sac_dmg:10}%)\uB97C \uC900\uB2E4. \uC911\uC2EC\uC5D0 \uAC00\uAE4C\uC6B8\uC218\uB85D
+      \uD134 \uC2DC\uC791 \uC2DC {slow:1}\uD134 \uB454\uD654\uC640 \uD53C\uD574(Dmg
+      {dot_dmg:10}% + \uD76C\uC0DD \uC911\uB825\uC7A5 \uB2F9 {sac_dot_dmg:1}%)\uB97C
+      \uC900\uB2E4."
+    keys:
+    - duration
+    - range
+    - dmg
+    - sac_dmg
+    - slow
+    - dot_dmg
+    - sac_dot_dmg
+    values:
+    - 4
+    - 4
+    - 250
+    - 10
+    - 1
+    - 10
+    - 1
+  - level: 4
+    levelDesc: "\uC911\uB825\uC7A5 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uACE0 \uB098\uBA38\uC9C0
+      \uC911\uB825\uC7A5\uC744 \uBAA8\uB450 \uD76C\uC0DD\uD55C\uB2E4. {duration:4}\uD134
+      \uB3D9\uC548 \uC9C0\uC815\uD55C \uC911\uB825\uC7A5\uC744 \uC911\uC2EC \uAE30\uC900\uC73C\uB85C
+      {range:5}x{range:5} \uD06C\uAE30 \uBC94\uC704\uB85C \uBAA8\uB450\uB97C \uB04C\uC5B4\uB2F9\uAE30\uBA70
+      \uCD5C\uCD08 \uD53C\uD574(Dmg {dmg:250}% + \uD76C\uC0DD \uC911\uB825\uC7A5
+      \uB2F9 {sac_dmg:10}%)\uB97C \uC900\uB2E4. \uC911\uC2EC\uC5D0 \uAC00\uAE4C\uC6B8\uC218\uB85D
+      \uD134 \uC2DC\uC791 \uC2DC {slow:1}\uD134 \uB454\uD654\uC640 \uD53C\uD574(Dmg
+      {dot_dmg:10}% + \uD76C\uC0DD \uC911\uB825\uC7A5 \uB2F9 {sac_dot_dmg:1}%)\uB97C
+      \uC900\uB2E4."
+    keys:
+    - duration
+    - range
+    - dmg
+    - sac_dmg
+    - slow
+    - dot_dmg
+    - sac_dot_dmg
+    values:
+    - 4
+    - 5
+    - 250
+    - 10
+    - 1
+    - 10
+    - 1
+  - level: 5
+    levelDesc: "\uC911\uB825\uC7A5 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uACE0 \uB098\uBA38\uC9C0
+      \uC911\uB825\uC7A5\uC744 \uBAA8\uB450 \uD76C\uC0DD\uD55C\uB2E4. {duration:5}\uD134
+      \uB3D9\uC548 \uC9C0\uC815\uD55C \uC911\uB825\uC7A5\uC744 \uC911\uC2EC \uAE30\uC900\uC73C\uB85C
+      {range:5}x{range:5} \uD06C\uAE30 \uBC94\uC704\uB85C \uBAA8\uB450\uB97C \uB04C\uC5B4\uB2F9\uAE30\uBA70
+      \uCD5C\uCD08 \uD53C\uD574(Dmg {dmg:250}% + \uD76C\uC0DD \uC911\uB825\uC7A5
+      \uB2F9 {sac_dmg:15}%)\uB97C \uC900\uB2E4. \uC911\uC2EC\uC5D0 \uAC00\uAE4C\uC6B8\uC218\uB85D
+      \uD134 \uC2DC\uC791 \uC2DC {slow:1}\uD134 \uB454\uD654\uC640 \uD53C\uD574(Dmg
+      {dot_dmg:15}% + \uD76C\uC0DD \uC911\uB825\uC7A5 \uB2F9 {sac_dot_dmg:2}%)\uB97C
+      \uC900\uB2E4."
+    keys:
+    - duration
+    - range
+    - dmg
+    - sac_dmg
+    - slow
+    - dot_dmg
+    - sac_dot_dmg
+    values:
+    - 5
+    - 5
+    - 250
+    - 15
+    - 1
+    - 15
+    - 2
   isUltimate: 0
   enhancedSkillAsset: {fileID: 0}
   enhanceConditionDesc: 

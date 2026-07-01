@@ -16,22 +16,52 @@ MonoBehaviour:
   passiveName: "\uC911\uB825 \uC694\uB3D9"
   levels:
   - level: 1
-    levelDesc: 
-    keys: []
-    values: []
+    levelDesc: "\uB9E4 \uD134 \uC2DC\uC791\uC2DC \uC790\uAE30 \uC8FC\uC704 {range:3}\uCE78
+      \uB0B4\uC5D0 \uC911\uBCF5\uB418\uC9C0 \uC54A\uAC8C \uC911\uB825\uC7A5\uC744
+      {count:1}\uAC1C \uC124\uCE58\uD55C\uB2E4."
+    keys:
+    - range
+    - count
+    values:
+    - 3
+    - 1
+  - level: 2
+    levelDesc: "\uB9E4 \uD134 \uC2DC\uC791\uC2DC \uC790\uAE30 \uC8FC\uC704 {range:3}\uCE78
+      \uB0B4\uC5D0 \uC911\uBCF5\uB418\uC9C0 \uC54A\uAC8C \uC911\uB825\uC7A5\uC744
+      {count:2}\uAC1C \uC124\uCE58\uD55C\uB2E4."
+    keys:
+    - range
+    - count
+    values:
+    - 3
+    - 2
   - level: 3
-    levelDesc: 
-    keys: []
-    values: []
-  - level: 3
-    levelDesc: 
-    keys: []
-    values: []
+    levelDesc: "\uB9E4 \uD134 \uC2DC\uC791\uC2DC \uC790\uAE30 \uC8FC\uC704 {range:4}\uCE78
+      \uB0B4\uC5D0 \uC911\uBCF5\uB418\uC9C0 \uC54A\uAC8C \uC911\uB825\uC7A5\uC744
+      {count:2}\uAC1C \uC124\uCE58\uD55C\uB2E4."
+    keys:
+    - range
+    - count
+    values:
+    - 4
+    - 2
   - level: 4
-    levelDesc: 
-    keys: []
-    values: []
+    levelDesc: "\uB9E4 \uD134 \uC2DC\uC791\uC2DC \uC790\uAE30 \uC8FC\uC704 {range:4}\uCE78
+      \uB0B4\uC5D0 \uC911\uBCF5\uB418\uC9C0 \uC54A\uAC8C \uC911\uB825\uC7A5\uC744
+      {count:3}\uAC1C \uC124\uCE58\uD55C\uB2E4."
+    keys:
+    - range
+    - count
+    values:
+    - 4
+    - 3
   - level: 5
-    levelDesc: 
-    keys: []
-    values: []
+    levelDesc: "\uB9E4 \uD134 \uC2DC\uC791\uC2DC \uC790\uAE30 \uC8FC\uC704 {range:6}\uCE78
+      \uB0B4\uC5D0 \uC911\uBCF5\uB418\uC9C0 \uC54A\uAC8C \uC911\uB825\uC7A5\uC744
+      {count:3}\uAC1C \uC124\uCE58\uD55C\uB2E4."
+    keys:
+    - range
+    - count
+    values:
+    - 6
+    - 3

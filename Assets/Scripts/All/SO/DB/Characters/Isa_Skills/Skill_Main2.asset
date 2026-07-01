@@ -12,13 +12,94 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d56dacde33ba3ae4f96aea75841cf4fb, type: 3}
   m_Name: Skill_Main2
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.SkillDataSO
-  serialNumber: 0
-  skillName: 
-  targetType: 0
-  requiredSP: 0
+  serialNumber: 10002
+  skillName: "\uADA4\uB3C4 \uC12D\uB3D9"
+  targetType: 1
+  requiredSP: 1
   isEndsTurn: 1
-  levels: []
-  isUltimate: 0
-  enhancedSkillAsset: {fileID: 0}
-  enhanceConditionDesc: 
-  enhanceLogicKey: 
+  levels:
+  - level: 1
+    levelDesc: "\uC911\uB825\uC7A5 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uC5EC \uADF8
+      \uC704\uCE58\uB97C \uAE30\uC900\uC73C\uB85C \uC2ED\uC790 \uBC29\uD5A5{straight:1}
+      \uC911 \uD55C \uACF3\uC73C\uB85C {range:5}\uCE78 \uAC70\uB9AC\uAE4C\uC9C0 \uD22C\uC0AC\uCCB4\uB97C
+      \uB0A0\uB824 \uD53C\uD574(Dmg {Dmg:100}% + \uC911\uB825\uC7A5 \uB2F9 {g_Dmg:1}%)\uB97C
+      \uC900\uB2E4."
+    keys:
+    - straight
+    - range
+    - dmg
+    - g_dmg
+    values:
+    - 1
+    - 5
+    - 100
+    - 1
+  - level: 2
+    levelDesc: "\uC911\uB825\uC7A5 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uC5EC \uADF8
+      \uC704\uCE58\uB97C \uAE30\uC900\uC73C\uB85C \uC2ED\uC790 \uBC29\uD5A5{straight:1}
+      \uC911 \uD55C \uACF3\uC73C\uB85C {range:5}\uCE78 \uAC70\uB9AC\uAE4C\uC9C0 \uD22C\uC0AC\uCCB4\uB97C
+      \uB0A0\uB824 \uD53C\uD574(Dmg {Dmg:100}% + \uC911\uB825\uC7A5 \uB2F9 {g_Dmg:2}%)\uB97C
+      \uC900\uB2E4."
+    keys:
+    - straight
+    - range
+    - dmg
+    - g_dmg
+    values:
+    - 1
+    - 5
+    - 100
+    - 2
+  - level: 3
+    levelDesc: "\uC911\uB825\uC7A5 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uC5EC \uADF8
+      \uC704\uCE58\uB97C \uAE30\uC900\uC73C\uB85C \uC2ED\uC790 \uBC29\uD5A5{straight:1}
+      \uC911 \uD55C \uACF3\uC73C\uB85C {range:6}\uCE78 \uAC70\uB9AC\uAE4C\uC9C0 \uD22C\uC0AC\uCCB4\uB97C
+      \uB0A0\uB824 \uD53C\uD574(Dmg {Dmg:100}% + \uC911\uB825\uC7A5 \uB2F9 {g_Dmg:2}%)\uB97C
+      \uC900\uB2E4."
+    keys:
+    - straight
+    - range
+    - dmg
+    - g_dmg
+    values:
+    - 1
+    - 6
+    - 100
+    - 2
+  - level: 4
+    levelDesc: "\uC911\uB825\uC7A5 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uC5EC \uADF8
+      \uC704\uCE58\uB97C \uAE30\uC900\uC73C\uB85C \uC2ED\uC790 \uBC29\uD5A5{straight:1}
+      \uC911 \uD55C \uACF3\uC73C\uB85C {range:6}\uCE78 \uAC70\uB9AC\uAE4C\uC9C0 \uD22C\uC0AC\uCCB4\uB97C
+      \uB0A0\uB824 \uD53C\uD574(Dmg {Dmg:100}% + \uC911\uB825\uC7A5 \uB2F9 {g_Dmg:3}%)\uB97C
+      \uC900\uB2E4."
+    keys:
+    - straight
+    - range
+    - dmg
+    - g_dmg
+    values:
+    - 1
+    - 6
+    - 100
+    - 3
+  - level: 5
+    levelDesc: "\uC911\uB825\uC7A5 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uC5EC \uADF8
+      \uC704\uCE58\uB97C \uAE30\uC900\uC73C\uB85C \uC2ED\uC790 \uBC29\uD5A5{straight:1}
+      \uC911 \uD55C \uACF3\uC73C\uB85C {range:7}\uCE78 \uAC70\uB9AC\uAE4C\uC9C0 \uD22C\uC0AC\uCCB4\uB97C
+      \uB0A0\uB824 \uD53C\uD574(Dmg {Dmg:100}% + \uC911\uB825\uC7A5 \uB2F9 {g_Dmg:3}%)\uB97C
+      \uC900\uB2E4."
+    keys:
+    - straight
+    - range
+    - dmg
+    - g_dmg
+    values:
+    - 1
+    - 7
+    - 100
+    - 3
+  isUltimate: 1
+  enhancedSkillAsset: {fileID: 11400000, guid: 5779eef6b4aa3304a8bc618728df9ff1, type: 2}
+  enhanceConditionDesc: "\uC911\uB825\uC7A5 \uCD5C\uC18C \uD558\uB098 \uC874\uC7AC,
+    4\uB77C\uC6B4\uB4DC \uBD80\uD130 \uC0AC\uC6A9 \uAC00\uB2A5"
+  enhanceLogicKey: Isa_Cond_HeatDeath

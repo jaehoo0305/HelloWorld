@@ -15,7 +15,7 @@ MonoBehaviour:
   serialNumber: 10003
   skillName: "\uBCC4\uC758 \uC794\uD574"
   targetType: 1
-  requiredSP: 4
+  requiredSP: 6
   isEndsTurn: 1
   levels:
   - level: 1

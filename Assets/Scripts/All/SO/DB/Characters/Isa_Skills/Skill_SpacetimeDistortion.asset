@@ -12,12 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d56dacde33ba3ae4f96aea75841cf4fb, type: 3}
   m_Name: Skill_SpacetimeDistortion
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.SkillDataSO
-  serialNumber: 0
-  skillName: 
-  targetType: 0
-  requiredSP: 0
-  isEndsTurn: 1
-  levels: []
+  serialNumber: 10005
+  skillName: "\uC2DC\uACF5\uAC04 \uC65C\uACE1"
+  targetType: 4
+  requiredSP: 2
+  isEndsTurn: 0
+  levels:
+  - level: 1
+    levelDesc: "\uC911\uB825\uC7A5 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uC5EC \uADF8\uACF3\uC73C\uB85C
+      \uC21C\uAC04\uC774\uB3D9 \uD6C4 \uCD94\uAC00 \uD134\uC744 \uD68D\uB4DD\uD55C\uB2E4. "
+    keys: []
+    values: []
   isUltimate: 0
   enhancedSkillAsset: {fileID: 0}
   enhanceConditionDesc: 

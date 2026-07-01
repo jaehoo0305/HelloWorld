@@ -79,6 +79,7 @@ MonoBehaviour:
     - 11
     - 90
   isUltimate: 1
-  enhancedSkillAsset: {fileID: 0}
-  enhanceConditionDesc: 
-  enhanceLogicKey: 
+  enhancedSkillAsset: {fileID: 11400000, guid: 06dbdd19cedfdb24ea46c3ee333d8b3b, type: 2}
+  enhanceConditionDesc: "\uC911\uB825\uC7A5 \uCD5C\uC18C \uD558\uB098 \uC874\uC7AC,
+    \uC18C\uBAA8\uD55C \uB204\uC801 SP 10\uAC1C"
+  enhanceLogicKey: Isa_Cond_MassCollapse
