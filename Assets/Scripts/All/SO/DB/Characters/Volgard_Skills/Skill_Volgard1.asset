@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d56dacde33ba3ae4f96aea75841cf4fb, type: 3}
+  m_Name: Skill_Volgard1
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.SkillDataSO
+  serialNumber: 10023
+  skillName: "\uC2DC\uC120 \uACE0\uC815"
+  targetType: 1
+  requiredSP: 3
+  isEndsTurn: 1
+  levels:
+  - level: 1
+    levelDesc: "\uBAA8\uB4E0 \uBC29\uD5A5\uC73C\uB85C \uC790\uC2E0 \uC8FC\uC704 {range:2}\uCE78
+      \uB0B4\uC5D0 \uC801 \uBAA8\uB450\uC5D0\uAC8C {provoke:3}\uD134 \uB3D9\uC548
+      \uB3C4\uBC1C\uD55C\uB2E4."
+    keys:
+    - range
+    - provoke
+    values:
+    - 2
+    - 3
+  - level: 2
+    levelDesc: "\uBAA8\uB4E0 \uBC29\uD5A5\uC73C\uB85C \uC790\uC2E0 \uC8FC\uC704 {range:3}\uCE78
+      \uB0B4\uC5D0 \uC801 \uBAA8\uB450\uC5D0\uAC8C {provoke:3}\uD134 \uB3D9\uC548
+      \uB3C4\uBC1C\uD55C\uB2E4."
+    keys:
+    - range
+    - provoke
+    values:
+    - 3
+    - 3
+  - level: 3
+    levelDesc: "\uBAA8\uB4E0 \uBC29\uD5A5\uC73C\uB85C \uC790\uC2E0 \uC8FC\uC704 {range:4}\uCE78
+      \uB0B4\uC5D0 \uC801 \uBAA8\uB450\uC5D0\uAC8C {provoke:3}\uD134 \uB3D9\uC548
+      \uB3C4\uBC1C\uD55C\uB2E4."
+    keys:
+    - range
+    - provoke
+    values:
+    - 4
+    - 3
+  - level: 4
+    levelDesc: "\uBAA8\uB4E0 \uBC29\uD5A5\uC73C\uB85C \uC790\uC2E0 \uC8FC\uC704 {range:5}\uCE78
+      \uB0B4\uC5D0 \uC801 \uBAA8\uB450\uC5D0\uAC8C {provoke:3}\uD134 \uB3D9\uC548
+      \uB3C4\uBC1C\uD55C\uB2E4."
+    keys:
+    - range
+    - provoke
+    values:
+    - 5
+    - 3
+  - level: 5
+    levelDesc: "\uBAA8\uB4E0 \uBC29\uD5A5\uC73C\uB85C \uC790\uC2E0 \uC8FC\uC704 {range:5}\uCE78
+      \uB0B4\uC5D0 \uC801 \uBAA8\uB450\uC5D0\uAC8C {provoke:4}\uD134 \uB3D9\uC548
+      \uB3C4\uBC1C\uD55C\uB2E4."
+    keys:
+    - range
+    - provoke
+    values:
+    - 5
+    - 4
+  isUltimate: 0
+  enhancedSkillAsset: {fileID: 0}
+  enhanceConditionDesc: 
+  enhanceLogicKey: 

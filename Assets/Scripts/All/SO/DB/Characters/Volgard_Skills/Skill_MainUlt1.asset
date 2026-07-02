@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d56dacde33ba3ae4f96aea75841cf4fb, type: 3}
+  m_Name: Skill_MainUlt1
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.SkillDataSO
+  serialNumber: 100211
+  skillName: "\uC9C4\uD615 \uBD95\uAD34"
+  targetType: 1
+  requiredSP: 7
+  isEndsTurn: 1
+  levels:
+  - level: 1
+    levelDesc: "\uC790\uC2E0 \uC8FC\uC704 {range:5}\uCE78 \uB0B4\uC5D0 {rangex:1}x{rangey:1}
+      \uBC94\uC704\uC5D0 \uC801 \uBAA8\uB450\uC5D0\uAC8C \uD53C\uD574(Dmg {dmg:100}%)\uB97C
+      \uC8FC\uACE0 {stun:1}\uD134 \uB3D9\uC548 \uAE30\uC808\uC744 \uC801\uC6A9\uD55C\uB2E4."
+    keys:
+    - range
+    - rangex
+    - rangey
+    - dmg
+    - stun
+    values:
+    - 5
+    - 1
+    - 1
+    - 100
+    - 1
+  - level: 2
+    levelDesc: "\uC790\uC2E0 \uC8FC\uC704 {range:5}\uCE78 \uB0B4\uC5D0 {rangex:2}x{rangey:2}
+      \uBC94\uC704\uC5D0 \uC801 \uBAA8\uB450\uC5D0\uAC8C \uD53C\uD574(Dmg {dmg:100}%)\uB97C
+      \uC8FC\uACE0 {stun:1}\uD134 \uB3D9\uC548 \uAE30\uC808\uC744 \uC801\uC6A9\uD55C\uB2E4."
+    keys:
+    - range
+    - rangex
+    - rangey
+    - dmg
+    - stun
+    values:
+    - 5
+    - 2
+    - 2
+    - 100
+    - 1
+  - level: 3
+    levelDesc: "\uC790\uC2E0 \uC8FC\uC704 {range:6}\uCE78 \uB0B4\uC5D0 {rangex:2}x{rangey:2}
+      \uBC94\uC704\uC5D0 \uC801 \uBAA8\uB450\uC5D0\uAC8C \uD53C\uD574(Dmg {dmg:100}%)\uB97C
+      \uC8FC\uACE0 {stun:1}\uD134 \uB3D9\uC548 \uAE30\uC808\uC744 \uC801\uC6A9\uD55C\uB2E4."
+    keys:
+    - range
+    - rangex
+    - rangey
+    - dmg
+    - stun
+    values:
+    - 6
+    - 2
+    - 2
+    - 100
+    - 1
+  - level: 4
+    levelDesc: "\uC790\uC2E0 \uC8FC\uC704 {range:6}\uCE78 \uB0B4\uC5D0 {rangex:3}x{rangey:3}
+      \uBC94\uC704\uC5D0 \uC801 \uBAA8\uB450\uC5D0\uAC8C \uD53C\uD574(Dmg {dmg:100}%)\uB97C
+      \uC8FC\uACE0 {stun:1}\uD134 \uB3D9\uC548 \uAE30\uC808\uC744 \uC801\uC6A9\uD55C\uB2E4."
+    keys:
+    - range
+    - rangex
+    - rangey
+    - dmg
+    - stun
+    values:
+    - 6
+    - 3
+    - 3
+    - 100
+    - 1
+  - level: 5
+    levelDesc: "\uC790\uC2E0 \uC8FC\uC704 {range:7}\uCE78 \uB0B4\uC5D0 {rangex:3}x{rangey:3}
+      \uBC94\uC704\uC5D0 \uC801 \uBAA8\uB450\uC5D0\uAC8C \uD53C\uD574(Dmg {dmg:100}%)\uB97C
+      \uC8FC\uACE0 {stun:1}\uD134 \uB3D9\uC548 \uAE30\uC808\uC744 \uC801\uC6A9\uD55C\uB2E4."
+    keys:
+    - range
+    - rangex
+    - rangey
+    - dmg
+    - stun
+    values:
+    - 7
+    - 3
+    - 3
+    - 100
+    - 1
+  isUltimate: 0
+  enhancedSkillAsset: {fileID: 0}
+  enhanceConditionDesc: 
+  enhanceLogicKey: 

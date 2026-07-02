@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d56dacde33ba3ae4f96aea75841cf4fb, type: 3}
+  m_Name: Skill_Volgard2
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.SkillDataSO
+  serialNumber: 10024
+  skillName: "\uC778\uACFC\uC751\uBCF4"
+  targetType: 1
+  requiredSP: 4
+  isEndsTurn: 1
+  levels:
+  - level: 1
+    levelDesc: "\uBAA8\uB4E0 \uBC29\uD5A5\uC73C\uB85C {duration:3}\uD134 \uB3D9\uC548
+      \uBC1B\uB294 \uB370\uBBF8\uC9C0\uC758 {reflection:10}%\uB97C \uB418\uB3CC\uB824
+      \uC900\uB2E4. "
+    keys:
+    - duration
+    - reflection
+    values:
+    - 3
+    - 10
+  - level: 2
+    levelDesc: "\uBAA8\uB4E0 \uBC29\uD5A5\uC73C\uB85C {duration:3}\uD134 \uB3D9\uC548
+      \uBC1B\uB294 \uB370\uBBF8\uC9C0\uC758 {reflection:15}%\uB97C \uB418\uB3CC\uB824
+      \uC900\uB2E4. "
+    keys:
+    - duration
+    - reflection
+    values:
+    - 3
+    - 15
+  - level: 3
+    levelDesc: "\uBAA8\uB4E0 \uBC29\uD5A5\uC73C\uB85C {duration:3}\uD134 \uB3D9\uC548
+      \uBC1B\uB294 \uB370\uBBF8\uC9C0\uC758 {reflection:20}%\uB97C \uB418\uB3CC\uB824
+      \uC900\uB2E4. "
+    keys:
+    - duration
+    - reflection
+    values:
+    - 3
+    - 20
+  - level: 4
+    levelDesc: "\uBAA8\uB4E0 \uBC29\uD5A5\uC73C\uB85C {duration:3}\uD134 \uB3D9\uC548
+      \uBC1B\uB294 \uB370\uBBF8\uC9C0\uC758 {reflection:25}%\uB97C \uB418\uB3CC\uB824
+      \uC900\uB2E4. "
+    keys:
+    - duration
+    - reflection
+    values:
+    - 3
+    - 25
+  - level: 5
+    levelDesc: "\uBAA8\uB4E0 \uBC29\uD5A5\uC73C\uB85C {duration:4}\uD134 \uB3D9\uC548
+      \uBC1B\uB294 \uB370\uBBF8\uC9C0\uC758 {reflection:30}%\uB97C \uB418\uB3CC\uB824
+      \uC900\uB2E4. "
+    keys:
+    - duration
+    - reflection
+    values:
+    - 4
+    - 30
+  isUltimate: 0
+  enhancedSkillAsset: {fileID: 0}
+  enhanceConditionDesc: 
+  enhanceLogicKey: 
