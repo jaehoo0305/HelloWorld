@@ -20,8 +20,8 @@ namespace DungeonCombat.Combat
         [SerializeField] private TextMeshProUGUI roundText; // 이제 TextMeshPro 컴포넌트를 드래그로 장착할 수 있습니다!
 
         [Header("[ 2. 턴 표시 UI (타임라인 리스트) ]")]
-        [SerializeField] private RectTransform turnListParent; // 우측 상단 턴 표시 컨테이너
-        [SerializeField] private GameObject turnSlotPrefab;    // 캐릭터 초상화 또는 이름이 들어갈 프리팹
+        [SerializeField] private RectTransform turnListParent; // 우측 상단 턴 표시 컨테이너 (TurnOrder 오브젝트)
+        [SerializeField] private GameObject turnSlotPrefab;    // 캐릭터 초상화 또는 이름이 들어갈 프리팹 (TurnOrderPrefabs 에셋)
 
         [Header("[ 3. 아군 파티 캐릭터 UI 슬롯들 ]")]
         [SerializeField] private List<PartyUnitUISlot> partyUISlots; // 좌측 하단 캐릭터 3명의 HP/SP 슬롯 (순서대로 매칭)
@@ -110,19 +110,75 @@ namespace DungeonCombat.Combat
 
             // 2. 우측 하단의 스킬 슬롯 UI 갱신 (현재 활성화된 유닛의 스킬 데이터 매핑)
             UpdateSkillButtons(activeUnit);
+
+            // 3. 턴이 진행될 때마다 타임라인 흐름을 실시간으로 다시 그립니다.
+            RebuildTurnTimelineUI();
         }
 
         /// <summary>
         /// 턴 순서 큐를 읽어와 우측 상단 턴 대기열 타임라인 UI를 동적으로 생성합니다.
+        /// 아르세우스 방식의 중복 턴, 피아 식별 색상 구분 연동 포함.
         /// </summary>
         private void RebuildTurnTimelineUI()
         {
             if (turnListParent == null || turnSlotPrefab == null || turnManager == null) return;
 
-            // 기존에 배치된 임시 턴 슬롯 아이콘들을 모두 삭제
+            // 1. 기존에 배치되어 있는 모든 턴 슬롯 아이콘을 완전히 파괴하여 지웁니다.
             foreach (Transform child in turnListParent)
             {
                 Destroy(child.gameObject);
+            }
+
+            var queue = turnManager.TurnQueue;
+            int currentIndex = turnManager.CurrentQueueIndex;
+
+            if (queue == null || currentIndex < 0) return;
+
+            // 2. 현재 실행 중인 턴 인덱스부터 남은 턴 큐 전체를 순회하며 슬롯을 실시간 생성합니다.
+            for (int i = currentIndex; i < queue.Count; i++)
+            {
+                TurnSlot slot = queue[i];
+                if (slot.Unit == null || slot.Unit.CurrentHP <= 0) continue;
+
+                // 프리팹을 TurnListParent(TurnOrder)의 자식으로 소환
+                GameObject slotObj = Instantiate(turnSlotPrefab, turnListParent);
+
+                // 3. 프리팹 하위의 텍스트 컴포넌트를 찾아 캐릭터 이름과 정보를 기입합니다.
+                TextMeshProUGUI slotText = slotObj.GetComponentInChildren<TextMeshProUGUI>();
+                if (slotText != null)
+                {
+                    string characterName = slot.Unit.CharacterData.CharacterName;
+
+                    // 만약 보스 다중 행동일 경우 "(1), (2)" 처럼 표시해 줍니다.
+                    if (slot.Unit.CharacterData.PositionType == PositionType.Boss && slot.ActionIndex != 99)
+                    {
+                        slotText.text = $"{characterName} ({slot.ActionIndex + 1})";
+                    }
+                    else if (slot.ActionIndex == 99)
+                    {
+                        slotText.text = $"{characterName} (추가행동)";
+                    }
+                    else
+                    {
+                        slotText.text = characterName;
+                    }
+                }
+
+                // 4. 피아 식별 아르세우스 스타일 연출 적용 (아군은 청색 계열, 적은 적색 계열 배경)
+                Image bgImage = slotObj.GetComponent<Image>();
+                if (bgImage != null)
+                {
+                    if (slot.Unit.CharacterData.PositionType == PositionType.Boss)
+                    {
+                        // 몬스터/보스: 붉은색 톤 배경 적용
+                        bgImage.color = new Color(0.85f, 0.35f, 0.35f, 1f);
+                    }
+                    else
+                    {
+                        // 플레이어 아군: 푸른색/청록색 톤 배경 적용
+                        bgImage.color = new Color(0.25f, 0.45f, 0.75f, 1f);
+                    }
+                }
             }
         }
 
@@ -276,12 +332,37 @@ namespace DungeonCombat.Combat
         {
             if (targetUnit == null) return;
 
-            // 실시간 상태 변화 구독 연동
+            BindEvents();
+        }
+
+        /// <summary>
+        /// [고급 확장] 전투 중에 모험 캐릭터 선택이 바뀌거나 동적으로 매칭을 갈아끼우기 위한 아키텍처 지원 함수
+        /// </summary>
+        public void BindUnit(BattleUnit newUnit)
+        {
+            UnbindEvents();
+            targetUnit = newUnit;
+            BindEvents();
+        }
+
+        private void BindEvents()
+        {
+            if (targetUnit == null) return;
+
             targetUnit.OnHPChanged += UpdateHP;
             targetUnit.OnSPChanged += UpdateSP;
             targetUnit.OnOverheatChanged += UpdateOverheat;
 
             targetUnit.TriggerAllEvents(); // 초기 동기화
+        }
+
+        private void UnbindEvents()
+        {
+            if (targetUnit == null) return;
+
+            targetUnit.OnHPChanged -= UpdateHP;
+            targetUnit.OnSPChanged -= UpdateSP;
+            targetUnit.OnOverheatChanged -= UpdateOverheat;
         }
 
         public void SetHighlight(bool isActive)
@@ -319,20 +400,23 @@ namespace DungeonCombat.Combat
             {
                 if (spBlocks[i] == null) continue;
 
+                // 오브젝트를 끄지 않고 항상 활성화 상태로 두어 10칸의 세그먼트 형태를 시각적으로 유지합니다.
+                spBlocks[i].gameObject.SetActive(true);
+
                 if (i < currentSP)
                 {
-                    spBlocks[i].gameObject.SetActive(true);
-                    spBlocks[i].color = Color.blue; // 보유 기본 SP 파란색 활성화
+                    // 보유 기본 SP: 파란색 활성화
+                    spBlocks[i].color = new Color(0.2f, 0.45f, 0.9f, 1f);
                 }
                 else if (i < currentSP + bankSP)
                 {
-                    spBlocks[i].gameObject.SetActive(true);
-                    spBlocks[i].color = Color.cyan; // 이월 은행 SP 청록색 활성화
+                    // 이월 은행 SP: 청록색 활성화
+                    spBlocks[i].color = new Color(0.0f, 0.85f, 0.9f, 1f);
                 }
                 else
                 {
-                    // 미보유 시 비활성화하여 검은색 배경 등이 드러나도록 세팅
-                    spBlocks[i].gameObject.SetActive(false);
+                    // 미보유 빈 칸: 투명도가 있는 아주 어두운 회색으로 채워 경계 격자선을 이쁘게 유지합니다.
+                    spBlocks[i].color = new Color(0.15f, 0.15f, 0.15f, 0.6f);
                 }
             }
         }

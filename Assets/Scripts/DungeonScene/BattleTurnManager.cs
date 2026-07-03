@@ -38,6 +38,10 @@ namespace DungeonCombat.Combat
         private List<TurnSlot> turnQueue = new List<TurnSlot>();
         private int currentQueueIndex = -1;
 
+        // --- UI에서 실시간 턴 대기열을 읽어갈 수 있도록 Getter 속성 제공 ---
+        public IReadOnlyList<TurnSlot> TurnQueue => turnQueue;
+        public int CurrentQueueIndex => currentQueueIndex;
+
         // --- 외부 연동용 전투 진행 이벤트 ---
         public event Action<int> OnRoundStarted;              // 라운드 시작 이벤트 (현재 라운드 번호)
         public event Action<BattleUnit> OnTurnStarted;        // 특정 유닛의 턴 시작 이벤트
