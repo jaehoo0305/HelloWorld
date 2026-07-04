@@ -2108,7 +2108,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5953536594237074138, guid: f5d250267e256a04d900d00dc310b185, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.1872501
+      value: -4.1872506
       objectReference: {fileID: 0}
     - target: {fileID: 5953536594237074138, guid: f5d250267e256a04d900d00dc310b185, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2116,7 +2116,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5953536594237074138, guid: f5d250267e256a04d900d00dc310b185, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.25
+      value: 0.25000286
       objectReference: {fileID: 0}
     - target: {fileID: 5953536594237074138, guid: f5d250267e256a04d900d00dc310b185, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3322,7 +3322,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 531496160}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5d009f06d2d303409278bcde928c594, type: 3}
+  m_Script: {fileID: 11500000, guid: f1552ff7ee20eb3429af3671e36b0374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Combat.BattleUnit
   characterData: {fileID: 11400000, guid: 3407a957042fd0542befbc00b6196e70, type: 2}
@@ -3848,7 +3848,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2629646561710680063, guid: d812fc230ee0c8049a4d2974cff66b28, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.1872501
+      value: -4.1872506
       objectReference: {fileID: 0}
     - target: {fileID: 2629646561710680063, guid: d812fc230ee0c8049a4d2974cff66b28, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3856,7 +3856,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2629646561710680063, guid: d812fc230ee0c8049a4d2974cff66b28, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.25
+      value: 0.25000286
       objectReference: {fileID: 0}
     - target: {fileID: 2629646561710680063, guid: d812fc230ee0c8049a4d2974cff66b28, type: 3}
       propertyPath: m_LocalRotation.w
@@ -8038,7 +8038,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1432308640}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5d009f06d2d303409278bcde928c594, type: 3}
+  m_Script: {fileID: 11500000, guid: f1552ff7ee20eb3429af3671e36b0374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Combat.BattleUnit
   characterData: {fileID: 11400000, guid: 32b2c2ee4ab82604c833433b86ce04c1, type: 2}
@@ -9483,7 +9483,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2629646561710680063, guid: d812fc230ee0c8049a4d2974cff66b28, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.1872501
+      value: -4.1872506
       objectReference: {fileID: 0}
     - target: {fileID: 2629646561710680063, guid: d812fc230ee0c8049a4d2974cff66b28, type: 3}
       propertyPath: m_LocalPosition.y
@@ -9491,7 +9491,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2629646561710680063, guid: d812fc230ee0c8049a4d2974cff66b28, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.25
+      value: 0.25000286
       objectReference: {fileID: 0}
     - target: {fileID: 2629646561710680063, guid: d812fc230ee0c8049a4d2974cff66b28, type: 3}
       propertyPath: m_LocalRotation.w
@@ -10646,7 +10646,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7750345302149633956, guid: 8c58236c41a8add40ac4051dcf4e7ae5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.1872501
+      value: -4.1872506
       objectReference: {fileID: 0}
     - target: {fileID: 7750345302149633956, guid: 8c58236c41a8add40ac4051dcf4e7ae5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -10654,7 +10654,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7750345302149633956, guid: 8c58236c41a8add40ac4051dcf4e7ae5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.25
+      value: 0.25000286
       objectReference: {fileID: 0}
     - target: {fileID: 7750345302149633956, guid: 8c58236c41a8add40ac4051dcf4e7ae5, type: 3}
       propertyPath: m_LocalRotation.w
@@ -10795,7 +10795,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1978047049}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5d009f06d2d303409278bcde928c594, type: 3}
+  m_Script: {fileID: 11500000, guid: f1552ff7ee20eb3429af3671e36b0374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Combat.BattleUnit
   characterData: {fileID: 11400000, guid: 706892ad60066fd4fbf3541ca5a2a594, type: 2}

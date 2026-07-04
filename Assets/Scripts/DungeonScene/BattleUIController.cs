@@ -112,27 +112,34 @@ namespace DungeonCombat.Combat
                 if (slotText != null)
                 {
                     string characterName = slot.Unit.UnitName;
+                    string displayName = characterName;
 
                     if (slot.Unit.IsBoss && slot.ActionIndex != 99)
                     {
-                        slotText.text = $"{characterName} ({slot.ActionIndex + 1})";
+                        displayName = $"{characterName} ({slot.ActionIndex + 1})";
                     }
                     else if (slot.ActionIndex == 99)
                     {
-                        slotText.text = $"{characterName} (추가행동)";
+                        displayName = $"{characterName} (추가행동)";
                     }
-                    else
-                    {
-                        slotText.text = characterName;
-                    }
+
+                    // 순서 큐 플레이트 내부 글씨는 다시 흰색으로 통일하여 가독성 보장
+                    slotText.text = $"<color=#FFFFFF>{displayName}</color>";
                 }
 
                 Image bgImage = slotObj.GetComponent<Image>();
                 if (bgImage != null)
                 {
-                    if (slot.Unit.IsBoss)
+                    if (slot.Unit is EnemyUnit)
                     {
-                        bgImage.color = new Color(0.85f, 0.35f, 0.35f, 1f);
+                        if (slot.Unit.IsBoss)
+                        {
+                            bgImage.color = new Color(0.85f, 0.25f, 0.25f, 1f);
+                        }
+                        else
+                        {
+                            bgImage.color = new Color(0.75f, 0.35f, 0.35f, 1f);
+                        }
                     }
                     else
                     {
@@ -146,14 +153,12 @@ namespace DungeonCombat.Combat
         {
             if (unit == null) return;
 
-            // 보스나 몬스터의 차례에는 스킬 조작창 숨기기
-            if (unit.IsBoss)
+            if (unit.IsBoss || unit is EnemyUnit)
             {
                 SetSkillPanelActive(false);
                 return;
             }
 
-            // 플레이어 캐릭터 데이터 타입으로 하향 캐스팅
             PlayerUnit player = unit as PlayerUnit;
             if (player == null || player.CharacterData == null)
             {
@@ -262,18 +267,139 @@ namespace DungeonCombat.Combat
         private void HandleBattleEnd()
         {
             SetSkillPanelActive(false);
+            if (tooltipPanel != null) tooltipPanel.SetActive(false);
+            if (passiveTooltipPanel != null) passiveTooltipPanel.SetActive(false);
+        }
+    }
 
-            if (tooltipPanel != null)
+    /// <summary>
+    /// 좌측 하단 캐릭터 UI 슬롯 낱개를 조종하는 서브 클래스입니다.
+    /// </summary>
+    [System.Serializable]
+    public class PartyUnitUISlot
+    {
+        [SerializeField] private BattleUnit targetUnit;
+        [SerializeField] private Image highlightBorder;
+
+        [SerializeField] private Image hpFillImage;
+        [SerializeField] private TextMeshProUGUI hpText;
+        [SerializeField] private Image overheatFillImage; // 프로필 이미지(CharacterImage)를 그대로 할당하여 위아래로 차오르게 연출하는 타겟이자 패시브 클릭 타겟
+        [SerializeField] private List<Image> spBlocks;
+
+        public BattleUnit TargetUnit => targetUnit;
+
+        public void Initialize(System.Action<BattleUnit> onCharacterClick)
+        {
+            if (targetUnit == null) return;
+
+            SetHighlight(false);
+
+            // 대기열 및 드래그 슬롯 설정이 필요 없도록 overheatFillImage에 Button 컴포넌트를 런타임에 동적으로 처리 및 연동
+            if (overheatFillImage != null)
             {
-                tooltipPanel.SetActive(false);
+                Button btn = overheatFillImage.GetComponent<Button>();
+                if (btn == null)
+                {
+                    btn = overheatFillImage.gameObject.AddComponent<Button>();
+                }
+                // 초상화 과열 게이지 렌더링에 영항을 주지 않도록 트랜지션 효과를 없음(None)으로 정의
+                btn.transition = Selectable.Transition.None;
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(() => onCharacterClick?.Invoke(targetUnit));
             }
 
-            if (passiveTooltipPanel != null)
+            BindEvents();
+        }
+
+        public void BindUnit(BattleUnit newUnit, System.Action<BattleUnit> onCharacterClick)
+        {
+            UnbindEvents();
+            targetUnit = newUnit;
+
+            if (overheatFillImage != null)
             {
-                passiveTooltipPanel.SetActive(false);
+                Button btn = overheatFillImage.GetComponent<Button>();
+                if (btn == null)
+                {
+                    btn = overheatFillImage.gameObject.AddComponent<Button>();
+                }
+                btn.transition = Selectable.Transition.None;
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(() => onCharacterClick?.Invoke(targetUnit));
             }
 
-            Debug.Log("[UI] 전투가 끝났으므로 모든 컨트롤을 정지합니다.");
+            BindEvents();
+        }
+
+        private void BindEvents()
+        {
+            if (targetUnit == null) return;
+
+            targetUnit.OnHPChanged += UpdateHP;
+            targetUnit.OnSPChanged += UpdateSP;
+            targetUnit.OnOverheatChanged += UpdateOverheat;
+
+            targetUnit.TriggerAllEvents();
+        }
+
+        private void UnbindEvents()
+        {
+            if (targetUnit == null) return;
+
+            targetUnit.OnHPChanged -= UpdateHP;
+            targetUnit.OnSPChanged -= UpdateSP;
+            targetUnit.OnOverheatChanged -= UpdateOverheat;
+        }
+
+        public void SetHighlight(bool isActive)
+        {
+            if (highlightBorder != null)
+            {
+                highlightBorder.gameObject.SetActive(isActive);
+            }
+        }
+
+        private void UpdateHP(int current, int max)
+        {
+            if (hpFillImage != null)
+            {
+                hpFillImage.fillAmount = (float)current / max;
+            }
+            if (hpText != null)
+            {
+                hpText.text = $"{current}/{max}";
+            }
+        }
+
+        private void UpdateOverheat(int current, int max)
+        {
+            if (overheatFillImage != null)
+            {
+                overheatFillImage.fillAmount = (float)current / max;
+            }
+        }
+
+        private void UpdateSP(int currentSP, int bankSP, int maxSP)
+        {
+            for (int i = 0; i < spBlocks.Count; i++)
+            {
+                if (spBlocks[i] == null) continue;
+
+                spBlocks[i].gameObject.SetActive(true);
+
+                if (i < currentSP)
+                {
+                    spBlocks[i].color = new Color(0.2f, 0.45f, 0.9f, 1f);
+                }
+                else if (i < currentSP + bankSP)
+                {
+                    spBlocks[i].color = new Color(0.0f, 0.85f, 0.9f, 1f);
+                }
+                else
+                {
+                    spBlocks[i].color = new Color(0.15f, 0.15f, 0.15f, 0.6f);
+                }
+            }
         }
     }
 }

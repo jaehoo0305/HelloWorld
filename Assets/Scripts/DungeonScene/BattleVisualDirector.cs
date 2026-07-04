@@ -251,13 +251,13 @@ namespace DungeonCombat.Combat
 
             if (bannerCanvasGroup == null) yield break;
 
-            // 피아 구분에 따른 컬러 태그 적용
-            bool isBoss = unit.CharacterData.PositionType == PositionType.Boss;
-            string colorHex = isBoss ? "#FF4D4D" : "#4D94FF";
+            // 아군은 청록색에 가까운 푸른색(#4D94FF), 적군(EnemyUnit)은 붉은색(#FF4D4D)으로 이름 강조 표출
+            bool isEnemy = unit is EnemyUnit;
+            string colorHex = isEnemy ? "#FF4D4D" : "#4D94FF";
 
             if (mainTitleText != null)
             {
-                mainTitleText.text = $"<color={colorHex}>{unit.CharacterData.CharacterName}</color> 턴 시작";
+                mainTitleText.text = $"<color={colorHex}>{unit.UnitName}</color> 턴 시작";
             }
 
             // 2. 턴 전환 배너 연출 (FadeIn & FadeOut)
