@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5204aba19c9922340ac320930bdfe6f7, type: 3}
+  m_Name: Enemy_Slime
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.EnemyDataSO
+  serialNumber: 2000
+  enemyName: "\uC2AC\uB77C\uC784"
+  race: 0
+  maxHP: 60
+  attack: 10
+  defense: 5
+  speed: 2
+  maxMoveDistance: 3
+  aiType: 0
+  targetPriority: 2
+  combatRole: 0
+  passiveSkill: {fileID: 11400000, guid: fcf215ab8b679f34189e222d0a2cedc0, type: 2}
+  usableSkills:
+  - {fileID: 11400000, guid: cf06a27d0dc17594bbe511b3ddf78a0a, type: 2}

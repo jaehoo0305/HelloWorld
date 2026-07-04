@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d56dacde33ba3ae4f96aea75841cf4fb, type: 3}
+  m_Name: Skill_Slime
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.SkillDataSO
+  serialNumber: 20001
+  skillName: "\uACF5\uACA9"
+  targetType: 0
+  requiredSP: 0
+  isEndsTurn: 1
+  levels:
+  - level: 1
+    levelDesc: "\uC2ED\uC790 \uBC29\uD5A5{straight:1} \uC911 \uD55C \uACF3\uC73C\uB85C
+      1{range:1}\uCE78 \uAC70\uB9AC\uAE4C\uC9C0 \uC801 \uD558\uB098\uC5D0\uAC8C \uD53C\uD574(Dmg
+      {dmg:100})\uB97C \uC900\uB2E4."
+    keys:
+    - straight
+    - range
+    - dmg
+    values:
+    - 1
+    - 1
+    - 100
+  isUltimate: 0
+  enhancedSkillAsset: {fileID: 0}
+  enhanceConditionDesc: 
+  enhanceLogicKey: 

@@ -3326,6 +3326,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Combat.BattleUnit
   characterData: {fileID: 11400000, guid: 3407a957042fd0542befbc00b6196e70, type: 2}
+  equippedUniqueSkill: 0
   currentPassiveLevel: 1
   currentSkill1Level: 1
   currentSkill2Level: 1
@@ -3681,6 +3682,16 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 7750345302149633956, guid: 8c58236c41a8add40ac4051dcf4e7ae5, type: 3}
   m_PrefabInstance: {fileID: 608805405}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &619385961 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3854972057319587305, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+  m_PrefabInstance: {fileID: 77348944985686148}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &619385962 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+  m_PrefabInstance: {fileID: 77348944985686148}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &627189550
 GameObject:
@@ -4381,6 +4392,7 @@ GameObject:
   m_Component:
   - component: {fileID: 792517260}
   - component: {fileID: 792517259}
+  - component: {fileID: 792517261}
   m_Layer: 0
   m_Name: Slime
   m_TagString: Untagged
@@ -4462,6 +4474,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 15, y: 0, z: 0}
+--- !u!114 &792517261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 792517258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff50e7e7a4ee5bc47a8180a144248f64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Combat.EnemyUnit
+  enemyData: {fileID: 11400000, guid: b58eaaf6b0b36d54a9ca242a4ffde15c, type: 2}
+  defenseCap: 0.8
 --- !u!1001 &800198179
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4578,6 +4604,7 @@ MonoBehaviour:
     - {fileID: 271102192}
     - {fileID: 271102191}
     - {fileID: 271102190}
+    characterButton: {fileID: 0}
   - targetUnit: {fileID: 531496163}
     highlightBorder: {fileID: 1175859187}
     hpFillImage: {fileID: 1469962557}
@@ -4594,6 +4621,7 @@ MonoBehaviour:
     - {fileID: 1503095759}
     - {fileID: 1503095758}
     - {fileID: 1503095757}
+    characterButton: {fileID: 0}
   - targetUnit: {fileID: 1978047052}
     highlightBorder: {fileID: 145386538}
     hpFillImage: {fileID: 1214673633}
@@ -4610,6 +4638,7 @@ MonoBehaviour:
     - {fileID: 7591547755799099691}
     - {fileID: 7591547755799099690}
     - {fileID: 7591547755799099689}
+    characterButton: {fileID: 0}
   skillPanelParent: {fileID: 645151446}
   skillButtons:
   - {fileID: 594801357}
@@ -4623,6 +4652,8 @@ MonoBehaviour:
   - {fileID: 1914280566}
   tooltipPanel: {fileID: 2289758493235689229}
   tooltipDescriptionText: {fileID: 743746933}
+  passiveTooltipPanel: {fileID: 619385961}
+  passiveTooltipText: {fileID: 1781983270}
 --- !u!4 &808381565
 Transform:
   m_ObjectHideFlags: 0
@@ -8011,6 +8042,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Combat.BattleUnit
   characterData: {fileID: 11400000, guid: 32b2c2ee4ab82604c833433b86ce04c1, type: 2}
+  equippedUniqueSkill: 0
   currentPassiveLevel: 1
   currentSkill1Level: 1
   currentSkill2Level: 1
@@ -8298,6 +8330,7 @@ RectTransform:
   - {fileID: 1143817931}
   - {fileID: 1124624120}
   - {fileID: 1817727269}
+  - {fileID: 619385962}
   - {fileID: 645151447}
   - {fileID: 440037633}
   m_Father: {fileID: 0}
@@ -9821,6 +9854,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1773097658}
   m_CullTransparentMesh: 1
+--- !u!114 &1781983270 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5497579383666179952, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+  m_PrefabInstance: {fileID: 77348944985686148}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &1793036347
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10755,6 +10799,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Combat.BattleUnit
   characterData: {fileID: 11400000, guid: 706892ad60066fd4fbf3541ca5a2a594, type: 2}
+  equippedUniqueSkill: 0
   currentPassiveLevel: 1
   currentSkill1Level: 1
   currentSkill2Level: 1
@@ -11636,6 +11681,107 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 281867451939096682, guid: 68ebfad805050de43ac891b80f733ceb, type: 3}
   m_PrefabInstance: {fileID: 2137282948}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &77348944985686148
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1454277223}
+    m_Modifications:
+    - target: {fileID: 3854972057319587305, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_Name
+      value: PassiveToolTip
+      objectReference: {fileID: 0}
+    - target: {fileID: 3854972057319587305, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 800
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 514
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -1170
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256029532291537209, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3ca7743e322f6874b9efcd550c6186f4, type: 3}
 --- !u!1001 &2289758493235689228
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11646,7 +11792,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2024726473510107522, guid: 4759144360743e34ba5df42e851fc8ac, type: 3}
       propertyPath: m_Name
-      value: ToolTip
+      value: SkillToolTip
       objectReference: {fileID: 0}
     - target: {fileID: 2024726473510107522, guid: 4759144360743e34ba5df42e851fc8ac, type: 3}
       propertyPath: m_IsActive
