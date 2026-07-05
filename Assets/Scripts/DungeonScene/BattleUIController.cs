@@ -73,6 +73,9 @@ namespace DungeonCombat.Combat
             {
                 roundText.text = $"ROUND {round}";
             }
+
+            SetSkillPanelActive(false); // 라운드가 전환되는 연출 기간 동안 스킬 패널을 명시적으로 비활성화
+
             RebuildTurnTimelineUI();
         }
 
@@ -153,12 +156,14 @@ namespace DungeonCombat.Combat
         {
             if (unit == null) return;
 
+            // 보스나 몬스터의 차례에는 스킬 조작창 숨기기
             if (unit.IsBoss || unit is EnemyUnit)
             {
                 SetSkillPanelActive(false);
                 return;
             }
 
+            // 플레이어 캐릭터 데이터 타입으로 하향 캐스팅
             PlayerUnit player = unit as PlayerUnit;
             if (player == null || player.CharacterData == null)
             {
@@ -166,7 +171,7 @@ namespace DungeonCombat.Combat
                 return;
             }
 
-            SetSkillPanelActive(true);
+            SetSkillPanelActive(false);
 
             if (tooltipPanel != null)
             {
@@ -212,7 +217,10 @@ namespace DungeonCombat.Combat
             });
         }
 
-        private void SetSkillPanelActive(bool isActive)
+        /// <summary>
+        /// 비주얼 디렉터가 연출 타이밍에 맞춰 스킬창을 켜고 끌 수 있도록 접근 제한자를 public으로 변경했습니다.
+        /// </summary>
+        public void SetSkillPanelActive(bool isActive)
         {
             if (skillPanelParent != null)
             {

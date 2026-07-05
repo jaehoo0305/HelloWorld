@@ -198,6 +198,12 @@ namespace DungeonCombat.Combat
             // 라운드가 바뀌면 카메라는 전장 중앙으로 리턴합니다.
             targetCameraPos = neutralCenterPosition;
 
+            // 새로운 라운드 배너가 표시되는 동안 스킬 조작창이 나타나지 않도록 확실하게 숨김 처리합니다.
+            if (uiController != null)
+            {
+                uiController.SetSkillPanelActive(false);
+            }
+
             if (bannerCanvasGroup == null) yield break;
 
             // 텍스트 기입
@@ -289,6 +295,13 @@ namespace DungeonCombat.Combat
                 yield return null;
             }
             bannerCanvasGroup.alpha = 0f;
+
+            // 캐릭터의 턴 개시 배너 애니메이션이 완전히 소멸한 직후, 플레이어 유닛인 경우에만 조작창을 자연스럽게 활성화합니다.
+            if (uiController != null)
+            {
+                bool isPlayer = !(unit.IsBoss || unit is EnemyUnit);
+                uiController.SetSkillPanelActive(isPlayer);
+            }
         }
 
         /// <summary>
