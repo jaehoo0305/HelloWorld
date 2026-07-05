@@ -40,8 +40,28 @@ namespace DungeonCombat.Combat
         [Header("[ 이동 속도 세팅 ]")]
         [SerializeField] private float moveSpeed = 5f;
 
+        public float MoveSpeed => moveSpeed;
+
         public event Action<BattleUnit, Vector2Int> OnUnitMoveStart;
         public event Action<BattleUnit, Vector2Int> OnUnitMoveEnd;
+
+        // --- A* 알고리즘용 내부 노드 구조체 ---
+        private class AStarNode
+        {
+            public Vector2Int Position;
+            public float G; // 시작점으로부터 이동해 온 실제 비용
+            public float H; // 목적지까지 남은 가상의 예상 거리 (맨해튼 거리)
+            public float F => G + 1.5f * H; // 가중치 1.5를 적용한 휴리스틱 공식 (F = G + 1.5H)
+            public AStarNode Parent;
+
+            public AStarNode(Vector2Int position, float g, float h, AStarNode parent)
+            {
+                Position = position;
+                G = g;
+                H = h;
+                Parent = parent;
+            }
+        }
 
         private void Awake()
         {
@@ -50,6 +70,33 @@ namespace DungeonCombat.Combat
 
             // 게임 시작 시 3D 씬 내부의 콜라이더 지형을 실시간 격자로 정밀 자동 스캔합니다.
             ScanGridLevel();
+        }
+
+        private void Start()
+        {
+            // 씬 내에 배치된 모든 전투 유닛들을 자동으로 찾아 각자가 지정한 시작 좌표에 그리드 등록을 진행합니다.
+            BattleUnit[] units = FindObjectsByType<BattleUnit>(FindObjectsSortMode.None);
+            foreach (var unit in units)
+            {
+                Vector2Int spawnCoord = unit.InitialGridPosition;
+
+                if (!walkableGrid.Contains(spawnCoord))
+                {
+                    Vector2Int calculatedCoord = WorldToGrid(unit.transform.position);
+                    if (walkableGrid.Contains(calculatedCoord))
+                    {
+                        spawnCoord = calculatedCoord;
+                        Debug.Log($"[그리드] {unit.UnitName}의 지정 격자 좌표가 범위 밖이므로, 월드 위치({unit.transform.position})를 역산하여 격자 {spawnCoord}에 정상 등록합니다.");
+                    }
+                    else
+                    {
+                        Debug.LogError($"[그리드] {unit.UnitName}의 현재 월드 위치가 스캔된 그리드 영역 바깥에 놓여 있습니다. 맵 오리진 범위나 Ground 지형 레이어를 확인하십시오.");
+                        continue;
+                    }
+                }
+
+                SetUnitInitialPosition(unit, spawnCoord);
+            }
         }
 
         /// <summary>
@@ -66,24 +113,19 @@ namespace DungeonCombat.Combat
                 {
                     Vector2Int coord = new Vector2Int(x, z);
 
-                    // 가상 격자 좌표를 기준 월드 위치로 가공
                     Vector3 cellWorldCenter = GetRawWorldPosition(coord);
                     Vector3 rayStart = cellWorldCenter + Vector3.up * scanHeightOffset;
 
-                    // 1. 위에서 아래로 레이캐스트를 발사하여 groundLayer(땅)가 존재하는지 탐지합니다.
                     if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, scanHeightOffset * 2f, groundLayer))
                     {
                         float groundHeight = hit.point.y;
                         Vector3 floorPoint = new Vector3(cellWorldCenter.x, groundHeight, cellWorldCenter.z);
 
-                        // 2. 해당 지점에 장애물 콜라이더(obstacleLayer)가 물리적으로 중첩되어 차단하고 있는지 체크합니다.
-                        // cellSize 크기보다 약간 작은 오버랩 박스로 정밀 콜라이더 간섭 탐색 진행
                         Vector3 halfExtents = new Vector3((cellSize * 0.9f) / 2f, 1f, (cellSize * 0.9f) / 2f);
                         bool isBlocked = Physics.CheckBox(floorPoint + Vector3.up * 1f, halfExtents, Quaternion.identity, obstacleLayer);
 
                         if (!isBlocked)
                         {
-                            // 땅이 존재하고 장애물이 없다면 이동 가능한 안전 격자로 등록
                             walkableGrid.Add(coord);
                             tileHeights[coord] = groundHeight;
                         }
@@ -92,6 +134,17 @@ namespace DungeonCombat.Combat
             }
 
             Debug.Log($"[그리드 스캐너] 스캔 완료! 총 {walkableGrid.Count}개의 유효 이동 격자가 발견되었습니다.");
+        }
+
+        /// <summary>
+        /// 월드 3D 좌표를 역산하여 가장 가까운 가상 격자 좌표(X, Y)를 반환합니다.
+        /// </summary>
+        public Vector2Int WorldToGrid(Vector3 worldPos)
+        {
+            Vector3 diff = worldPos - gridOrigin;
+            int x = Mathf.RoundToInt(diff.x / cellSize);
+            int y = Mathf.RoundToInt(diff.z / cellSize);
+            return new Vector2Int(x, y);
         }
 
         /// <summary>
@@ -147,29 +200,25 @@ namespace DungeonCombat.Combat
 
             Vector2Int currentCoords = unitPositions[unit];
 
-            // 1. 상하좌우 십자 방향 인접 타일 검증 (대각선 불가, 맨해튼 거리 1 검증)
             int distance = Mathf.Abs(targetCoordinate.x - currentCoords.x) + Mathf.Abs(targetCoordinate.y - currentCoords.y);
             if (distance != 1)
             {
-                Debug.LogWarning($"[그리드] 이동 실패: 목표 {targetCoordinate}는 현재 위치 {currentCoords}와 인접(십자 방향 1칸)해 있지 않습니다.");
+                Debug.LogWarning($"[그리드] 이동 실패: 목표 {targetCoordinate}는 현재 위치 {currentCoords}와 인접해 있지 않습니다.");
                 return false;
             }
 
-            // 2. 가상 스캔 맵 상에 등록된 유효 이동 가능 구역인지 체크 (장애물 및 영역 이탈 자동 차단)
             if (!walkableGrid.Contains(targetCoordinate))
             {
-                Debug.LogWarning($"[그리드] 이동 실패: 목표 좌표 {targetCoordinate}는 스캔되지 않은 비활성 영역이거나 벽 장애물 지역입니다.");
+                Debug.LogWarning($"[그리드] 이동 실패: 목표 좌표 {targetCoordinate}는 스캔되지 않은 영역이거나 장애물 지역입니다.");
                 return false;
             }
 
-            // 3. 유닛 충돌 판정 (다른 아군/적군이 이미 서 있는지 검증)
             if (occupiedUnits.ContainsKey(targetCoordinate))
             {
-                Debug.LogWarning($"[그리드] 이동 실패: 목표 {targetCoordinate} 타일에는 이미 다른 유닛이 점유하고 있습니다.");
+                Debug.LogWarning($"[그리드] 이동 실패: 목표 {targetCoordinate} 타일에는 이미 다른 유닛이 존재합니다.");
                 return false;
             }
 
-            // 4. 유닛 타입별 행동/비용 자원 검증
             if (unit is PlayerUnit playerUnit)
             {
                 if (!playerUnit.ConsumeSP(1))
@@ -182,12 +231,11 @@ namespace DungeonCombat.Combat
             {
                 if (enemyUnit.HasMovedThisTurn)
                 {
-                    Debug.LogWarning($"[그리드] 이동 실패: 적군 {enemyUnit.UnitName}은 이미 이번 턴의 최대 이동력을 소진했습니다.");
+                    Debug.LogWarning($"[그리드] 이동 실패: 적군 {enemyUnit.UnitName}은 이미 이번 턴의 이동력을 소모했습니다.");
                     return false;
                 }
             }
 
-            // 모든 검증 통과 후 실시간 좌표 이전 및 월드 좌표 이동 시작
             StartCoroutine(CoAnimateMovement(unit, currentCoords, targetCoordinate, GetWorldPosition(targetCoordinate)));
             return true;
         }
@@ -196,7 +244,6 @@ namespace DungeonCombat.Combat
         {
             OnUnitMoveStart?.Invoke(unit, endCoords);
 
-            // 점유 정보 교체 처리
             occupiedUnits.Remove(startCoords);
             occupiedUnits[endCoords] = unit;
             unitPositions[unit] = endCoords;
@@ -206,7 +253,6 @@ namespace DungeonCombat.Combat
                 enemyUnit.HasMovedThisTurn = true;
             }
 
-            // 3D 지차에 맞춘 물리적 높이를 보존하며 부드럽게 Lerp 이동 연출 진행
             Vector3 startPos = unit.transform.position;
             float elapsed = 0f;
             float duration = 1f / moveSpeed;
@@ -220,6 +266,106 @@ namespace DungeonCombat.Combat
 
             unit.transform.position = targetWorldPos;
             OnUnitMoveEnd?.Invoke(unit, endCoords);
+        }
+
+        /// <summary>
+        /// F = G + 1.5H 가중치 공식을 적용한 A* 알고리즘 기반 최단 경로 계산 메서드입니다.
+        /// </summary>
+        /// <param name="start">출발 격자 좌표</param>
+        /// <param name="end">목적지 격자 좌표</param>
+        /// <param name="self">현재 길을 찾고 있는 주체 유닛 (본인 충돌 무시 목적)</param>
+        /// <returns>순차 이동 격자 좌표 목록 (결로가 없으면 null 반환)</returns>
+        public List<Vector2Int> FindPath(Vector2Int start, Vector2Int end, BattleUnit self)
+        {
+            if (!walkableGrid.Contains(end)) return null;
+
+            List<AStarNode> openList = new List<AStarNode>();
+            HashSet<Vector2Int> closedList = new HashSet<Vector2Int>();
+
+            float startH = Mathf.Abs(end.x - start.x) + Mathf.Abs(end.y - start.y);
+            openList.Add(new AStarNode(start, 0, startH, null));
+
+            while (openList.Count > 0)
+            {
+                // F 비용이 가장 낮은 노드 추출
+                AStarNode current = openList[0];
+                for (int i = 1; i < openList.Count; i++)
+                {
+                    if (openList[i].F < current.F || (Mathf.Approximately(openList[i].F, current.F) && openList[i].H < current.H))
+                    {
+                        current = openList[i];
+                    }
+                }
+
+                openList.Remove(current);
+                closedList.Add(current.Position);
+
+                // 최종 목적지 도달 시 경로 역추적 및 반환
+                if (current.Position == end)
+                {
+                    return RetracePath(current);
+                }
+
+                Vector2Int[] neighbors = {
+                    new Vector2Int(0, 1),   // 상
+                    new Vector2Int(0, -1),  // 하
+                    new Vector2Int(-1, 0),  // 좌
+                    new Vector2Int(1, 0)    // 우
+                };
+
+                foreach (var dir in neighbors)
+                {
+                    Vector2Int neighborPos = current.Position + dir;
+
+                    if (closedList.Contains(neighborPos)) continue;
+                    if (!walkableGrid.Contains(neighborPos)) continue;
+
+                    // 경로 탐색 중 다른 유닛이 길을 막고 있는 경우 회피 처리
+                    // (단, 목적지 타일 자체에 대상이 있는 것은 허용하여 인접 도달이 가능하도록 처리)
+                    if (neighborPos != end && occupiedUnits.ContainsKey(neighborPos))
+                    {
+                        if (occupiedUnits[neighborPos] != self)
+                        {
+                            continue;
+                        }
+                    }
+
+                    float newG = current.G + 1f;
+                    float newH = Mathf.Abs(end.x - neighborPos.x) + Mathf.Abs(end.y - neighborPos.y);
+
+                    AStarNode existingNode = openList.Find(n => n.Position == neighborPos);
+                    if (existingNode == null)
+                    {
+                        openList.Add(new AStarNode(neighborPos, newG, newH, current));
+                    }
+                    else if (newG < existingNode.G)
+                    {
+                        existingNode.G = newG;
+                        existingNode.Parent = current;
+                    }
+                }
+            }
+
+            return null; // 도달 불가능한 경우
+        }
+
+        private List<Vector2Int> RetracePath(AStarNode node)
+        {
+            List<Vector2Int> path = new List<Vector2Int>();
+            AStarNode temp = node;
+            while (temp != null)
+            {
+                path.Add(temp.Position);
+                temp = temp.Parent;
+            }
+            path.Reverse();
+
+            // 출발점(현재 서 있는 위치)은 리스트에서 안전하게 제거
+            if (path.Count > 0)
+            {
+                path.RemoveAt(0);
+            }
+            return path;
         }
 
         /// <summary>
@@ -242,7 +388,6 @@ namespace DungeonCombat.Combat
             return Vector2Int.zero;
         }
 
-        // 인스펙터 편집 상태 기획 편의를 위한 전체 가상 스캔 범위 기즈모 표현 영역
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = new Color(0.2f, 0.6f, 1f, 0.25f);

@@ -37,6 +37,9 @@ namespace DungeonCombat.Combat
         [SerializeField] private GameObject passiveTooltipPanel;
         [SerializeField] private TextMeshProUGUI passiveTooltipText;
 
+        // 비주얼 라운드 및 턴 전환 배너 연출 중에는 입력을 통제하기 위한 게이트 제어 플래그 프로퍼티
+        public bool IsVisualTransitionActive { get; set; } = false;
+
         private BattleUnit currentPassiveTooltipUnit;
 
         private void Start()
@@ -75,7 +78,6 @@ namespace DungeonCombat.Combat
             }
 
             SetSkillPanelActive(false); // 라운드가 전환되는 연출 기간 동안 스킬 패널을 명시적으로 비활성화
-
             RebuildTurnTimelineUI();
         }
 
@@ -152,7 +154,7 @@ namespace DungeonCombat.Combat
             }
         }
 
-        private void UpdateSkillButtons(BattleUnit unit)
+        public void UpdateSkillButtons(BattleUnit unit)
         {
             if (unit == null) return;
 
@@ -170,8 +172,6 @@ namespace DungeonCombat.Combat
                 SetSkillPanelActive(false);
                 return;
             }
-
-            SetSkillPanelActive(false);
 
             if (tooltipPanel != null)
             {
@@ -196,6 +196,9 @@ namespace DungeonCombat.Combat
                     }
                 }
             }
+
+            // 비주얼 시네마틱 연출 가드가 풀렸을 때만 스킬창 물리 노출 활성화
+            SetSkillPanelActive(!IsVisualTransitionActive);
         }
 
         private void ConfigureSkillButton(int buttonIndex, SkillDataSO skill, int currentLevel)
@@ -217,9 +220,6 @@ namespace DungeonCombat.Combat
             });
         }
 
-        /// <summary>
-        /// 비주얼 디렉터가 연출 타이밍에 맞춰 스킬창을 켜고 끌 수 있도록 접근 제한자를 public으로 변경했습니다.
-        /// </summary>
         public void SetSkillPanelActive(bool isActive)
         {
             if (skillPanelParent != null)
@@ -310,7 +310,7 @@ namespace DungeonCombat.Combat
                 {
                     btn = overheatFillImage.gameObject.AddComponent<Button>();
                 }
-                // 초상화 과열 게이지 렌더링에 영항을 주지 않도록 트랜지션 효과를 없음(None)으로 정의
+                // 초상화 과열 게이지 렌더링에 영향을 주지 않도록 트랜지션 효과를 없음(None)으로 정의
                 btn.transition = Selectable.Transition.None;
                 btn.onClick.RemoveAllListeners();
                 btn.onClick.AddListener(() => onCharacterClick?.Invoke(targetUnit));

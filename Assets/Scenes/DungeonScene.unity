@@ -579,6 +579,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 46384811}
   m_CullTransparentMesh: 1
+--- !u!1 &50184972
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 50184974}
+  - component: {fileID: 50184973}
+  m_Layer: 0
+  m_Name: PlayerGridMovementManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &50184973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 50184972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 677a96c9febd1744fbd1b91d0e2ab587, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Combat.PlayerGridMovementController
+  gridManager: {fileID: 925506206}
+  turnManager: {fileID: 331457640}
+  uiController: {fileID: 808381564}
+--- !u!4 &50184974
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 50184972}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &55131925
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1981,7 +2028,6 @@ Transform:
   - {fileID: 536737587}
   - {fileID: 1667829306}
   - {fileID: 1352694367}
-  - {fileID: 925506205}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &271102188
@@ -3468,7 +3514,7 @@ Transform:
   m_GameObject: {fileID: 531496160}
   serializedVersion: 2
   m_LocalRotation: {x: 0.13052596, y: -0, z: -0, w: 0.99144495}
-  m_LocalPosition: {x: -7, y: 1.6, z: 1}
+  m_LocalPosition: {x: -7, y: 0, z: 1}
   m_LocalScale: {x: 0.35, y: 0.35, z: 0.35}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -3486,6 +3532,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1552ff7ee20eb3429af3671e36b0374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Combat.BattleUnit
+  initialGridPosition: {x: -7, y: 1}
   characterData: {fileID: 11400000, guid: 3407a957042fd0542befbc00b6196e70, type: 2}
   equippedUniqueSkill: 0
   currentPassiveLevel: 1
@@ -4687,6 +4734,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff50e7e7a4ee5bc47a8180a144248f64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Combat.EnemyUnit
+  initialGridPosition: {x: 5, y: -1}
   enemyData: {fileID: 11400000, guid: b58eaaf6b0b36d54a9ca242a4ffde15c, type: 2}
   defenseCap: 0.8
 --- !u!1001 &800198179
@@ -4770,7 +4818,7 @@ GameObject:
   - component: {fileID: 808381565}
   - component: {fileID: 808381564}
   m_Layer: 0
-  m_Name: BattleUIControllerManager
+  m_Name: BattleUIManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5053,7 +5101,7 @@ GameObject:
   - component: {fileID: 925506205}
   - component: {fileID: 925506206}
   m_Layer: 0
-  m_Name: TestMapBox
+  m_Name: MapBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5072,7 +5120,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 266589208}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &925506206
 MonoBehaviour:
@@ -5086,8 +5134,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaa5805d52b91b2418efde41428efb21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Combat.BattleGridManager
-  gridOrigin: {x: -11, y: 0, z: -7}
-  gridSize: {x: 12, y: 8}
+  gridOrigin: {x: -51, y: 0, z: -51}
+  gridSize: {x: 51, y: 51}
   cellSize: 2
   groundLayer:
     serializedVersion: 2
@@ -8553,7 +8601,7 @@ Transform:
   m_GameObject: {fileID: 1432308640}
   serializedVersion: 2
   m_LocalRotation: {x: 0.13052598, y: -0, z: -0, w: 0.9914449}
-  m_LocalPosition: {x: -5, y: 1.6, z: -1}
+  m_LocalPosition: {x: -5, y: 0, z: -1}
   m_LocalScale: {x: 0.35, y: 0.35, z: 0.35}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -8571,6 +8619,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1552ff7ee20eb3429af3671e36b0374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Combat.BattleUnit
+  initialGridPosition: {x: -5, y: -1}
   characterData: {fileID: 11400000, guid: 32b2c2ee4ab82604c833433b86ce04c1, type: 2}
   equippedUniqueSkill: 0
   currentPassiveLevel: 1
@@ -11515,6 +11564,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1552ff7ee20eb3429af3671e36b0374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Combat.BattleUnit
+  initialGridPosition: {x: -6, y: -1}
   characterData: {fileID: 11400000, guid: 706892ad60066fd4fbf3541ca5a2a594, type: 2}
   equippedUniqueSkill: 0
   currentPassiveLevel: 1
@@ -13044,11 +13094,13 @@ SceneRoots:
   - {fileID: 792517260}
   - {fileID: 647640959}
   - {fileID: 1202009614}
+  - {fileID: 925506205}
   - {fileID: 266589208}
   - {fileID: 2096914683}
   - {fileID: 1209263740}
   - {fileID: 1401371455}
-  - {fileID: 35887274}
   - {fileID: 808381565}
   - {fileID: 331457641}
+  - {fileID: 35887274}
+  - {fileID: 50184974}
   - {fileID: 1572888536}

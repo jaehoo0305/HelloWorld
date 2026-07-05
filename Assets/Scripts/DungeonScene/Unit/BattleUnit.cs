@@ -9,7 +9,12 @@ namespace DungeonCombat.Combat
     /// </summary>
     public abstract class BattleUnit : MonoBehaviour
     {
+        [Header("[ 그리드 배치 설정 ]")]
+        [Tooltip("이 유닛이 전장에서 시작할 가상 격자 좌표(X, Y)입니다.")]
+        [SerializeField] private Vector2Int initialGridPosition;
+
         public int CurrentHP { get; protected set; }
+        public Vector2Int InitialGridPosition => initialGridPosition;
 
         // --- 공통 추상 프로퍼티 (매니저 및 UI가 참조할 핵심 데이터) ---
         public abstract int MaxHP { get; }
