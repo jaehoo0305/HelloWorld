@@ -27,16 +27,18 @@ namespace DungeonCombat.Combat
         [SerializeField] private Vector3 cameraOffset = new Vector3(0f, 1.5f, -10f);
         [Tooltip("카메라가 중립 상태일 때(라운드 전환 등) 바라볼 기본 전장 중앙 좌표입니다.")]
         [SerializeField] private Vector3 neutralCenterPosition = new Vector3(0f, 0f, -10f);
-        [Tooltip("카메라가 부드럽게 화면을 따라갈 속도 수치입니다.")]
-        [SerializeField] private float cameraLerpSpeed = 4f;
 
-        [Header("[ 2. 슬더스 스타일 배너 UI (Notification Banner) ]")]
+        [Header("[ 2. 할로우 나이트식 카메라 팔로우 설정 ]")]
+        [Tooltip("할로우 나이트식 카메라 부드러운 위치 도달 시간 (낮을수록 빠르게 반응)")]
+        [SerializeField] private float cameraSmoothTime = 0.22f;
+
+        [Header("[ 3. 슬더스 스타일 배너 UI (Notification Banner) ]")]
         [Tooltip("배너 전체를 깜빡이게 할 Canvas Group (배경 블랙 바 오브젝트 권장)")]
         [SerializeField] private CanvasGroup bannerCanvasGroup;
         [Tooltip("배너 중앙에 크게 보일 메인 텍스트 (TMP)")]
         [SerializeField] private TextMeshProUGUI mainTitleText;
 
-        [Header("[ 3. 테스트 및 자동화 옵션 ]")]
+        [Header("[ 4. 테스트 및 자동화 옵션 ]")]
         [Tooltip("체크 시 스페이스바를 누르면 다음 캐릭터의 턴으로 즉시 건너뜁니다.")]
         [SerializeField] private bool enableSpacebarTest = true;
         [Tooltip("체크 시 일정 시간마다 자동으로 턴이 끝납니다. (자동 무대 연출 감상용)")]
@@ -48,6 +50,15 @@ namespace DungeonCombat.Combat
         private bool isSequencing = false;
         private float autoPlayTimer = 0f;
         private Queue<IEnumerator> visualSequenceQueue = new Queue<IEnumerator>();
+
+        // 할로우 나이트식 Elastic 트래킹 가속도 상태 저장 벡터
+        private Vector3 cameraVelocity = Vector3.zero;
+
+        // 카메라 모드 상태 플래그 및 문명 6식 드래그 상태 보관용
+        private bool isCameraLocked = true; // 기본값은 캐릭터 자동 추적 고정 상태
+        private Vector3 dragStartMousePos;  // 드래그 시작 시점의 스크린 마우스 좌표
+        private Vector3 dragStartCamPos;
+        private bool isDragging = false;
 
         private void Start()
         {
@@ -80,23 +91,53 @@ namespace DungeonCombat.Combat
 
         private void Update()
         {
-            // 1. 카메라의 부드러운 목적지 보간 이동 (Lerp)
-            if (mainCamera != null)
+            // 1. 카메라 자유 조작 및 캐릭터 실시간 탄성 추적(Smooth Follow) 상태 분기
+            if (isCameraLocked)
             {
-                mainCamera.transform.position = Vector3.Lerp(
+                // [카메라 고정 모드]: 현재 행동권을 가진 유닛의 실시간 이동 상태를 쫓아갑니다 (아군, 적군 실시간 동기화)
+                if (turnManager != null && turnManager.CurrentTurnUnit != null)
+                {
+                    targetCameraPos = turnManager.CurrentTurnUnit.transform.position + cameraOffset;
+                }
+            }
+            else
+            {
+                // [자유 이동 모드]: 마우스 우클릭 드래그 입력을 계산하여 targetCameraPos를 조율합니다.
+                HandleFreeCameraPan();
+            }
+
+            // 2. 카메라는 항상 부드러우면서도 탄력 넘치게 할로우 나이트식으로 목표 지점을 향해 가감속합니다.
+            // 단, 문명 6식 1:1 드래그 중인 프레임에는 드래그 일체감을 위해 Lerp 딜레이를 생략하고 즉시 붙어있도록 처리합니다.
+            if (mainCamera != null && !isDragging)
+            {
+                mainCamera.transform.position = Vector3.SmoothDamp(
                     mainCamera.transform.position,
                     targetCameraPos,
-                    Time.deltaTime * cameraLerpSpeed
+                    ref cameraVelocity,
+                    cameraSmoothTime
                 );
             }
 
-            // 2. 비주얼 시퀀스 큐 처리기 작동
+            // 3. 비주얼 시퀀스 큐 처리기 작동
             if (visualSequenceQueue.Count > 0 && !isSequencing)
             {
                 StartCoroutine(ExecuteNextSequence());
             }
 
-            // 3. 디버그 및 수동 조작 테스트 키 (Spacebar로 턴 강제 종료)
+            // 4. CAPS LOCK 입력 감지: 카메라 고정/해제 토글 제어 (Caps Lock 키로 전장 뷰 모드 전환)
+#if ENABLE_INPUT_SYSTEM
+            if (Keyboard.current != null && Keyboard.current.capsLockKey.wasPressedThisFrame)
+            {
+                ToggleCameraLock();
+            }
+#else
+            if (Input.GetKeyDown(KeyCode.CapsLock))
+            {
+                ToggleCameraLock();
+            }
+#endif
+
+            // 5. 원래대로 복원된 디버그 및 수동 조작 테스트 키 (Spacebar로 턴 강제 종료)
             if (enableSpacebarTest)
             {
 #if ENABLE_INPUT_SYSTEM
@@ -112,7 +153,7 @@ namespace DungeonCombat.Combat
 #endif
             }
 
-            // 4. 관람용 자동 플레이 타이머
+            // 6. 관람용 자동 플레이 타이머
             if (enableAutoPlay && turnManager != null && turnManager.CurrentTurnUnit != null)
             {
                 autoPlayTimer += Time.deltaTime;
@@ -120,6 +161,95 @@ namespace DungeonCombat.Combat
                 {
                     TriggerEndTurn();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Caps Lock을 누르면 카메라 고정을 풀고, 다시 누르면 즉시 현재 유닛에게 빠르게 안착하며 락 상태로 전환합니다.
+        /// </summary>
+        private void ToggleCameraLock()
+        {
+            isCameraLocked = !isCameraLocked;
+
+            if (isCameraLocked)
+            {
+                Debug.Log("[디렉터] 카메라 자동 추적 활성화 (캐릭터 포커스 고정)");
+                if (turnManager != null && turnManager.CurrentTurnUnit != null)
+                {
+                    targetCameraPos = turnManager.CurrentTurnUnit.transform.position + cameraOffset;
+                }
+                else
+                {
+                    targetCameraPos = neutralCenterPosition;
+                }
+            }
+            else
+            {
+                Debug.Log("[디렉터] 카메라 자유 모드 활성화 (우클릭 드래그로 화면 탐색 가능)");
+            }
+        }
+
+        /// <summary>
+        /// 마우스 우클릭으로 바닥 가상 평면(Y=0)을 집어 올린 뒤, 마우스 커서와 맵을 1:1로 결합해 물리적으로 움직입니다.
+        /// 카메라 위치 업데이트로 인한 피드백 루프 떨림(Jitter)을 방지하기 위해 드래그 시작 시점의 카메라 가상 평면을 기준으로 계산합니다.
+        /// </summary>
+        private void HandleFreeCameraPan()
+        {
+            Vector3 mousePos;
+#if ENABLE_INPUT_SYSTEM
+            if (Mouse.current == null) return;
+            mousePos = Mouse.current.position.ReadValue();
+            bool isPressed = Mouse.current.rightButton.isPressed;
+            bool wasPressed = Mouse.current.rightButton.wasPressedThisFrame;
+#else
+            mousePos = Input.mousePosition;
+            bool isPressed = Input.GetMouseButton(1);
+            bool wasPressed = Input.GetMouseButtonDown(1);
+#endif
+
+            if (wasPressed)
+            {
+                isDragging = true;
+                dragStartMousePos = mousePos;
+                dragStartCamPos = targetCameraPos;
+            }
+            else if (isPressed && isDragging)
+            {
+                Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+
+                // 루프 기반 떨림(Feedback loop jitter)을 막기 위해 드래그 시작 시점 카메라 위치를 기준으로 안정적 레이캐스트 계산
+                Vector3 originalCamPos = mainCamera.transform.position;
+                mainCamera.transform.position = dragStartCamPos;
+
+                Ray startRay = mainCamera.ScreenPointToRay(dragStartMousePos);
+                Ray currentRay = mainCamera.ScreenPointToRay(mousePos);
+
+                bool startHit = groundPlane.Raycast(startRay, out float startEnter);
+                bool currentHit = groundPlane.Raycast(currentRay, out float currentEnter);
+
+                // 연출 중간 프레임 흔들림 방지를 위해 원래 카메라 위치로 즉시 환원
+                mainCamera.transform.position = originalCamPos;
+
+                if (startHit && currentHit)
+                {
+                    Vector3 startWorldPoint = startRay.GetPoint(startEnter);
+                    Vector3 currentWorldPoint = currentRay.GetPoint(currentEnter);
+
+                    // 시작점과 현재 점의 평면 차이 계산
+                    Vector3 delta = currentWorldPoint - startWorldPoint;
+
+                    // Y축(높이)은 고정하고 X, Z축 평면만 오프셋 이동
+                    Vector3 nextTarget = dragStartCamPos - new Vector3(delta.x, 0f, delta.z);
+                    targetCameraPos = new Vector3(nextTarget.x, originalCamPos.y, nextTarget.z);
+
+                    // 드래그 중인 프레임 동안 1:1 부착 효과 극대화
+                    mainCamera.transform.position = targetCameraPos;
+                    cameraVelocity = Vector3.zero;
+                }
+            }
+            else
+            {
+                isDragging = false;
             }
         }
 
@@ -195,14 +325,15 @@ namespace DungeonCombat.Combat
         /// </summary>
         private IEnumerator SequenceRoundBanner(int round)
         {
-            // 라운드가 바뀌면 카메라는 전장 중앙으로 리턴합니다.
-            targetCameraPos = neutralCenterPosition;
-
-            // 새로운 라운드 배너가 표시되는 동안 스킬 조작창이 나타나지 않도록 확실하게 숨김 처리합니다.
+            // 새로운 라운드 배너가 표시되기 시작할 때 툴팁 및 스킬 UI를 일괄적으로 숨김 처리합니다.
             if (uiController != null)
             {
+                uiController.HideAllTooltips();
                 uiController.SetSkillPanelActive(false);
             }
+
+            // 라운드가 바뀌면 카메라는 전장 중앙으로 리턴합니다.
+            targetCameraPos = neutralCenterPosition;
 
             if (bannerCanvasGroup == null) yield break;
 
@@ -249,8 +380,14 @@ namespace DungeonCombat.Combat
         /// </summary>
         private IEnumerator SequenceTurnBanner(BattleUnit unit)
         {
-            // 1. 카메라를 해당 유닛 위치로 부드럽게 조준
-            if (unit != null)
+            // 새로운 턴이 개시되어 연출이 시작되는 즉시 전 차례의 툴팁들을 완벽하게 닫아 화면을 정돈합니다.
+            if (uiController != null)
+            {
+                uiController.HideAllTooltips();
+            }
+
+            // 1. 카메라 잠금 모드가 활성화되어 있다면 타겟 유닛 위치로 타겟 카메라 위치 즉시 설정
+            if (isCameraLocked && unit != null)
             {
                 targetCameraPos = unit.transform.position + cameraOffset;
             }

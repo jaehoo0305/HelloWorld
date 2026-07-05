@@ -272,11 +272,28 @@ namespace DungeonCombat.Combat
             }
         }
 
+        /// <summary>
+        /// 화면 상에 활성화되어 떠 있는 모든 스킬 및 패시브 관련 세부 정보 툴팁창을 강제로 클리어하고 닫습니다.
+        /// </summary>
+        public void HideAllTooltips()
+        {
+            if (tooltipPanel != null)
+            {
+                tooltipPanel.SetActive(false);
+            }
+
+            if (passiveTooltipPanel != null)
+            {
+                passiveTooltipPanel.SetActive(false);
+            }
+
+            currentPassiveTooltipUnit = null;
+        }
+
         private void HandleBattleEnd()
         {
             SetSkillPanelActive(false);
-            if (tooltipPanel != null) tooltipPanel.SetActive(false);
-            if (passiveTooltipPanel != null) passiveTooltipPanel.SetActive(false);
+            HideAllTooltips();
         }
     }
 

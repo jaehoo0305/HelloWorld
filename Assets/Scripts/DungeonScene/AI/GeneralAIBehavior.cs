@@ -54,7 +54,7 @@ namespace DungeonCombat.Combat
 
             if (astarPath != null && astarPath.Count > 0)
             {
-                // 최대 이동력만큼의 스텝 수 계산
+                // 이번 차례에 허용된 최대 이동량만큼의 스텝 수 계산 (예: 3칸)
                 int allowedSteps = Mathf.Min(astarPath.Count, enemy.EnemyData.MaxMoveDistance);
 
                 for (int i = 0; i < allowedSteps; i++)
@@ -74,6 +74,9 @@ namespace DungeonCombat.Combat
                     }
                 }
             }
+
+            // ★ 중요: 지정된 이번 턴의 최대 보폭(3칸) 이동 시퀀스가 완벽히 종결된 시점에 락을 걸어 중복 연사를 방지합니다.
+            enemy.HasMovedThisTurn = true;
 
             // 6. 최종 위치 기준 사거리 검사 및 공격 프로세스 진행
             enemyGridPos = gridManager.GetUnitCoordinate(enemy);
@@ -170,9 +173,11 @@ namespace DungeonCombat.Combat
 
             if (candidates.Count > 0)
             {
+                // ★ 중요: 초장거리 타겟 추적을 위해 .Where(Count <= maxMove) 제약 필터를 완벽 분리했습니다.
+                // 이제 10칸 밖에 있어도 타겟 주위의 공격 포인트 지점을 향해 3칸씩 저돌적으로 전진합니다.
                 var validPaths = candidates
                     .Select(c => new { Pos = c, Path = gridManager.FindPath(enemyPos, c, self) })
-                    .Where(item => item.Path != null && item.Path.Count <= maxMove)
+                    .Where(item => item.Path != null)
                     .OrderBy(item => item.Path.Count)
                     .ToList();
 

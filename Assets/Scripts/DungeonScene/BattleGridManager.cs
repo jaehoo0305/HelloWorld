@@ -121,6 +121,7 @@ namespace DungeonCombat.Combat
                         float groundHeight = hit.point.y;
                         Vector3 floorPoint = new Vector3(cellWorldCenter.x, groundHeight, cellWorldCenter.z);
 
+                        // cellSize 크기보다 약간 작은 오버랩 박스로 정밀 콜라이더 간섭 탐색 진행
                         Vector3 halfExtents = new Vector3((cellSize * 0.9f) / 2f, 1f, (cellSize * 0.9f) / 2f);
                         bool isBlocked = Physics.CheckBox(floorPoint + Vector3.up * 1f, halfExtents, Quaternion.identity, obstacleLayer);
 
@@ -219,6 +220,7 @@ namespace DungeonCombat.Combat
                 return false;
             }
 
+            // [비용 차감] 플레이어는 한 칸당 1 SP 소모 규칙 적용
             if (unit is PlayerUnit playerUnit)
             {
                 if (!playerUnit.ConsumeSP(1))
@@ -227,14 +229,7 @@ namespace DungeonCombat.Combat
                     return false;
                 }
             }
-            else if (unit is EnemyUnit enemyUnit)
-            {
-                if (enemyUnit.HasMovedThisTurn)
-                {
-                    Debug.LogWarning($"[그리드] 이동 실패: 적군 {enemyUnit.UnitName}은 이미 이번 턴의 이동력을 소모했습니다.");
-                    return false;
-                }
-            }
+            // ★ 중요: 적의 HasMovedThisTurn 단일 제어문 삭제 완료! 역할 분담을 위해 제어권은 AI 행동문으로 전담 이관합니다.
 
             StartCoroutine(CoAnimateMovement(unit, currentCoords, targetCoordinate, GetWorldPosition(targetCoordinate)));
             return true;
@@ -248,10 +243,7 @@ namespace DungeonCombat.Combat
             occupiedUnits[endCoords] = unit;
             unitPositions[unit] = endCoords;
 
-            if (unit is EnemyUnit enemyUnit)
-            {
-                enemyUnit.HasMovedThisTurn = true;
-            }
+            // ★ 중요: 걸을 때마다 HasMovedThisTurn = true 박아버리던 족쇄 코드 완전 삭제 완료!
 
             Vector3 startPos = unit.transform.position;
             float elapsed = 0f;
@@ -271,10 +263,6 @@ namespace DungeonCombat.Combat
         /// <summary>
         /// F = G + 1.5H 가중치 공식을 적용한 A* 알고리즘 기반 최단 경로 계산 메서드입니다.
         /// </summary>
-        /// <param name="start">출발 격자 좌표</param>
-        /// <param name="end">목적지 격자 좌표</param>
-        /// <param name="self">현재 길을 찾고 있는 주체 유닛 (본인 충돌 무시 목적)</param>
-        /// <returns>순차 이동 격자 좌표 목록 (결로가 없으면 null 반환)</returns>
         public List<Vector2Int> FindPath(Vector2Int start, Vector2Int end, BattleUnit self)
         {
             if (!walkableGrid.Contains(end)) return null;
@@ -287,7 +275,6 @@ namespace DungeonCombat.Combat
 
             while (openList.Count > 0)
             {
-                // F 비용이 가장 낮은 노드 추출
                 AStarNode current = openList[0];
                 for (int i = 1; i < openList.Count; i++)
                 {
@@ -300,7 +287,6 @@ namespace DungeonCombat.Combat
                 openList.Remove(current);
                 closedList.Add(current.Position);
 
-                // 최종 목적지 도달 시 경로 역추적 및 반환
                 if (current.Position == end)
                 {
                     return RetracePath(current);
@@ -320,8 +306,6 @@ namespace DungeonCombat.Combat
                     if (closedList.Contains(neighborPos)) continue;
                     if (!walkableGrid.Contains(neighborPos)) continue;
 
-                    // 경로 탐색 중 다른 유닛이 길을 막고 있는 경우 회피 처리
-                    // (단, 목적지 타일 자체에 대상이 있는 것은 허용하여 인접 도달이 가능하도록 처리)
                     if (neighborPos != end && occupiedUnits.ContainsKey(neighborPos))
                     {
                         if (occupiedUnits[neighborPos] != self)
@@ -346,7 +330,7 @@ namespace DungeonCombat.Combat
                 }
             }
 
-            return null; // 도달 불가능한 경우
+            return null;
         }
 
         private List<Vector2Int> RetracePath(AStarNode node)
@@ -360,7 +344,6 @@ namespace DungeonCombat.Combat
             }
             path.Reverse();
 
-            // 출발점(현재 서 있는 위치)은 리스트에서 안전하게 제거
             if (path.Count > 0)
             {
                 path.RemoveAt(0);
@@ -368,17 +351,11 @@ namespace DungeonCombat.Combat
             return path;
         }
 
-        /// <summary>
-        /// 특정 가상 격자 좌표가 통행이 허용된 빈 타일인지 여부를 판단합니다.
-        /// </summary>
         public bool IsTileWalkableAndFree(Vector2Int coordinate)
         {
             return walkableGrid.Contains(coordinate) && !occupiedUnits.ContainsKey(coordinate);
         }
 
-        /// <summary>
-        /// 특정 유닛의 현재 격자 좌표를 안전하게 반환합니다.
-        /// </summary>
         public Vector2Int GetUnitCoordinate(BattleUnit unit)
         {
             if (unit != null && unitPositions.TryGetValue(unit, out Vector2Int coord))
