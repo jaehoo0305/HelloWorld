@@ -42,7 +42,7 @@ namespace DungeonCombat.Data
         /// <summary>
         /// 격자 맵 범위 연산을 위해 추출한 range 값 자동 매핑 프로퍼티
         /// </summary>
-        public int Range => Mathf.RoundToInt(GetValue("range", 1f));
+        public int Range => Mathf.RoundToInt(GetValue("range", 3f)); // 중력 요동을 고려해 기본값 3 세팅
 
         /// <summary>
         /// 중력장 등의 설치 개수 연산을 위해 추출한 count 값 자동 매핑 프로퍼티
@@ -67,7 +67,6 @@ namespace DungeonCombat.Data
 
             if (string.IsNullOrEmpty(levelDesc)) return;
 
-            // 정규식 패턴: {알파벳이름:숫자} -> 예: {range:3}, {count:2}, {gold:20}, {slow:3}
             MatchCollection matches = Regex.Matches(levelDesc, @"\{([a-zA-Z0-9_]+):([\d\.-]+)\}");
 
             foreach (Match match in matches)
@@ -99,11 +98,9 @@ namespace DungeonCombat.Data
         {
             if (string.IsNullOrEmpty(levelDesc)) return string.Empty;
 
-            // {key:value} 패턴을 실시간으로 내부의 "value" 문자열로만 일괄 치환합니다.
             return Regex.Replace(levelDesc, @"\{[a-zA-Z0-9_]+:([\d\.-]+)\}", "$1");
         }
 
-        // 에디터 뷰 가시성용 디버그 헬퍼 리스트 제공
         public List<string> DebugKeys => keys;
         public List<float> DebugValues => values;
     }
@@ -136,9 +133,6 @@ namespace DungeonCombat.Data
             return levels[currentLevel - 1];
         }
 
-        /// <summary>
-        /// 텍스트 가공을 완벽히 끝마친 최종 출력 설명글을 반환합니다.
-        /// </summary>
         public string GetFormattedDescription(int currentLevel)
         {
             PassiveLevelData levelData = GetLevelData(currentLevel);
@@ -149,10 +143,21 @@ namespace DungeonCombat.Data
             return levelData.GetFormattedDescription();
         }
 
+        // --- [수술적 추가] 전투 씬 수명 주기와의 연동을 위한 다형성 가상 메서드 선언 ---
+
+        /// <summary>
+        /// 캐릭터의 턴이 시작될 때 패시브 고유 행동을 연출합니다.
+        /// </summary>
+        public virtual void OnTurnStart(DungeonCombat.Combat.BattleUnit owner, int passiveLevel) { }
+
+        /// <summary>
+        /// 전용 패시브 기믹 구현 시 유닛 이동 완료 이벤트를 가로챌 수 있는 가상 훅입니다.
+        /// </summary>
+        public virtual void OnUnitMoveEnd(DungeonCombat.Combat.BattleUnit owner, Vector2Int currentCoord, int passiveLevel) { }
+
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            // 인스펙터 값이 수정될 때마다 실시간으로 정규식 추출 파싱을 미리 트리거합니다.
             if (levels == null) return;
             foreach (var level in levels)
             {
@@ -194,32 +199,26 @@ namespace DungeonCombat.Data
                 EditorGUI.indentLevel++;
                 float yOffset = position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-                // 1. 레벨 값
                 EditorGUI.PropertyField(new Rect(position.x, yOffset, position.width, EditorGUIUtility.singleLineHeight), levelProp);
                 yOffset += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-                // 2. 가이드라인 박스 표시
                 Rect helpRect = EditorGUI.IndentedRect(new Rect(position.x, yOffset, position.width, EditorGUIUtility.singleLineHeight * 2f));
                 EditorGUI.HelpBox(helpRect, "설명란에 {range:3}, {count:2}, {gold:20} 처럼 입력하면 시스템이 감지하여 실시간 패시브 데이터로 자동 활용합니다.", MessageType.Info);
                 yOffset += (EditorGUIUtility.singleLineHeight * 2f) + EditorGUIUtility.standardVerticalSpacing;
 
-                // 3. 설명 라벨 표시
                 Rect descLabelRect = EditorGUI.IndentedRect(new Rect(position.x, yOffset, position.width, EditorGUIUtility.singleLineHeight));
                 EditorGUI.LabelField(descLabelRect, "텍스트 기반 일체형 툴팁 설명", EditorStyles.boldLabel);
                 yOffset += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-                // 4. 설명 TextArea 영역
                 float descHeight = EditorGUIUtility.singleLineHeight * 5f;
                 Rect descTextRect = EditorGUI.IndentedRect(new Rect(position.x, yOffset, position.width, descHeight));
                 descProp.stringValue = EditorGUI.TextArea(descTextRect, descProp.stringValue);
                 yOffset += descHeight + EditorGUIUtility.standardVerticalSpacing;
 
-                // 5. 텍스트로부터 파싱되어 추출된 결과물 실시간 미리보기 리스트 출력
                 Rect headerRect = EditorGUI.IndentedRect(new Rect(position.x, yOffset, position.width, EditorGUIUtility.singleLineHeight));
                 EditorGUI.LabelField(headerRect, "[ 실시간 추출된 시스템 스탯 목록 ]", EditorStyles.boldLabel);
                 yOffset += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-                // 가상의 타겟 구조로부터 List 값 추출하여 읽기전용으로 표시
                 PassiveLevelData targetData = GetTargetObject(property);
                 if (targetData != null && targetData.DebugKeys != null && targetData.DebugKeys.Count > 0)
                 {
@@ -278,11 +277,9 @@ namespace DungeonCombat.Data
                 return EditorGUIUtility.singleLineHeight;
             }
 
-            // 고정 행: Foldout(1) + Level(1) + HelpBox(2) + DescLabel(1) + TextArea(5) + StatsHeader(1) = 11 행
             int fixedRows = 11;
             float height = (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * fixedRows;
 
-            // 실시간 추출된 파라미터 개수에 따른 가변 높이 추가
             PassiveLevelData targetData = GetTargetObject(property);
             int dynamicRows = 1;
             if (targetData != null && targetData.DebugKeys != null && targetData.DebugKeys.Count > 0)

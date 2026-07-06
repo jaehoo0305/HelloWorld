@@ -41,6 +41,7 @@ namespace DungeonCombat.Combat
         [SerializeField] private float moveSpeed = 5f;
 
         public float MoveSpeed => moveSpeed;
+        public Vector2Int GridSize => gridSize;
 
         public event Action<BattleUnit, Vector2Int> OnUnitMoveStart;
         public event Action<BattleUnit, Vector2Int> OnUnitMoveEnd;
@@ -229,7 +230,6 @@ namespace DungeonCombat.Combat
                     return false;
                 }
             }
-            // ★ 중요: 적의 HasMovedThisTurn 단일 제어문 삭제 완료! 역할 분담을 위해 제어권은 AI 행동문으로 전담 이관합니다.
 
             StartCoroutine(CoAnimateMovement(unit, currentCoords, targetCoordinate, GetWorldPosition(targetCoordinate)));
             return true;
@@ -242,8 +242,6 @@ namespace DungeonCombat.Combat
             occupiedUnits.Remove(startCoords);
             occupiedUnits[endCoords] = unit;
             unitPositions[unit] = endCoords;
-
-            // ★ 중요: 걸을 때마다 HasMovedThisTurn = true 박아버리던 족쇄 코드 완전 삭제 완료!
 
             Vector3 startPos = unit.transform.position;
             float elapsed = 0f;
@@ -363,6 +361,24 @@ namespace DungeonCombat.Combat
                 return coord;
             }
             return Vector2Int.zero;
+        }
+
+        // --- [수술적 추가] 스킬 시스템과의 유기적 연동을 위한 헬퍼 API ---
+
+        /// <summary>
+        /// 해당 가상 격자 타일이 장애물이 없이 정상적으로 스캔되어 밟을 수 있는 공간인지 확인합니다.
+        /// </summary>
+        public bool IsWalkable(Vector2Int coordinate)
+        {
+            return walkableGrid.Contains(coordinate);
+        }
+
+        /// <summary>
+        /// 지정한 가상 격자 타일 위에 점유하고 서 있는 전투 유닛(BattleUnit)을 즉시 조회하여 반환합니다.
+        /// </summary>
+        public BattleUnit GetUnitAt(Vector2Int coordinate)
+        {
+            return occupiedUnits.TryGetValue(coordinate, out BattleUnit unit) ? unit : null;
         }
 
         private void OnDrawGizmosSelected()

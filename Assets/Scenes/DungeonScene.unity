@@ -3540,7 +3540,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -8922086587302757671, guid: 9c1e969a97efd7842a286ae8a47f7bf7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -3649,7 +3649,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 0f46b928ebd3f7545ac93d27dcab3244, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 0.5019608}
@@ -4742,7 +4742,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 657193517335828509, guid: ee06b3167c0d11046a6ac098940fb145, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -4981,6 +4981,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &836740803
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 836740805}
+  - component: {fileID: 836740804}
+  m_Layer: 0
+  m_Name: BattleFieldEffectManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &836740804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 836740803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b55a33c954b2374bb21be4b205aac98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Combat.BattleFieldEffectManager
+  gridManager: {fileID: 925506206}
+  turnManager: {fileID: 331457640}
+--- !u!4 &836740805
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 836740803}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.18454, y: 1.347, z: -1.38826}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &852695628
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5191,7 +5237,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   scanHeightOffset: 10
-  moveSpeed: 3
+  moveSpeed: 3.5
 --- !u!1001 &944869967
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8627,7 +8673,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 8200698553739396555, guid: 21a5f7b49eda10847b5eca545b97e9a3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -11642,7 +11688,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 1366610902635409789, guid: 7f2fbba2f0f4cf442aeb3c97c2c2846b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -13219,6 +13265,7 @@ SceneRoots:
   - {fileID: 808381565}
   - {fileID: 492662282}
   - {fileID: 331457641}
+  - {fileID: 836740805}
   - {fileID: 35887274}
   - {fileID: 50184974}
   - {fileID: 1572888536}

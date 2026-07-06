@@ -1,8 +1,13 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DungeonCombat.Data;
+
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 namespace DungeonCombat.Combat
 {
@@ -40,7 +45,13 @@ namespace DungeonCombat.Combat
         // 비주얼 라운드 및 턴 전환 배너 연출 중에는 입력을 통제하기 위한 게이트 제어 플래그 프로퍼티
         public bool IsVisualTransitionActive { get; set; } = false;
 
+        // Z-Skill 토글 상태 공유 스태틱 프로퍼티
+        public static bool IsZSkillModeActive { get; private set; } = false;
+
         private BattleUnit currentPassiveTooltipUnit;
+
+        // --- [기획 변경 사항] 실시간 클릭된 고유 스킬 캐시 장치 ---
+        private SkillDataSO currentlyPreviewedSkill;
 
         private void Start()
         {
@@ -68,6 +79,51 @@ namespace DungeonCombat.Combat
                 turnManager.OnTurnStarted += UpdateActiveUnitUI;
                 turnManager.OnBattleEnded += HandleBattleEnd;
             }
+
+            // 우클릭 등으로 조준 철회 시 프리뷰 캐시도 완전 동기화 청소 처리
+            if (SkillCaster.Instance != null)
+            {
+                SkillCaster.Instance.OnTargetingModeEnded += () =>
+                {
+                    currentlyPreviewedSkill = null;
+                };
+            }
+        }
+
+        private void Update()
+        {
+            bool qPressed = false;
+
+#if ENABLE_INPUT_SYSTEM
+            if (Keyboard.current != null && Keyboard.current.qKey.wasPressedThisFrame)
+            {
+                qPressed = true;
+            }
+#else
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                qPressed = true;
+            }
+#endif
+
+            if (qPressed)
+            {
+                IsZSkillModeActive = !IsZSkillModeActive;
+                Debug.Log($"[Z스킬 모드] {(IsZSkillModeActive ? "<color=gold>활성화</color>" : "비활성화")}");
+
+                // 모드 스왑 시 프리뷰 및 타겟 조작 중이던 캐시 전면 초기화
+                if (SkillCaster.Instance != null)
+                {
+                    SkillCaster.Instance.CancelTargetingMode();
+                }
+
+                RebuildTurnTimelineUI();
+
+                if (turnManager != null && turnManager.CurrentTurnUnit != null)
+                {
+                    UpdateSkillButtons(turnManager.CurrentTurnUnit);
+                }
+            }
         }
 
         private void UpdateRoundUI(int round)
@@ -77,7 +133,7 @@ namespace DungeonCombat.Combat
                 roundText.text = $"ROUND {round}";
             }
 
-            SetSkillPanelActive(false); // 라운드가 전환되는 연출 기간 동안 스킬 패널을 명시적으로 비활성화
+            SetSkillPanelActive(false);
             RebuildTurnTimelineUI();
         }
 
@@ -128,7 +184,6 @@ namespace DungeonCombat.Combat
                         displayName = $"{characterName} (추가행동)";
                     }
 
-                    // 순서 큐 플레이트 내부 글씨는 다시 흰색으로 통일하여 가독성 보장
                     slotText.text = $"<color=#FFFFFF>{displayName}</color>";
                 }
 
@@ -158,14 +213,12 @@ namespace DungeonCombat.Combat
         {
             if (unit == null) return;
 
-            // 보스나 몬스터의 차례에는 스킬 조작창 숨기기
             if (unit.IsBoss || unit is EnemyUnit)
             {
                 SetSkillPanelActive(false);
                 return;
             }
 
-            // 플레이어 캐릭터 데이터 타입으로 하향 캐스팅
             PlayerUnit player = unit as PlayerUnit;
             if (player == null || player.CharacterData == null)
             {
@@ -197,7 +250,6 @@ namespace DungeonCombat.Combat
                 }
             }
 
-            // 비주얼 시네마틱 연출 가드가 풀렸을 때만 스킬창 물리 노출 활성화
             SetSkillPanelActive(!IsVisualTransitionActive);
         }
 
@@ -211,13 +263,29 @@ namespace DungeonCombat.Combat
             if (btn == null || btnText == null) return;
 
             btn.gameObject.SetActive(true);
-            btnText.text = $"{skill.SkillName}\n(Lv.{currentLevel})";
 
-            btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(() =>
+            // Z스킬 모드 시 버튼 매핑 분기 처리
+            if (IsZSkillModeActive && skill.EnhancedSkillAsset != null && buttonIndex == 0)
             {
-                OnSkillButtonClicked(skill, currentLevel);
-            });
+                SkillDataSO enhanced = skill.EnhancedSkillAsset;
+                btnText.text = $"<color=#FFD700>★ {enhanced.SkillName} ★\n(Lv.{currentLevel})</color>";
+
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(() =>
+                {
+                    OnSkillButtonClicked(enhanced, currentLevel);
+                });
+            }
+            else
+            {
+                btnText.text = $"{skill.SkillName}\n(Lv.{currentLevel})";
+
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(() =>
+                {
+                    OnSkillButtonClicked(skill, currentLevel);
+                });
+            }
         }
 
         public void SetSkillPanelActive(bool isActive)
@@ -235,12 +303,38 @@ namespace DungeonCombat.Combat
             }
         }
 
+        /// <summary>
+        /// 스킬 단추를 누를 때 호출되는 기획형 2단계 토글 조작 판정식입니다.
+        /// </summary>
         private void OnSkillButtonClicked(SkillDataSO skill, int level)
         {
             if (tooltipPanel != null) tooltipPanel.SetActive(true);
             if (tooltipDescriptionText != null)
             {
                 tooltipDescriptionText.text = skill.GetFormattedDescription(level);
+            }
+
+            PlayerUnit caster = turnManager.CurrentTurnUnit as PlayerUnit;
+            if (caster == null) return;
+
+            // --- 2단계 스킬 시전 흐름 제어 ---
+            if (currentlyPreviewedSkill == skill)
+            {
+                // [2타째 클릭]: 타겟팅 모드로 격상! (마우스 호버 가이드 활성화 및 클릭 시 즉시 스킬 실행)
+                if (SkillCaster.Instance != null)
+                {
+                    SkillCaster.Instance.SelectSkill(caster, skill, level);
+                }
+                currentlyPreviewedSkill = null; // 타겟팅 모드 진입했으므로 프리뷰 캐시 클리어
+            }
+            else
+            {
+                // [1타째 클릭]: 프리뷰 모드 작동! (설명문 띄우고, 격자에 사거리를 은은한 하늘색으로만 표시)
+                currentlyPreviewedSkill = skill;
+                if (SkillCaster.Instance != null)
+                {
+                    SkillCaster.Instance.PreviewSkill(caster, skill, level);
+                }
             }
         }
 
@@ -272,9 +366,6 @@ namespace DungeonCombat.Combat
             }
         }
 
-        /// <summary>
-        /// 화면 상에 활성화되어 떠 있는 모든 스킬 및 패시브 관련 세부 정보 툴팁창을 강제로 클리어하고 닫습니다.
-        /// </summary>
         public void HideAllTooltips()
         {
             if (tooltipPanel != null)
@@ -288,143 +379,13 @@ namespace DungeonCombat.Combat
             }
 
             currentPassiveTooltipUnit = null;
+            currentlyPreviewedSkill = null; // 모든 툴팁 소멸 시 프리뷰 캐시도 완전 청소
         }
 
         private void HandleBattleEnd()
         {
             SetSkillPanelActive(false);
             HideAllTooltips();
-        }
-    }
-
-    /// <summary>
-    /// 좌측 하단 캐릭터 UI 슬롯 낱개를 조종하는 서브 클래스입니다.
-    /// </summary>
-    [System.Serializable]
-    public class PartyUnitUISlot
-    {
-        [SerializeField] private BattleUnit targetUnit;
-        [SerializeField] private Image highlightBorder;
-
-        [SerializeField] private Image hpFillImage;
-        [SerializeField] private TextMeshProUGUI hpText;
-        [SerializeField] private Image overheatFillImage; // 프로필 이미지(CharacterImage)를 그대로 할당하여 위아래로 차오르게 연출하는 타겟이자 패시브 클릭 타겟
-        [SerializeField] private List<Image> spBlocks;
-
-        public BattleUnit TargetUnit => targetUnit;
-
-        public void Initialize(System.Action<BattleUnit> onCharacterClick)
-        {
-            if (targetUnit == null) return;
-
-            SetHighlight(false);
-
-            // 대기열 및 드래그 슬롯 설정이 필요 없도록 overheatFillImage에 Button 컴포넌트를 런타임에 동적으로 처리 및 연동
-            if (overheatFillImage != null)
-            {
-                Button btn = overheatFillImage.GetComponent<Button>();
-                if (btn == null)
-                {
-                    btn = overheatFillImage.gameObject.AddComponent<Button>();
-                }
-                // 초상화 과열 게이지 렌더링에 영향을 주지 않도록 트랜지션 효과를 없음(None)으로 정의
-                btn.transition = Selectable.Transition.None;
-                btn.onClick.RemoveAllListeners();
-                btn.onClick.AddListener(() => onCharacterClick?.Invoke(targetUnit));
-            }
-
-            BindEvents();
-        }
-
-        public void BindUnit(BattleUnit newUnit, System.Action<BattleUnit> onCharacterClick)
-        {
-            UnbindEvents();
-            targetUnit = newUnit;
-
-            if (overheatFillImage != null)
-            {
-                Button btn = overheatFillImage.GetComponent<Button>();
-                if (btn == null)
-                {
-                    btn = overheatFillImage.gameObject.AddComponent<Button>();
-                }
-                btn.transition = Selectable.Transition.None;
-                btn.onClick.RemoveAllListeners();
-                btn.onClick.AddListener(() => onCharacterClick?.Invoke(targetUnit));
-            }
-
-            BindEvents();
-        }
-
-        private void BindEvents()
-        {
-            if (targetUnit == null) return;
-
-            targetUnit.OnHPChanged += UpdateHP;
-            targetUnit.OnSPChanged += UpdateSP;
-            targetUnit.OnOverheatChanged += UpdateOverheat;
-
-            targetUnit.TriggerAllEvents();
-        }
-
-        private void UnbindEvents()
-        {
-            if (targetUnit == null) return;
-
-            targetUnit.OnHPChanged -= UpdateHP;
-            targetUnit.OnSPChanged -= UpdateSP;
-            targetUnit.OnOverheatChanged -= UpdateOverheat;
-        }
-
-        public void SetHighlight(bool isActive)
-        {
-            if (highlightBorder != null)
-            {
-                highlightBorder.gameObject.SetActive(isActive);
-            }
-        }
-
-        private void UpdateHP(int current, int max)
-        {
-            if (hpFillImage != null)
-            {
-                hpFillImage.fillAmount = (float)current / max;
-            }
-            if (hpText != null)
-            {
-                hpText.text = $"{current}/{max}";
-            }
-        }
-
-        private void UpdateOverheat(int current, int max)
-        {
-            if (overheatFillImage != null)
-            {
-                overheatFillImage.fillAmount = (float)current / max;
-            }
-        }
-
-        private void UpdateSP(int currentSP, int bankSP, int maxSP)
-        {
-            for (int i = 0; i < spBlocks.Count; i++)
-            {
-                if (spBlocks[i] == null) continue;
-
-                spBlocks[i].gameObject.SetActive(true);
-
-                if (i < currentSP)
-                {
-                    spBlocks[i].color = new Color(0.2f, 0.45f, 0.9f, 1f);
-                }
-                else if (i < currentSP + bankSP)
-                {
-                    spBlocks[i].color = new Color(0.0f, 0.85f, 0.9f, 1f);
-                }
-                else
-                {
-                    spBlocks[i].color = new Color(0.15f, 0.15f, 0.15f, 0.6f);
-                }
-            }
         }
     }
 }

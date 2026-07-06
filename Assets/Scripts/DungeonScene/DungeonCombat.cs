@@ -20,6 +20,22 @@ namespace DungeonCombat.Data
         Boss        // 보스: 라운드 내 다중 행동
     }
 
+    public enum SkillRangeType
+    {
+        Manhattan,  // 상하좌우 마름모형 (단순 맨해튼 거리)
+        Rook,       // 체스의 룩처럼 상하좌우 십자 무한/유한 직선 형태
+        Square,     // 사각형 영역 (N x N)
+        SelfOnly    // 자기 자신 전용
+    }
+
+    public enum SkillSplashType
+    {
+        Single,     // 스플래시 없음 (단일 타겟)
+        Square,     // 대상 중심의 정사각형 확장 영역 (N x N)
+        Cross,      // 대상 중심의 직교 상하좌우 십자 연장선 영역
+        AllField    // 전장 전체 대상
+    }
+
     public enum TargetType
     {
         EnemySingle,    // 적 단일
@@ -35,6 +51,6 @@ namespace DungeonCombat.Data
         None,               // 조건 없음 (일반 스킬)
         RoundCount,         // 특정 라운드 이상 경과
         OverheatGauge,      // 과열 게이지 특정치 이상
-        CumulativeSP        // 누적 소모 SP 수치 달성
+        CumulativeSP        // 누적 소모 SP 수치 달성   
     }
 }

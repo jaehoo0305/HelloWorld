@@ -7,7 +7,7 @@ namespace DungeonCombat.Data
 {
     /// <summary>
     /// 1레벨부터 5레벨까지, 각 레벨 단계마다 변화하는 스킬의 세부 데이터입니다.
-    /// 설명 텍스트 내에 {변수명:값} 형태로 적으면, 시스템이 이를 자동으로 파싱하여 가로/세로 범위, 데미지 등으로 활용합니다.
+    /// 설명 텍스트 내에 {변수명:값} 형태로 적으면, 시스템이 이를 자동으로 감지 및 파싱하여 가로/세로 범위, 데미지 등으로 활용합니다.
     /// </summary>
     [Serializable]
     public class SkillLevelData : ISerializationCallbackReceiver
@@ -73,7 +73,6 @@ namespace DungeonCombat.Data
 
             if (string.IsNullOrEmpty(levelDesc)) return;
 
-            // 정규식 패턴: {알파벳이름:숫자} -> 예: {rangex:3}, {rangey:5}, {dmg:250.5}, {slow:3}
             MatchCollection matches = Regex.Matches(levelDesc, @"\{([a-zA-Z0-9_]+):([\d\.-]+)\}");
 
             foreach (Match match in matches)
@@ -83,7 +82,6 @@ namespace DungeonCombat.Data
                     string key = match.Groups[1].Value.ToLower().Trim();
                     if (float.TryParse(match.Groups[2].Value, out float value))
                     {
-                        // 중복된 키가 들어와도 마지막 값으로 갱신 처리
                         int existingIndex = keys.IndexOf(key);
                         if (existingIndex != -1)
                         {
@@ -106,11 +104,9 @@ namespace DungeonCombat.Data
         {
             if (string.IsNullOrEmpty(levelDesc)) return string.Empty;
 
-            // {key:value} 패턴을 찾아서 가공 없이 내부의 "value" 문자열로만 실시간 일괄 치환합니다.
             return Regex.Replace(levelDesc, @"\{[a-zA-Z0-9_]+:([\d\.-]+)\}", "$1");
         }
 
-        // 에디터 뷰 가시성용 디버그 헬퍼 리스트 제공
         public List<string> DebugKeys => keys;
         public List<float> DebugValues => values;
     }
@@ -168,6 +164,7 @@ namespace DungeonCombat.Data
 
         /// <summary>
         /// 텍스트 가공을 완벽히 끝마친 최종 출력 설명글을 반환합니다.
+        /// 기획 요구 명세에 부합하도록 강화(Ultimate)형 스킬의 경우 본문 하단에 개행 2번 후 '조건:' 명세를 추가합니다.
         /// </summary>
         public string GetFormattedDescription(int currentLevel)
         {
@@ -176,13 +173,33 @@ namespace DungeonCombat.Data
             {
                 return "미해금 상태입니다.";
             }
-            return levelData.GetFormattedDescription();
+
+            string baseDesc = levelData.GetFormattedDescription();
+
+            // 만약 궁극/Z-Skill이거나 조건 명세가 들어있다면, 요구 조건 텍스트를 개행 2번하여 이쁘게 붙여 줍니다.
+            if (!string.IsNullOrEmpty(enhanceConditionDesc))
+            {
+                baseDesc += $"\n\n조건: {enhanceConditionDesc}";
+            }
+
+            return baseDesc;
+        }
+
+        // --- [수술적 추가] 스킬의 다형적 발사 흐름을 처리하기 위한 가상 실행 메서드 훅 ---
+
+        /// <summary>
+        /// 스킬이 최종 타격지에 발사될 때의 구체적인 연출 및 로직 처리를 전담합니다.
+        /// 개별 투사체나 기획 전용 코드가 완수되면 마지막에 onComplete 콜백을 당겨 줍니다.
+        /// </summary>
+        public virtual void Execute(DungeonCombat.Combat.PlayerUnit caster, Vector2Int targetCoord, int level, Action onComplete)
+        {
+            // 기본 스킬들의 경우, 특별한 연출 없이 즉시 완료 콜백을 쏘아줍니다.
+            onComplete?.Invoke();
         }
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            // 인스펙터 값이 수정될 때마다 실시간으로 정규식 추출 파싱을 미리 트리거합니다.
             if (levels == null) return;
             foreach (var level in levels)
             {
@@ -224,32 +241,26 @@ namespace DungeonCombat.Data
                 EditorGUI.indentLevel++;
                 float yOffset = position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-                // 1. 레벨 값
                 EditorGUI.PropertyField(new Rect(position.x, yOffset, position.width, EditorGUIUtility.singleLineHeight), levelProp);
                 yOffset += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-                // 2. 가이드라인 박스 표시
                 Rect helpRect = EditorGUI.IndentedRect(new Rect(position.x, yOffset, position.width, EditorGUIUtility.singleLineHeight * 2f));
                 EditorGUI.HelpBox(helpRect, "설명란에 {rangex:3}, {rangey:5}, {dmg:250}, {slow:3} 처럼 입력하면 시스템이 감지하여 실시간 전투 데이터로 자동 활용합니다.", MessageType.Info);
                 yOffset += (EditorGUIUtility.singleLineHeight * 2f) + EditorGUIUtility.standardVerticalSpacing;
 
-                // 3. 설명 라벨 표시
                 Rect descLabelRect = EditorGUI.IndentedRect(new Rect(position.x, yOffset, position.width, EditorGUIUtility.singleLineHeight));
                 EditorGUI.LabelField(descLabelRect, "텍스트 기반 일체형 툴팁 설명", EditorStyles.boldLabel);
                 yOffset += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-                // 4. 설명 TextArea 영역
                 float descHeight = EditorGUIUtility.singleLineHeight * 5f;
                 Rect descTextRect = EditorGUI.IndentedRect(new Rect(position.x, yOffset, position.width, descHeight));
                 descProp.stringValue = EditorGUI.TextArea(descTextRect, descProp.stringValue);
                 yOffset += descHeight + EditorGUIUtility.standardVerticalSpacing;
 
-                // 5. 텍스트로부터 파싱되어 추출된 결과물 실시간 미리보기 리스트 출력
                 Rect headerRect = EditorGUI.IndentedRect(new Rect(position.x, yOffset, position.width, EditorGUIUtility.singleLineHeight));
                 EditorGUI.LabelField(headerRect, "[ 실시간 추출된 시스템 스탯 목록 ]", EditorStyles.boldLabel);
                 yOffset += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-                // 가상의 타겟 구조로부터 List 값 추출하여 읽기전용으로 표시
                 SkillLevelData targetData = GetTargetObject(property);
                 if (targetData != null && targetData.DebugKeys != null && targetData.DebugKeys.Count > 0)
                 {
@@ -259,7 +270,6 @@ namespace DungeonCombat.Data
                         string keyName = targetData.DebugKeys[i];
                         float val = targetData.DebugValues[i];
 
-                        // 특정 키워드 보정 한글 안내 추가
                         string suffix = "";
                         if (keyName == "range") suffix = " (고정 Range)";
                         else if (keyName == "rangex") suffix = " (가로 Range)";
@@ -286,11 +296,9 @@ namespace DungeonCombat.Data
 
         private SkillLevelData GetTargetObject(SerializedProperty property)
         {
-            // 리스트 원본의 현재 타겟 인스턴스를 직접 캐스팅하여 반환
             string path = property.propertyPath;
             object obj = property.serializedObject.targetObject;
 
-            // 리스트 내부 element의 인덱스 파싱
             if (path.Contains("["))
             {
                 int indexStart = path.IndexOf("[") + 1;
@@ -314,13 +322,11 @@ namespace DungeonCombat.Data
                 return EditorGUIUtility.singleLineHeight;
             }
 
-            // 고정 행: Foldout(1) + Level(1) + HelpBox(2) + DescLabel(1) + TextArea(5) + StatsHeader(1) = 11 행
             int fixedRows = 11;
             float height = (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * fixedRows;
 
-            // 실시간 추출된 파라미터 개수에 따른 가변 높이 추가
             SkillLevelData targetData = GetTargetObject(property);
-            int dynamicRows = 1; // 변수 없을 때 문구 공간 기본 1행
+            int dynamicRows = 1;
             if (targetData != null && targetData.DebugKeys != null && targetData.DebugKeys.Count > 0)
             {
                 dynamicRows = targetData.DebugKeys.Count;

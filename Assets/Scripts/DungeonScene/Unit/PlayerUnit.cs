@@ -27,9 +27,27 @@ namespace DungeonCombat.Combat
         [Range(1, 5)][SerializeField] private int currentSkill1Level = 1;
         [Range(1, 5)][SerializeField] private int currentSkill2Level = 1;
 
-        // --- 추상 프로퍼티 구현 ---
+        // --- 추상 프로퍼티 구현 (둔화 상태 시 속도가 25% 감소하는 기획 수식 대입) ---
         public override int MaxHP => characterData != null ? characterData.MaxHP : 100;
-        public override int Speed => characterData != null ? characterData.Speed : 10;
+
+        /// <summary>
+        /// 둔화 상태일 때는 캐릭터의 고유 속도가 25% 감소(최소 1 감소)하여 연산됩니다.
+        /// </summary>
+        public override int Speed
+        {
+            get
+            {
+                int baseSpeed = characterData != null ? characterData.Speed : 10;
+                if (IsSlowed)
+                {
+                    // 25% 감소하되, 기획에 따라 최소 1 감소 보장
+                    int reduction = Mathf.Max(1, Mathf.RoundToInt(baseSpeed * 0.25f));
+                    return Mathf.Max(1, baseSpeed - reduction);
+                }
+                return baseSpeed;
+            }
+        }
+
         public override string UnitName => characterData != null ? characterData.CharacterName : "Hero";
         public override bool IsBoss => characterData != null && characterData.PositionType == PositionType.Boss;
         public override int ActionCountPerRound => characterData != null ? characterData.ActionCountPerRound : 1;
@@ -44,6 +62,9 @@ namespace DungeonCombat.Combat
         public override int CurrentSP => currentSP;
         public override int CurrentBankSP => currentBankSP;
         public override int CurrentOverheat => currentOverheat;
+
+        // --- [수술적 추가] Z스킬 해금 조건 평가를 위한 실시간 전투 데이터 누적 필드 ---
+        public int CumulativeSpentSP { get; private set; }
 
         public CharacterDataSO CharacterData => characterData;
         public int Skill1Level => currentSkill1Level;
@@ -77,6 +98,7 @@ namespace DungeonCombat.Combat
             currentSP = CombatConfig.TURN_START_SP_RECOVERY;
             currentBankSP = 0;
             currentOverheat = 0;
+            currentPassiveLevel = 1;
 
             TriggerAllEvents();
         }
@@ -84,6 +106,13 @@ namespace DungeonCombat.Combat
         public override void TakeDamage(int rawDamage)
         {
             if (CurrentHP <= 0) return;
+
+            // [취약 규칙 추가 적용]: 취약 상태라면 받는 피해가 25% 증가 (최소 1 증가)
+            if (IsVulnerable)
+            {
+                int extraDamage = Mathf.Max(1, Mathf.RoundToInt(rawDamage * 0.25f));
+                rawDamage += extraDamage;
+            }
 
             float reductionPercent = Mathf.Min(characterData.Defense * 0.01f, characterData.DefenseCap);
             int blockedDamage = Mathf.RoundToInt(rawDamage * reductionPercent);
@@ -124,12 +153,18 @@ namespace DungeonCombat.Combat
 
             OnSPChanged?.Invoke(currentSP, currentBankSP, CombatConfig.MAX_SP);
 
+            // --- [수술적 추가] Z스킬 해금 연산을 위해 소모한 총 누적 SP를 가산합니다. ---
+            CumulativeSpentSP += amount;
+
             int overheatGain = amount * CombatConfig.OVERHEAT_PER_SP;
             AddOverheat(overheatGain);
 
             return true;
         }
 
+        /// <summary>
+        /// 아군 턴 개시 시 SP를 회복하고, 상태이상 수명을 차감하며 패시브 행동을 연동시킵니다.
+        /// </summary>
         public override void RecoverSPOnTurnStart()
         {
             int spRecovery = CombatConfig.TURN_START_SP_RECOVERY;
@@ -146,6 +181,15 @@ namespace DungeonCombat.Combat
             }
 
             OnSPChanged?.Invoke(currentSP, currentBankSP, CombatConfig.MAX_SP);
+
+            // 턴 개시 시 둔화 디버프 수명 감소 제어
+            TickStatusEffects();
+
+            // 아군 기력 충전과 동시에 패시브 트리거 훅 호출
+            if (PassiveSkill != null)
+            {
+                PassiveSkill.OnTurnStart(this, PassiveLevel);
+            }
         }
 
         public void AddOverheat(int amount)

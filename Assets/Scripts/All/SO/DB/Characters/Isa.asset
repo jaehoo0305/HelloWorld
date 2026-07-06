@@ -22,8 +22,8 @@ MonoBehaviour:
   speed: 6
   critRate: 0.05
   actionCountPerRound: 1
-  passiveSkill: {fileID: 11400000, guid: 520cf043a12235649b9c90fc314b9035, type: 2}
-  uniqueSkill1: {fileID: 11400000, guid: b9d39d3e8dc8e184f8245d60fa0de8d1, type: 2}
+  passiveSkill: {fileID: 11400000, guid: 670b38e2dbdaac349af64004557510e1, type: 2}
+  uniqueSkill1: {fileID: 11400000, guid: 8bcb804356f57e94eb4306e8a89c091a, type: 2}
   uniqueSkill2: {fileID: 11400000, guid: e232c207a6bca2a4d8af2a99356b4e00, type: 2}
   learnableSkills:
   - {fileID: 11400000, guid: f49b80e345d1f3b4da806371752aa178, type: 2}

@@ -18,14 +18,31 @@ namespace DungeonCombat.Combat
 
         // --- 추상 프로퍼티 구현 ---
         public override int MaxHP => enemyData != null ? enemyData.MaxHP : 50;
-        public override int Speed => enemyData != null ? enemyData.Speed : 10;
+
+        /// <summary>
+        /// 둔화 상태일 때는 몬스터의 속도가 25% 감소(최소 1 감소)하여 다음 라운드 턴 배치 계산에 쓰입니다.
+        /// </summary>
+        public override int Speed
+        {
+            get
+            {
+                int baseSpeed = enemyData != null ? enemyData.Speed : 10;
+                if (IsSlowed)
+                {
+                    // 25% 감소하되, 기획에 따라 최소 1 감소 보장
+                    int reduction = Mathf.Max(1, Mathf.RoundToInt(baseSpeed * 0.25f));
+                    return Mathf.Max(1, baseSpeed - reduction);
+                }
+                return baseSpeed;
+            }
+        }
+
         public override string UnitName => enemyData != null ? enemyData.EnemyName : "Enemy";
 
-        // 체력이 높은 단두대급 정예/보스 몬스터 판단
         public override bool IsBoss => enemyData != null && enemyData.MaxHP >= 150;
         public override int ActionCountPerRound => IsBoss ? 2 : 1;
         public override PassiveDataSO PassiveSkill => enemyData != null ? enemyData.PassiveSkill : null;
-        public override int PassiveLevel => 1; // 몬스터 패시브의 기본 레벨 규격
+        public override int PassiveLevel => 1;
 
         // --- 적 AI 상태 값 (이동 및 행동 처리용) ---
         public bool HasMovedThisTurn { get; set; }
@@ -58,6 +75,13 @@ namespace DungeonCombat.Combat
         {
             if (CurrentHP <= 0) return;
 
+            // [취약 규칙 추가 적용]: 취약 상태라면 받는 피해가 25% 증가 (최소 1 증가)
+            if (IsVulnerable)
+            {
+                int extraDamage = Mathf.Max(1, Mathf.RoundToInt(rawDamage * 0.25f));
+                rawDamage += extraDamage;
+            }
+
             float reductionPercent = Mathf.Min(enemyData.Defense * 0.01f, defenseCap);
             int blockedDamage = Mathf.RoundToInt(rawDamage * reductionPercent);
             int finalDamage = Mathf.Max(1, rawDamage - blockedDamage);
@@ -71,6 +95,15 @@ namespace DungeonCombat.Combat
             {
                 InvokeDeath();
             }
+        }
+
+        /// <summary>
+        /// 몬스터의 턴 시작 시 둔화 디버프 지속 턴 수를 삭감하고 이펙트 소멸 주기를 가동시킵니다.
+        /// </summary>
+        public override void RecoverSPOnTurnStart()
+        {
+            base.RecoverSPOnTurnStart();
+            TickStatusEffects();
         }
 
         public void ResetTurnState()
