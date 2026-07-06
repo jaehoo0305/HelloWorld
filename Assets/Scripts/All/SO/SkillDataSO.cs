@@ -16,7 +16,7 @@ namespace DungeonCombat.Data
         [SerializeField] private int level;
 
         [TextArea(6, 10)]
-        [SerializeField] private string levelDesc; // 직접 숫자를 포함해 기입 (예: "{rangex:3}x{rangey:5} 크기로 끌어당기며 최초 피해 {dmg:250}%를...")
+        [SerializeField] private string levelDesc; // 직접 숫자를 포함해 기입 (예: "{range:7}칸 거리까지 투사체를 날려 피해(Dmg {dmg:80}%)를...")
 
         // 런타임 최적화를 위해 직렬화 및 캐싱되는 추출 변수 리스트
         [HideInInspector][SerializeField] private List<string> keys = new List<string>();
@@ -27,7 +27,7 @@ namespace DungeonCombat.Data
         public string RawLevelDesc => levelDesc;
 
         /// <summary>
-        /// 캐싱된 파라미터 딕셔너리에서 특정 값을 가져옵니다. (상태이상 수치 등 자율 확장 가능)
+        /// 캐싱된 파라미터 딕셔너리에서 특정 값을 가져옵니다.
         /// </summary>
         public float GetValue(string key, float defaultValue = 0f)
         {
@@ -42,18 +42,18 @@ namespace DungeonCombat.Data
         /// <summary>
         /// 격자 맵 범위 연산을 위한 물리 스탯 자동 매핑 프로퍼티 (가로/세로 지원)
         /// </summary>
-        public int RangeX => Mathf.RoundToInt(GetValue("rangex", GetValue("range", 1f))); // {rangex:3} 또는 {range:3} 감지
-        public int RangeY => Mathf.RoundToInt(GetValue("rangey", GetValue("range", 1f))); // {rangey:5} 또는 {range:5} 감지
+        public int RangeX => Mathf.RoundToInt(GetValue("rangex", GetValue("range", 1f)));
+        public int RangeY => Mathf.RoundToInt(GetValue("rangey", GetValue("range", 1f)));
 
         /// <summary>
-        /// 단일 정수형 범위를 원할 때 사용하는 하위 호환용 프로퍼티
+        /// 단일 정수형 범위를 원할 때 사용하는 하위 호환용 프로퍼티 (스킬 고유 최대 사거리 반환)
         /// </summary>
         public int Range => Mathf.RoundToInt(GetValue("range", GetValue("rangex", 1f)));
 
         /// <summary>
         /// 전투 데미지 난수 기준 배율 계산 프로퍼티
         /// </summary>
-        public float DamageModifier => GetValue("dmg", 100f) / 100f; // {dmg:250} 입력 시 2.5f 반환
+        public float DamageModifier => GetValue("dmg", 100f) / 100f;
 
         // --- 유니티 직렬화 주기 시 텍스트에서 데이터 실시간 추출 (OnValidate 등과 연동) ---
         public void OnBeforeSerialize()
@@ -103,7 +103,6 @@ namespace DungeonCombat.Data
         public string GetFormattedDescription()
         {
             if (string.IsNullOrEmpty(levelDesc)) return string.Empty;
-
             return Regex.Replace(levelDesc, @"\{[a-zA-Z0-9_]+:([\d\.-]+)\}", "$1");
         }
 
@@ -111,6 +110,9 @@ namespace DungeonCombat.Data
         public List<float> DebugValues => values;
     }
 
+    /// <summary>
+    /// 모든 스킬 에셋의 공통 부모 클래스입니다.
+    /// </summary>
     [CreateAssetMenu(fileName = "Skill_", menuName = "Dungeon/Skill Data", order = 2)]
     public class SkillDataSO : ScriptableObject
     {
@@ -120,8 +122,12 @@ namespace DungeonCombat.Data
 
         [Header("[ 고정 전투 메커니즘 ]")]
         [SerializeField] private TargetType targetType;
-        [SerializeField] private int requiredSP; // 사용 SP 수치는 모든 레벨 공통 고정이므로 상위로 이전 완료
+        [SerializeField] private int requiredSP;
         [SerializeField] private bool isEndsTurn = true;
+
+        [Header("[ 빈 지면 타겟팅 여부 ]")]
+        [Tooltip("적 유닛이 없는 빈 땅이나 빈 타일에도 조준하여 쏠 수 있도록 허용합니까? (장판 설치 스킬 필수)")]
+        [SerializeField] private bool canTargetEmptyGround = false;
 
         [Header("[ 5단계 레벨 데이터 리스트 ]")]
         [Tooltip("1레벨부터 5레벨까지 순서대로 데이터를 채워 넣습니다.")]
@@ -144,56 +150,68 @@ namespace DungeonCombat.Data
         public TargetType TargetType => targetType;
         public int RequiredSP => requiredSP;
         public bool IsEndsTurn => isEndsTurn;
+        public bool CanTargetEmptyGround => canTargetEmptyGround;
         public IReadOnlyList<SkillLevelData> Levels => levels;
         public bool IsUltimate => isUltimate;
         public SkillDataSO EnhancedSkillAsset => enhancedSkillAsset;
         public string EnhanceConditionDesc => enhanceConditionDesc;
         public string EnhanceLogicKey => enhanceLogicKey;
 
-        /// <summary>
-        /// 현재 레벨(0~5)에 부합하는 가변 세부 데이터를 안전하게 반환합니다.
-        /// </summary>
         public SkillLevelData GetLevelData(int currentLevel)
         {
-            if (currentLevel <= 0 || currentLevel > levels.Count)
-            {
-                return null;
-            }
+            if (currentLevel <= 0 || currentLevel > levels.Count) return null;
             return levels[currentLevel - 1];
         }
 
         /// <summary>
         /// 텍스트 가공을 완벽히 끝마친 최종 출력 설명글을 반환합니다.
-        /// 기획 요구 명세에 부합하도록 강화(Ultimate)형 스킬의 경우 본문 하단에 개행 2번 후 '조건:' 명세를 추가합니다.
         /// </summary>
         public string GetFormattedDescription(int currentLevel)
         {
             SkillLevelData levelData = GetLevelData(currentLevel);
-            if (levelData == null)
-            {
-                return "미해금 상태입니다.";
-            }
+            if (levelData == null) return "미해금 상태입니다.";
 
             string baseDesc = levelData.GetFormattedDescription();
 
-            // 만약 궁극/Z-Skill이거나 조건 명세가 들어있다면, 요구 조건 텍스트를 개행 2번하여 이쁘게 붙여 줍니다.
-            if (!string.IsNullOrEmpty(enhanceConditionDesc))
+            // [수정 완료]: 오직 인게임에서 Z스킬 모드가 켜졌을 때만 정확히 개행 2번 후 조건을 붙여 UI에 표출합니다.
+            if (DungeonCombat.Combat.BattleUIController.IsZSkillModeActive)
             {
-                baseDesc += $"\n\n조건: {enhanceConditionDesc}";
+                if (!string.IsNullOrEmpty(enhanceConditionDesc))
+                {
+                    baseDesc += $"\n\n조건: {enhanceConditionDesc}";
+                }
+                else if (!string.IsNullOrEmpty(enhanceLogicKey))
+                {
+                    baseDesc += $"\n\n조건: {GetEnhanceConditionKoreanText(enhanceLogicKey)}";
+                }
+                else if (DungeonCombat.Combat.SkillCaster.Instance != null)
+                {
+                    string cachedCond = DungeonCombat.Combat.SkillCaster.Instance.GetActiveSkillEnhanceConditionText();
+                    if (!string.IsNullOrEmpty(cachedCond))
+                    {
+                        baseDesc += $"\n\n조건: {cachedCond}";
+                    }
+                }
             }
 
             return baseDesc;
         }
 
-        // --- [수술적 추가] 스킬의 다형적 발사 흐름을 처리하기 위한 가상 실행 메서드 훅 ---
+        private string GetEnhanceConditionKoreanText(string key)
+        {
+            switch (key.ToLower().Trim())
+            {
+                case "isa_cond_masscollapse":
+                    return "중력장 최소 하나 존재, 소모한 누적 SP 10개";
+                case "isa_cond_heatdeath":
+                    return "중력장 최소 하나 존재, 4라운드 이상 경과";
+                default:
+                    return "강화 특수 조건 필요";
+            }
+        }
 
-        /// <summary>
-        /// 스킬이 최종 타격지에 발사될 때의 구체적인 연출 및 로직 처리를 전담합니다.
-        /// 개별 투사체나 기획 전용 코드가 완수되면 마지막에 onComplete 콜백을 당겨 줍니다.
-        /// </summary>
         public virtual void Execute(DungeonCombat.Combat.PlayerUnit caster, Vector2Int targetCoord, int level, Action onComplete)
         {
-            // 기본 스킬들의 경우, 특별한 연출 없이 즉시 완료 콜백을 쏘아줍니다.
             onComplete?.Invoke();
         }
 
@@ -210,7 +228,6 @@ namespace DungeonCombat.Data
     }
 }
 
-// --- 기획자 편의 및 실시간 추출 변수 가이드라인 제공을 위한 에디터 스크립트 ---
 #if UNITY_EDITOR
 namespace DungeonCombat.Data
 {
@@ -317,10 +334,7 @@ namespace DungeonCombat.Data
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            if (!property.isExpanded)
-            {
-                return EditorGUIUtility.singleLineHeight;
-            }
+            if (!property.isExpanded) return EditorGUIUtility.singleLineHeight;
 
             int fixedRows = 11;
             float height = (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * fixedRows;

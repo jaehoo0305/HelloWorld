@@ -41,6 +41,8 @@ namespace DungeonCombat.Combat
         [SerializeField] private float moveSpeed = 5f;
 
         public float MoveSpeed => moveSpeed;
+
+        // --- [수술적 추가] 외부 시스템(SkillCaster 등)에서 참조할 격자 사이즈 정보 ---
         public Vector2Int GridSize => gridSize;
 
         public event Action<BattleUnit, Vector2Int> OnUnitMoveStart;
@@ -221,7 +223,6 @@ namespace DungeonCombat.Combat
                 return false;
             }
 
-            // [비용 차감] 플레이어는 한 칸당 1 SP 소모 규칙 적용
             if (unit is PlayerUnit playerUnit)
             {
                 if (!playerUnit.ConsumeSP(1))
@@ -363,10 +364,10 @@ namespace DungeonCombat.Combat
             return Vector2Int.zero;
         }
 
-        // --- [수술적 추가] 스킬 시스템과의 유기적 연동을 위한 헬퍼 API ---
+        // --- [수술적 추가] 런타임에 외부 스킬 시스템이 맵 타일과 점유 정보를 물어볼 수 있도록 열어주는 API ---
 
         /// <summary>
-        /// 해당 가상 격자 타일이 장애물이 없이 정상적으로 스캔되어 밟을 수 있는 공간인지 확인합니다.
+        /// 해당 가상 격자 타일이 장애물이 없이 정상적으로 스캔되어 밟거나 투사체가 통과할 수 있는 공간인지 확인합니다.
         /// </summary>
         public bool IsWalkable(Vector2Int coordinate)
         {

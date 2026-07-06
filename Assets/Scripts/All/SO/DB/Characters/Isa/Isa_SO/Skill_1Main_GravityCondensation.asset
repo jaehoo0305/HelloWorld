@@ -17,6 +17,7 @@ MonoBehaviour:
   targetType: 0
   requiredSP: 1
   isEndsTurn: 1
+  canTargetEmptyGround: 1
   levels:
   - level: 1
     levelDesc: "\uC2ED\uC790 \uBC29\uD5A5{straight:1} \uC911 \uD55C \uACF3\uC73C\uB85C
@@ -79,7 +80,7 @@ MonoBehaviour:
     - 11
     - 90
   isUltimate: 1
-  enhancedSkillAsset: {fileID: 11400000, guid: 06dbdd19cedfdb24ea46c3ee333d8b3b, type: 2}
+  enhancedSkillAsset: {fileID: 11400000, guid: 827487ea1fd059047a65e61138241c33, type: 2}
   enhanceConditionDesc: "\uC911\uB825\uC7A5 \uCD5C\uC18C \uD558\uB098 \uC874\uC7AC,
     \uC18C\uBAA8\uD55C \uB204\uC801 SP 10\uAC1C"
   enhanceLogicKey: Isa_Cond_MassCollapse

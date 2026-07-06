@@ -9,14 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d56dacde33ba3ae4f96aea75841cf4fb, type: 3}
-  m_Name: Skill_Isa1
-  m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Data.SkillDataSO
-  serialNumber: 10005
+  m_Script: {fileID: 11500000, guid: 8c13a53d089a72049a224d5ef23a27ba, type: 3}
+  m_Name: Skill_1Basic_SpaceTimeDistortion
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonCombat.Combat.SpaceTimeDistortionSkillSO
+  serialNumber: 10002
   skillName: "\uC2DC\uACF5\uAC04 \uC65C\uACE1"
   targetType: 4
   requiredSP: 2
   isEndsTurn: 0
+  canTargetEmptyGround: 1
   levels:
   - level: 1
     levelDesc: "\uC911\uB825\uC7A5 \uD558\uB098\uB97C \uC9C0\uC815\uD558\uC5EC \uADF8\uACF3\uC73C\uB85C
