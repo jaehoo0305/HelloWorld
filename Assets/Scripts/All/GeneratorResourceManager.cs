@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement; // 씬 감지를 위한 네임스페이스 추가
 
 /// <summary>
 /// 게임의 핵심 재화인 전기를 관리하고 생산하며, 발전기의 레벨과 전력량 수치를 총괄하는 매니저 클래스입니다.
@@ -68,6 +69,12 @@ public class GeneratorResourceManager : MonoBehaviour
 
     private void Update()
     {
+        // 킹덤 광장 씬("KingdomScene")에 머물고 있을 때는 전력 생산을 차단합니다.
+        if (SceneManager.GetActiveScene().name == "KingdomUIScene")
+        {
+            return;
+        }
+
         // 매 프레임 초당 생산 속도(EPS) 비례 전기를 안전하게 적립합니다.
         if (ElectricityPerSecond > 0)
         {

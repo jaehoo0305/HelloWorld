@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 /// <summary>
 /// 특정 시설 내의 세부 메뉴(월드 캔버스)를 클릭 시 비율에 맞게 줌인/줌아웃하고
-/// 씬을 넘나들어도 그 상태를 정적으로 기억하는 컨트롤러입니다.
+/// 씬을 넘나들거나 게임 최초 시작 시 지정된 세부 뷰에서 즉각 시작할 수 있도록 돕는 컨트롤러입니다.
 /// </summary>
 public class FacilitySubMenuZoom : MonoBehaviour
 {
@@ -31,6 +31,10 @@ public class FacilitySubMenuZoom : MonoBehaviour
     [Header("Zoom Settings")]
     [SerializeField] private float zoomDuration = 0.5f;
     [SerializeField] private List<SubMenu> subMenus;
+
+    [Header("Default Start Zoom (최초 시작 설정)")]
+    [Tooltip("게임 최초 기동 시 해당 상점의 이 서브메뉴에서 즉시 시작하고 싶다면 이름을 정확히 기입하세요. (예: 서재 또는 Study)")]
+    [SerializeField] private string defaultSubMenuName;
 
     private SubMenu _currentZoomedMenu = null;
     private bool _isMyFacilityActive = false;
@@ -67,16 +71,38 @@ public class FacilitySubMenuZoom : MonoBehaviour
             }
         }
 
-        // 씬 로드 시, 정적 기억장치에 이 시설의 줌인 기록이 있다면 복구 준비
+        // 1. 씬 로드 시, 정적 기억장치에 이 시설의 줌인 기록이 있다면 복구 준비
         if (_savedZoomStates.TryGetValue(facilityType, out string savedMenuName))
         {
             _currentZoomedMenu = subMenus.Find(m => m.menuName == savedMenuName);
+        }
+        // 2. 만약 저장된 기억장치 기록이 없고, 에디터상에 지정한 디폴트 서브메뉴(서재 등)가 존재한다면 자동 선택
+        else if (!string.IsNullOrEmpty(defaultSubMenuName))
+        {
+            _currentZoomedMenu = subMenus.Find(m => m.menuName == defaultSubMenuName);
             if (_currentZoomedMenu != null)
             {
-                foreach (var go in _currentZoomedMenu.elementsToHide)
-                {
-                    if (go != null) go.SetActive(false);
-                }
+                // 정적 기록장치에 상태 미리 저장
+                _savedZoomStates[facilityType] = defaultSubMenuName;
+            }
+        }
+
+        // 선택된 줌인 서브메뉴가 있다면 초기 비활성화 UI 및 즉시 카메라 스냅 배치 처리
+        if (_currentZoomedMenu != null)
+        {
+            foreach (var go in _currentZoomedMenu.elementsToHide)
+            {
+                if (go != null) go.SetActive(false);
+            }
+
+            // [추가] 최초 씬 시작 시, 이 상점이 현재 활성화된 상점인 경우 부드러운 전환 없이 줌인 좌표로 즉시 카메라 배치
+            bool isActiveNow = (manager.CurrentActiveIndex == (int)facilityType);
+            if (isActiveNow)
+            {
+                cameraController.enabled = false;
+                mainCameraTransform.position = GetZoomTargetPosition(_currentZoomedMenu.targetCanvas);
+                mainCameraTransform.rotation = GetZoomTargetRotation(_currentZoomedMenu.targetCanvas);
+                _isMyFacilityActive = true; // 최초 동기화 활성화로 Update 내 중복 진입 차단
             }
         }
     }
@@ -113,23 +139,18 @@ public class FacilitySubMenuZoom : MonoBehaviour
         // 씬 전환 또는 다른 상점에서 돌아왔을 때 상태 복구
         if (_currentZoomedMenu != null)
         {
-            // [해결] 이 시설이 줌인 상태라면 궤도 컨트롤러를 확실하게 끕니다.
             cameraController.enabled = false;
             StartCameraMovement(GetZoomTargetPosition(_currentZoomedMenu.targetCanvas), GetZoomTargetRotation(_currentZoomedMenu.targetCanvas));
             Debug.Log($"[FacilitySubMenuZoom] 전역 기억 복구 완료: {_currentZoomedMenu.menuName}");
         }
         else
         {
-            // [해결] 이 시설이 메인 뷰 상태라면 궤도 컨트롤러를 켭니다. 
-            // 입장하는 녀석이 직접 켜주기 때문에 경쟁 상태가 사라집니다.
             cameraController.enabled = true;
         }
     }
 
     private void OnFacilityExited()
     {
-        // [해결] 퇴장할 때는 제어권(cameraController.enabled)에 절대 손대지 않습니다.
-        // 다음으로 입장하는 상점이 자신의 상태(줌인/메인뷰)에 맞춰서 알아서 세팅할 것입니다.
         if (_movementCoroutine != null) StopCoroutine(_movementCoroutine);
     }
 
@@ -166,7 +187,6 @@ public class FacilitySubMenuZoom : MonoBehaviour
 
         StartCameraMovement(orbitPos, orbitRot, onComplete: () =>
         {
-            // 줌아웃 이동이 끝난 후, 여전히 현재 활성화된 시설일 때만 궤도 컨트롤러를 켭니다.
             if (_isMyFacilityActive && _currentZoomedMenu == null)
             {
                 cameraController.enabled = true;

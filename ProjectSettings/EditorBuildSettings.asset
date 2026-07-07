@@ -6,14 +6,14 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/KingdomUIScene.unity
+    guid: 2080beb6e104de34bb0941b8f4d451a4
+  - enabled: 1
     path: Assets/Scenes/AFKScene.unity
     guid: f7874dfd505f69446a85ef1b236c2e3f
   - enabled: 1
     path: Assets/Scenes/KingdomScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 1
-    path: Assets/Scenes/KingdomUIScene.unity
-    guid: 2080beb6e104de34bb0941b8f4d451a4
   - enabled: 1
     path: Assets/Scenes/DungeonScene.unity
     guid: 4d6446dd21d350b4fa8dba957aad5c47
