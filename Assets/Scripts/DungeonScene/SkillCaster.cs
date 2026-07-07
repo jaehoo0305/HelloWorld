@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using DungeonCombat.Data;
 
@@ -9,6 +10,9 @@ using UnityEngine.InputSystem;
 
 namespace DungeonCombat.Combat
 {
+    /// <summary>
+    /// 플레이어의 턴에 마우스 입력을 받아 사거리 시각화, 타겟 검증, 스킬 발사 처리 자원을 연산하는 컨트롤러입니다.
+    /// </summary>
     public class SkillCaster : MonoBehaviour
     {
         public static SkillCaster Instance { get; private set; }
@@ -68,6 +72,7 @@ namespace DungeonCombat.Combat
                 return;
             }
 
+            // 아군 캐릭터 이동 시 실시간 사거리 오라 연산 자동 동기화 추적
             Vector2Int currentCasterPos = gridManager.GetUnitCoordinate(currentCaster);
             if (currentCasterPos != lastCasterCoordinate)
             {
@@ -234,7 +239,6 @@ namespace DungeonCombat.Combat
 
             ClearVisualTiles();
             OnTargetingModeEnded?.Invoke();
-            Debug.Log("[SkillCaster] Targeting canceled.");
         }
 
         private void CalculateCastingRange()
@@ -244,13 +248,45 @@ namespace DungeonCombat.Combat
 
             Vector2Int casterCoord = gridManager.GetUnitCoordinate(currentCaster);
             SkillLevelData lvlData = activeSkill.GetLevelData(activeSkillLevel);
-            int range = (lvlData != null) ? lvlData.Range : 3;
 
-            // [수정 완료]: activeSkill.SkillName 이 null 일 경우를 안전 방어
-            bool isRook = (activeSkill.SkillName != null && activeSkill.SkillName.Contains("응축")) ||
-                          (activeSkill.EnhanceLogicKey != null && (activeSkill.EnhanceLogicKey.Contains("Rook") ||
-                                                                   activeSkill.EnhanceLogicKey.Contains("Line") ||
-                                                                   activeSkill.EnhanceLogicKey.Contains("Straight")));
+            // 한글 자모 분리 오작동 방지를 위해 NFC 표준 정규화 진행
+            string sName = activeSkill.SkillName != null ? activeSkill.SkillName.Normalize(System.Text.NormalizationForm.FormC) : "";
+            string eKey = activeSkill.EnhanceLogicKey != null ? activeSkill.EnhanceLogicKey.Normalize(System.Text.NormalizationForm.FormC) : "";
+
+            int range = (lvlData != null) ? lvlData.Range : 3;
+            if (range == 1 && lvlData != null && !string.IsNullOrEmpty(lvlData.RawLevelDesc))
+            {
+                string descNormalized = lvlData.RawLevelDesc.Normalize(System.Text.NormalizationForm.FormC);
+                var match = Regex.Match(descNormalized, @"(\d+)\s*칸");
+                if (match.Success && int.TryParse(match.Groups[1].Value, out int parsedRange))
+                {
+                    range = parsedRange;
+                }
+            }
+
+            // 시공간 왜곡 스킬 특수 규칙: 전장에 배치된 중력장 장판 타일들만 사거리로 연계 조명
+            if (sName.Contains("시공간 왜곡") || sName.Contains("왜곡"))
+            {
+                Vector2Int size = gridManager.GridSize;
+                for (int x = 0; x < size.x; x++)
+                {
+                    for (int z = 0; z < size.y; z++)
+                    {
+                        Vector2Int target = new Vector2Int(x, z);
+                        if (BattleFieldEffectManager.Instance != null &&
+                            BattleFieldEffectManager.Instance.HasEffectAt(target, "GravityField"))
+                        {
+                            castingRangeTiles.Add(target);
+                        }
+                    }
+                }
+                return;
+            }
+
+            bool isRook = sName.Contains("응축") ||
+                          eKey.Contains("Rook") ||
+                          eKey.Contains("Line") ||
+                          eKey.Contains("Straight");
 
             if (isRook)
             {
@@ -283,9 +319,12 @@ namespace DungeonCombat.Combat
                 }
             }
 
-            // [수정 완료]: 안전하게 null 조건 필터링 처리를 결합하여 연산 파이프라인 붕괴를 원천 차단
-            bool isGravityConstrained = (activeSkill.EnhanceLogicKey != null && activeSkill.EnhanceLogicKey.Contains("MassCollapse")) ||
-                                        (activeSkill.SkillName != null && (activeSkill.SkillName.Contains("질량") || activeSkill.SkillName.Contains("시공간 왜곡")));
+            // [버그 수정 완료]: "중력 응축"은 강화 가능한 '베이스' 스킬(EnhancedSkillAsset이 존재함)이므로 중력장 제약을 받으면 안 됩니다.
+            // 1. "시공간 왜곡" (이름에 왜곡 포함)
+            // 2. "질량 축퇴" (이름에 질량 포함 또는 강화 에셋이 없는 완성형 상태이면서 키에 MassCollapse 포함)
+            bool isGravityConstrained = sName.Contains("왜곡") ||
+                                        sName.Contains("질량") ||
+                                        (activeSkill.EnhancedSkillAsset == null && eKey.Contains("masscollapse"));
 
             if (isGravityConstrained)
             {
@@ -306,10 +345,13 @@ namespace DungeonCombat.Combat
         {
             if (activeSkill == null || currentCaster == null) return target;
 
-            bool isProjectileLine = (activeSkill.SkillName != null && activeSkill.SkillName.Contains("응축")) ||
-                                    (activeSkill.EnhanceLogicKey != null && (activeSkill.EnhanceLogicKey.Contains("Rook") ||
-                                                                             activeSkill.EnhanceLogicKey.Contains("Line") ||
-                                                                             activeSkill.EnhanceLogicKey.Contains("Straight")));
+            string sName = activeSkill.SkillName != null ? activeSkill.SkillName.Normalize(System.Text.NormalizationForm.FormC) : "";
+            string eKey = activeSkill.EnhanceLogicKey != null ? activeSkill.EnhanceLogicKey.Normalize(System.Text.NormalizationForm.FormC) : "";
+
+            bool isProjectileLine = sName.Contains("응축") ||
+                                    eKey.Contains("Rook") ||
+                                    eKey.Contains("Line") ||
+                                    eKey.Contains("Straight");
 
             if (!isProjectileLine) return target;
 
@@ -319,6 +361,16 @@ namespace DungeonCombat.Combat
 
             SkillLevelData lvlData = activeSkill.GetLevelData(activeSkillLevel);
             int skillMaxRange = (lvlData != null) ? lvlData.Range : 7;
+
+            if (skillMaxRange == 1 && lvlData != null && !string.IsNullOrEmpty(lvlData.RawLevelDesc))
+            {
+                string descNormalized = lvlData.RawLevelDesc.Normalize(System.Text.NormalizationForm.FormC);
+                var match = Regex.Match(descNormalized, @"(\d+)\s*칸");
+                if (match.Success && int.TryParse(match.Groups[1].Value, out int parsedRange))
+                {
+                    skillMaxRange = parsedRange;
+                }
+            }
 
             Vector2Int currentHitPos = caster;
 
@@ -474,27 +526,44 @@ namespace DungeonCombat.Combat
             int requiredSP = GetDynamicRequiredSP(currentCaster, activeSkill);
             if (!currentCaster.ConsumeSP(requiredSP)) return;
 
+            // [수정 완료]: CancelTargetingMode()가 캐스터 필드를 null로 비워버리기 전에 미리 백업해 둡니다.
+            PlayerUnit casterBackup = currentCaster;
+
             activeSkill.Execute(currentCaster, realImpactCenter, activeSkillLevel, () =>
             {
                 bool shouldEndTurn = activeSkill.IsEndsTurn;
                 uiController.HideAllTooltips();
-                CancelTargetingMode();
+                CancelTargetingMode(); // 여기서 currentCaster가 null이 됩니다.
 
-                if (shouldEndTurn) turnManager.EndCurrentTurn();
-                else uiController.UpdateSkillButtons(currentCaster);
+                if (shouldEndTurn)
+                {
+                    turnManager.EndCurrentTurn();
+                }
+                else
+                {
+                    // 백업해 둔 캐스터 정보를 넘겨주어 스킬 패널이 정상 갱신 및 유지되게 합니다.
+                    uiController.UpdateSkillButtons(casterBackup);
+                }
             });
         }
 
         private int GetDynamicRequiredSP(PlayerUnit caster, SkillDataSO skill)
         {
             int finalCost = skill.RequiredSP;
-            if (caster != null && (caster.UnitName == "Isa" || caster.UnitName == "아이사" || caster.gameObject.name.Contains("Isa")))
+            if (caster != null)
             {
-                Vector2Int currentCoord = gridManager.GetUnitCoordinate(caster);
-                if (BattleFieldEffectManager.Instance != null && BattleFieldEffectManager.Instance.HasEffectAt(currentCoord, "GravityField"))
+                string name = caster.UnitName != null ? caster.UnitName.Normalize(System.Text.NormalizationForm.FormC).ToLower() : "";
+                string objName = caster.gameObject.name.Normalize(System.Text.NormalizationForm.FormC).ToLower();
+
+                if (name.Contains("isa") || name.Contains("아이사") || objName.Contains("isa") || objName.Contains("아이사"))
                 {
-                    finalCost = Mathf.Max(0, finalCost - 1);
-                    Debug.Log($"[GravityField Cost Discount] {caster.UnitName} spent {finalCost} SP on {skill.SkillName}.");
+                    Vector2Int currentCoord = gridManager.GetUnitCoordinate(caster);
+                    if (BattleFieldEffectManager.Instance != null && BattleFieldEffectManager.Instance.HasEffectAt(currentCoord, "GravityField"))
+                    {
+                        int oldCost = finalCost;
+                        finalCost = Mathf.Max(0, finalCost - 1);
+                        Debug.Log($"[중력 요동 패시브] 아이사가 중력장 위에서 능력을 발동하여 요구 기력이 1 감소했습니다! ({oldCost} -> {finalCost})");
+                    }
                 }
             }
             return finalCost;

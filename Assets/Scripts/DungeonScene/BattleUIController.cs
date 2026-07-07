@@ -11,6 +11,9 @@ using UnityEngine.InputSystem;
 
 namespace DungeonCombat.Combat
 {
+    /// <summary>
+    /// Canvas 요소를 관리하고 2단계 툴팁 시전 시퀀스 및 Q 모드 전환 스왑을 통제하는 컨트롤러입니다.
+    /// </summary>
     public class BattleUIController : MonoBehaviour
     {
         [Header("[ 핵심 매니저 참조 ]")]

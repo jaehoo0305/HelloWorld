@@ -27,10 +27,13 @@ namespace DungeonCombat.Data
         public string RawLevelDesc => levelDesc;
 
         /// <summary>
-        /// 캐싱된 파라미터 딕셔너리에서 특정 값을 가져옵니다.
+        /// 캐싱된 파라미터 딕셔너리에서 특정 값을 가져옵니다. (안전 가드 추가)
         /// </summary>
         public float GetValue(string key, float defaultValue = 0f)
         {
+            // [자가 수복 완료]: 유니티 직렬화 주기 중 null이 넘어올 경우의 강철 가드 배치
+            if (keys == null || values == null) return defaultValue;
+
             int index = keys.IndexOf(key.ToLower().Trim());
             if (index != -1 && index < values.Count)
             {
@@ -68,6 +71,9 @@ namespace DungeonCombat.Data
         /// </summary>
         public void ParseParametersFromDescription()
         {
+            if (keys == null) keys = new List<string>();
+            if (values == null) values = new List<float>();
+
             keys.Clear();
             values.Clear();
 
