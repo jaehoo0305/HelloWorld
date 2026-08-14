@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
+
 namespace Kingdom.Tutorial
 {
     /// <summary>
@@ -34,13 +38,34 @@ namespace Kingdom.Tutorial
             if (Instance == null)
             {
                 Instance = this;
-                // 필요 시 씬이 전환되어도 파괴되지 않도록 설정할 수 있습니다.
-                // DontDestroyOnLoad(gameObject);
             }
             else
             {
                 Destroy(gameObject);
             }
+        }
+
+        private void Update()
+        {
+            // 활성화된 튜토리얼이 없으면 키 입력을 검사하지 않습니다.
+            if (currentActiveTutorial == null) return;
+
+#if ENABLE_INPUT_SYSTEM
+            // 새로운 Input System 대응 (엔터 및 키패드 엔터)
+            if (Keyboard.current != null)
+            {
+                if (Keyboard.current.enterKey.wasPressedThisFrame || Keyboard.current.numpadEnterKey.wasPressedThisFrame)
+                {
+                    OnClickNext();
+                }
+            }
+#else
+            // 레거시 Input System 대응 (fallback)
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+            {
+                OnClickNext();
+            }
+#endif
         }
 
         /// <summary>
@@ -71,8 +96,7 @@ namespace Kingdom.Tutorial
         }
 
         /// <summary>
-        /// 화면 클릭 시 다음 상태로 넘어가거나 타이핑을 스킵하는 컨트롤러 로직입니다.
-        /// (버튼 OnClick 이벤트나 Update 입력 루프에서 이 함수를 바인딩하면 됩니다.)
+        /// 화면 클릭 또는 키 입력 시 다음 상태로 넘어가거나 타이핑을 스킵하는 컨트롤러 로직입니다.
         /// </summary>
         public void OnClickNext()
         {

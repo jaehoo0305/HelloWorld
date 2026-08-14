@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89fa1ac8d175058499898a9af76cba57, type: 3}
+  m_Name: NewTutorialData
+  m_EditorClassIdentifier: Assembly-CSharp::Kingdom.Tutorial.TutorialDataSO
+  tutorialID: 3000
+  triggerKey: SCENE_START_INTRO
+  speakerName: Dragon
+  speakerPortrait: {fileID: 21300000, guid: 6ace4453acf5f004ab45586a43df32db, type: 3}
+  guideTexts:
+  - "\uC548\uB155 "
+  - "\uB098\uB294 Dragon \uC774\uC57C"
+  - "\uC9C0\uAE08 \uC6B0\uB9AC \uC655\uAD6D\uC740 \uD604\uC7AC \uAC74\uC124 \uC911\uC774\uC57C"
+  - "\uB098\uB3C4 \uC9C0\uAE08 \uAC74\uC124\uC744 \uB3C4\uC640\uC57C\uD574\uC11C
+    \uC18C\uAC1C\uD574\uC904 \uC5EC\uC720\uAC00 \uC5C6\uAC70\uB4E0?"
+  - "\uC54C\uC544\uC11C \uC798 \uB3CC\uC544\uB2E4\uB140\uBD10"
+  - "\uAC74\uBB3C \uD574\uAE08 \uC9C0\uBB3C\uC1E0 \uC560\uB2C8\uBA54\uC774\uC158
+    \uBA4B\uC9C0\uAC70\uB4E0?"
+  - "D \uB20C\uB7EC\uC11C \uAD50\uD68C\uB85C \uAC04 \uB2E4\uC74C\uC5D0 Space \uB20C\uB7EC\uBD10
+    \uD574\uAE08 \uD560 \uC218 \uC788\uC5B4"
+  - "S \uAFB9 \uB204\uB974\uBA74 \uAC74\uBB3C \uBC16\uC73C\uB85C \uB098\uAC08 \uC218
+    \uC788\uC5B4"
+  - "\uC6D0\uC815\uC73C\uB85C \uAC00\uC11C \uCD9C\uBC1C\uD558\uBA74 \uC804\uD22C
+    \uD574\uBCFC \uC218 \uC788\uC5B4"
+  - "\uD589\uC6B4\uC744 \uBE4C\uAC8C"
+  eventTriggerCode: 

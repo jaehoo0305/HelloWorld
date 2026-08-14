@@ -13,7 +13,7 @@ public class FacilityUnlockController : MonoBehaviour
 {
     [Header("기준 데이터베이스 및 상태 연동")]
     [SerializeField] private FacilityDataSO facilityDataState;
-    [SerializeField] private FacilityLevelCostTableSO costTable;
+    //[SerializeField] private FacilityLevelCostTableSO costTable;
 
     [Header("화면 장막 및 비주얼 제어")]
     [Tooltip("뒤쪽에 화면을 어둡게 가리는 장막 오브젝트입니다. (Blind 오브젝트)")]
@@ -86,10 +86,13 @@ public class FacilityUnlockController : MonoBehaviour
             RefreshLockState();
         }
 
-        // 디버그 키 'F' 감지 시 즉시 잠금 풀림 치트 연출 실행
-        if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
+        // 디버그 키 감지 (Space 키 또는 F 키 누름 시 즉시 잠금 해제 연출 실행)
+        if (Keyboard.current != null)
         {
-            TriggerDebugUnlock();
+            if (Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.fKey.wasPressedThisFrame)
+            {
+                TriggerDebugUnlock();
+            }
         }
     }
 
@@ -184,15 +187,15 @@ public class FacilityUnlockController : MonoBehaviour
         if (_currentActiveFacility == FacilityType.Church)
         {
             if (costElectricityText != null) costElectricityText.text = "";
-            if (costBitcoinText != null) costBitcoinText.text = "원정 후 해금";
+            if (costBitcoinText != null) costBitcoinText.text = "원정 후 해금됩니다.";
             if (buildTimeText != null) buildTimeText.text = "";
             return;
         }
 
-        if (costTable == null) return;
+        if (FacilityLevelCostDatabase.Instance == null) return;
 
         // 0레벨 상점 건설 비용은 Target Level이 1인 행의 비용을 가져옵니다.
-        if (costTable.TryGetCostForLevel(1, out LevelCostDetails details))
+        if (FacilityLevelCostDatabase.Instance.TryGetCostForLevel(1, out LevelCostDetails details))
         {
             if (costElectricityText != null) costElectricityText.text = $"Ele: {FormatValue(details.requiredElectricity)}";
             if (costBitcoinText != null) costBitcoinText.text = $"Bit: {details.requiredBitcoin.ToString()}";
@@ -205,12 +208,12 @@ public class FacilityUnlockController : MonoBehaviour
     /// </summary>
     private void OnUpgradeButtonClick()
     {
-        if (_isUpgrading || costTable == null || GeneratorResourceManager.Instance == null) return;
+        if (_isUpgrading || FacilityLevelCostDatabase.Instance == null || GeneratorResourceManager.Instance == null) return;
 
         // 교회의 경우 버튼 클릭 작동 방지
         if (_currentActiveFacility == FacilityType.Church) return;
 
-        if (costTable.TryGetCostForLevel(1, out LevelCostDetails details))
+        if (FacilityLevelCostDatabase.Instance.TryGetCostForLevel(1, out LevelCostDetails details))
         {
             // 1. 필요한 전력량이 충분한지 체크 후 안전하게 차감 시도
             if (GeneratorResourceManager.Instance.TryConsumeElectricity(details.requiredElectricity))
@@ -270,7 +273,7 @@ public class FacilityUnlockController : MonoBehaviour
     {
         if (_isUpgrading) return;
 
-        Debug.Log($"[FacilityUnlock-Debug] 'F' 치트키 감지됨! '{_currentActiveFacility}'의 0레벨 잠금을 즉각 해제합니다.");
+        Debug.Log($"[FacilityUnlock-Debug] 디버그 치트키 감지됨! '{_currentActiveFacility}'의 0레벨 잠금을 즉각 해제합니다.");
 
         if (_buildCoroutine != null)
         {

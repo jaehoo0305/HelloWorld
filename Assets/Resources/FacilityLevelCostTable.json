@@ -1,0 +1,8 @@
+{
+  "baseElectricity": 1,
+  "electricityMultiplier": 100.0,
+  "baseBitcoin": 10,
+  "bitcoinMultiplier": 5.0,
+  "baseBuildTimeInSeconds": 25.0,
+  "buildTimeMultiplier": 12.0
+}

@@ -52,9 +52,11 @@ namespace DungeonCombat.Combat
         private class AStarNode
         {
             public Vector2Int Position;
-            public float G; // 시작점으로부터 이동해 온 실제 비용
-            public float H; // 목적지까지 남은 가상의 예상 거리 (맨해튼 거리)
-            public float F => G + 1.5f * H; // 가중치 1.5를 적용한 휴리스틱 공식 (F = G + 1.5H)
+            public float G;
+            public float H;
+
+            public float F => G + 1.5f * H;
+
             public AStarNode Parent;
 
             public AStarNode(Vector2Int position, float g, float h, AStarNode parent)

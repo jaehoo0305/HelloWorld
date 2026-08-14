@@ -2,17 +2,22 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// 상태(인덱스)를 관리하고 씬을 전환하는 중앙 사령탑입니다.
+/// Model(FacilityDataSO, FacilityDatabaseSO)과 View(FacilityTitleLevelUI) 사이에서 데이터 흐름 및 상태를 중개하고
+/// 씬 전환 및 인덱스 이동을 제어하는 Presenter / Controller 역할을 수행합니다.
 /// </summary>
 public class FacilityManager : MonoBehaviour
 {
-    [Header("Data Reference")]
+    [Header("Data (Model)")]
     [SerializeField] private FacilityDataSO facilityData;
+    [SerializeField] private FacilityDatabaseSO facilityDatabase;
     [SerializeField] private string exitSceneName = "KingdomScene";
+
+    [Header("UI (View)")]
+    [SerializeField] private FacilityTitleLevelUI titleLevelUI;
 
     public const int TotalFacilityCount = 8;
 
-    // 외부 컨트롤러들이 읽어갈 수 있는 프로퍼티
+    // 외부 컨트롤러들이 읽어갈 수 있는 프로퍼티 (기존 유지)
     public int TargetIndex { get; private set; }
     public int CurrentActiveIndex { get; private set; }
 
@@ -27,6 +32,41 @@ public class FacilityManager : MonoBehaviour
         // 초기화
         TargetIndex = facilityData.CurrentIndex;
         CurrentActiveIndex = WrapIndex(TargetIndex);
+    }
+
+    private void Start()
+    {
+        // 씬 진입 시 초기 UI 화면 중개
+        RefreshUI();
+    }
+
+    private void Update()
+    {
+        // 실시간 레벨 변경이나 외부 데이터 변동이 있을 수 있으므로 주기적 UI 동기화 중개
+        RefreshUI();
+    }
+
+    /// <summary>
+    /// Model에서 최신 상태를 읽어와 View에게 전달하는 MVP 중개 메서드입니다.
+    /// </summary>
+    public void RefreshUI()
+    {
+        if (facilityData == null || titleLevelUI == null) return;
+
+        FacilityType currentType = facilityData.currentFacility;
+
+        // 1. Database Model에서 한글 표시 이름 조회
+        string displayName = currentType.ToString();
+        if (facilityDatabase != null && facilityDatabase.TryGetFacilityDetails(currentType, out FacilityDetails details))
+        {
+            displayName = details.facilityName;
+        }
+
+        // 2. Realtime State Model에서 레벨 조회
+        int currentLevel = facilityData.GetFacilityLevel(currentType);
+
+        // 3. View에 데이터 전달 지시 (Model과 View 간 결합 완전히 차단)
+        titleLevelUI.SetFacilityTitleAndLevel(displayName, currentLevel);
     }
 
     /// <summary>
@@ -80,6 +120,9 @@ public class FacilityManager : MonoBehaviour
         {
             facilityData.SetFacility((FacilityType)CurrentActiveIndex);
         }
+
+        // 인덱스 변경 시 Presenter가 View에 갱신 지시
+        RefreshUI();
     }
 
     private int WrapIndex(int index)
