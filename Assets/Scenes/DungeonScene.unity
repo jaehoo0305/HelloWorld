@@ -11410,6 +11410,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 350928227}
     m_Modifications:
+    - target: {fileID: 5037643597923209579, guid: 8c58236c41a8add40ac4051dcf4e7ae5, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 805402e8d0af1db468432717661176f7, type: 2}
     - target: {fileID: 6761477703782229431, guid: 8c58236c41a8add40ac4051dcf4e7ae5, type: 3}
       propertyPath: m_Name
       value: P_MOD_Column_01_med (15)
