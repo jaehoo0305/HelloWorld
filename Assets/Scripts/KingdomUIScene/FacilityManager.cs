@@ -9,7 +9,6 @@ public class FacilityManager : MonoBehaviour
 {
     [Header("Data (Model)")]
     [SerializeField] private FacilityDataSO facilityData;
-    [SerializeField] private FacilityDatabaseSO facilityDatabase;
     [SerializeField] private string exitSceneName = "KingdomScene";
 
     [Header("UI (View)")]
@@ -54,19 +53,10 @@ public class FacilityManager : MonoBehaviour
         if (facilityData == null || titleLevelUI == null) return;
 
         FacilityType currentType = facilityData.currentFacility;
-
-        // 1. Database Model에서 한글 표시 이름 조회
-        string displayName = currentType.ToString();
-        if (facilityDatabase != null && facilityDatabase.TryGetFacilityDetails(currentType, out FacilityDetails details))
-        {
-            displayName = details.facilityName;
-        }
-
-        // 2. Realtime State Model에서 레벨 조회
         int currentLevel = facilityData.GetFacilityLevel(currentType);
 
-        // 3. View에 데이터 전달 지시 (Model과 View 간 결합 완전히 차단)
-        titleLevelUI.SetFacilityTitleAndLevel(displayName, currentLevel);
+        // 순수 동적 데이터(레벨)만 View에 전달
+        titleLevelUI.SetFacilityLevel(currentLevel);
     }
 
     /// <summary>
