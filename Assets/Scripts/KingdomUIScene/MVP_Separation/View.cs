@@ -3,14 +3,10 @@ using TMPro;
 
 public class View : MonoBehaviour
 {
-    [Header("UI Component")]
-    [SerializeField] private TMP_Text facilityNameText;
+    [SerializeField] private TMP_Text curText;
 
-    public void SetFacilityName(string displayName)
+    public void SetDisplay(string displayName)
     {
-        if (facilityNameText != null)
-        {
-            facilityNameText.text = displayName;
-        }
+        curText.text = displayName;
     }
 }

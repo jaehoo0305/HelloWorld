@@ -5176,6 +5176,7 @@ GameObject:
   - component: {fileID: 66930826}
   - component: {fileID: 66930825}
   - component: {fileID: 66930829}
+  - component: {fileID: 66930830}
   m_Layer: 5
   m_Name: MainUICanvas
   m_TagString: Untagged
@@ -5286,8 +5287,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33a2dd4d2aabce54285ef6e1477d1126, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FacilityTitleLevelUI
-  facilityNameText: {fileID: 260315425}
   facilityLevelText: {fileID: 268438447}
+--- !u!114 &66930830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66930824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4932fba763235064e8c9a43d623e0166, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::View
+  facilityNameText: {fileID: 260315425}
 --- !u!1001 &67055369
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20019,6 +20032,7 @@ GameObject:
   m_Component:
   - component: {fileID: 289753035}
   - component: {fileID: 289753039}
+  - component: {fileID: 289753040}
   - component: {fileID: 289753038}
   - component: {fileID: 289753037}
   - component: {fileID: 289753036}
@@ -20121,9 +20135,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FacilityManager
   facilityData: {fileID: 11400000, guid: 97b8aacef5db4cc4a9accad93e2d283a, type: 2}
-  facilityDatabase: {fileID: 11400000, guid: 49976b1ceb70e0b49aa145849751533b, type: 2}
   exitSceneName: KingdomScene
   titleLevelUI: {fileID: 66930829}
+--- !u!114 &289753040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289753033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f7e1eb2f3a9dad4399c255b96201e24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Presenter
+  facilityData: {fileID: 11400000, guid: 97b8aacef5db4cc4a9accad93e2d283a, type: 2}
+  facilityDatabase: {fileID: 11400000, guid: 49976b1ceb70e0b49aa145849751533b, type: 2}
+  nameView: {fileID: 66930830}
 --- !u!4 &290199129 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2979053798986426513, guid: 14de5fbc4bd096240ba2dacda835cd1b, type: 3}
@@ -90624,7 +90652,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FacilityUnlockController
   facilityDataState: {fileID: 11400000, guid: 97b8aacef5db4cc4a9accad93e2d283a, type: 2}
-  costTable: {fileID: 11400000, guid: da8e44436fcdc904da32b2c2f67bedee, type: 2}
   blindObject: {fileID: 1182279030}
   lockCanvasGroup: {fileID: 1228753416}
   lockBodyTransform: {fileID: 888048130}

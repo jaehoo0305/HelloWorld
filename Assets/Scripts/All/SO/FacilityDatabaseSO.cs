@@ -4,69 +4,55 @@ using UnityEngine;
 
 #region 1. 기본 구조체 정의 (Structs)
 
-/// <summary>
-/// 특정 시설 레벨 달성 시 해금될 세부 기능(버튼)들의 규칙을 정의하는 구조체입니다.
-/// </summary>
 [Serializable]
 public struct FacilitySubFeature
 {
-    [Tooltip("해금될 기능의 직관적인 이름입니다. (예: 예금, 보험, 장비 합성)")]
+    [Tooltip("Next Unlock")]
     public string featureName;
 
-    [Tooltip("이 기능이 활성화되기 위해 필요한 최소 시설 레벨입니다. (예: 2, 3)")]
+    [Tooltip("Required Facility Level")]
     public int unlockRequiredLevel;
 
-    [Tooltip("실제 UI 버튼 오브젝트를 찾아내고 매핑하기 위한 고유 식별 코드(ID)입니다.\n(예: BTN_BANK_DEPOSIT, BTN_BLACKSMITH_COMBINE)")]
+    [Tooltip("Unique Code")]
     public string buttonIdentifier;
 }
 
-/// <summary>
-/// 각 건물의 고유 정보 및 시트 데이터를 담는 구조체입니다.
-/// </summary>
 [Serializable]
 public struct FacilityDetails
 {
-    [Header("기본 정보")]
-    [Tooltip("상점의 고유 타입 Enum입니다.")]
+    [Header("Basic Info")]
+    [Tooltip("Unique Facility Type Enum")]
     public FacilityType facilityType;
 
-    [Tooltip("게임 내에 노출될 한국어 이름입니다. (예: 은행, 대장간)")]
+    [Tooltip("In-game Display Name")]
     public string facilityName;
 
     [TextArea(3, 5)]
-    [Tooltip("상점에 대한 설명 문구입니다.")]
+    [Tooltip("Shop Description")]
     public string description;
 
-    [Header("해금 설정")]
-    [Tooltip("이 건물이 최초에 해금되는 방식입니다.")]
+    [Header("Unlock Settings")]
+    [Tooltip("Initial Unlock Condition/Method")]
     public UnlockType initialUnlockType;
 
-    [Header("레벨업 효과 리스트 (텍스트 툴팁용)")]
-    [Tooltip("레벨별로 어떤 효과가 나타나는지 설명용 텍스트를 적습니다.\n[0]은 1레벨, [4]는 5레벨 효과입니다.")]
+    [Header("Level-up Effects (Tooltip Text)")]
+    [Tooltip("Per-level effect descriptions")]
     [TextArea(2, 4)]
     public List<string> levelUpDescriptions;
 
-    [Header("건물 레벨업 시 해금될 실제 기능(버튼)들")]
-    [Tooltip("이 건물 내에서 특정 레벨 달성 시 실제로 활성화/비활성화할 버튼 정보들의 목록입니다.")]
+    [Header("Unlocked Features/Buttons")]
+    [Tooltip("Buttons toggled upon reaching specific levels")]
     public List<FacilitySubFeature> subFeatures;
 }
 
 #endregion
 
-/// <summary>
-/// 8개 시설의 고유 설명 및 해금 정보를 관리하는 중앙 데이터베이스 SO입니다.
-/// </summary>
 [CreateAssetMenu(fileName = "FacilityDatabase", menuName = "Kingdom/Database/Facility Database")]
 public class FacilityDatabaseSO : ScriptableObject
 {
-    [Header("시설 목록")]
-    [Tooltip("시트에 작성된 8개의 상점 데이터를 인스펙터에서 차례대로 추가하세요.")]
     public List<FacilityDetails> facilities = new List<FacilityDetails>();
 
-    /// <summary>
-    /// 특정 시설의 세부 정보 데이터를 찾아 반환합니다.
-    /// </summary>
-    public bool TryGetFacilityDetails(FacilityType type, out FacilityDetails details)
+    public bool TryGetDetails(FacilityType type, out FacilityDetails details)
     {
         for (int i = 0; i < facilities.Count; i++)
         {
@@ -76,6 +62,7 @@ public class FacilityDatabaseSO : ScriptableObject
                 return true;
             }
         }
+
         details = default;
         return false;
     }
