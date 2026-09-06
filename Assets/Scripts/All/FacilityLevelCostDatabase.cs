@@ -104,7 +104,7 @@ public class FacilityLevelCostDatabase : MonoBehaviour
             costDetails = default;
             return false;
         }
-
+        
         int exponent = level - 1;
 
         // 등비수열 공식 적용
