@@ -67,7 +67,7 @@ public class FacilityDataSO : ScriptableObject
             bool hasDatabaseSetup = false;
             UnlockType dbUnlockType = UnlockType.ResourceRequired;
 
-            if (facilityDatabase != null && facilityDatabase.TryGetFacilityDetails(type, out FacilityDetails details))
+            if (facilityDatabase != null && facilityDatabase.TryGetDetails(type, out FacilityDetails details))
             {
                 hasDatabaseSetup = true;
                 dbUnlockType = details.initialUnlockType;
