@@ -18,10 +18,10 @@ public class Node
 
     public float x, z, G, H;
 
-    public float F 
-    { 
-        get { return G + (1.5f * H); } 
-    } 
+    public float F
+    {
+        get { return G + (1.5f * H); }
+    }
 }
 
 public class Astar : MonoBehaviour
@@ -49,15 +49,15 @@ public class Astar : MonoBehaviour
                 float z = (j * cellSize) + bottomLeft.z;
 
                 bool isObstacle = false;
-                foreach (Collider col in Physics.OverlapSphere(new Vector3(x, 0, z), 4f))
-                { 
+                foreach (Collider col in Physics.OverlapSphere(new Vector3(x, 0.5f, z), 0.5f))
+                {
                     if (col.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
                     {
                         isObstacle = true;
                     }
                 }
 
-                NodeArray[i,j] = new Node(isObstacle, x, z);
+                NodeArray[i, j] = new Node(isObstacle, x, z);
             }
         }
 
@@ -72,9 +72,9 @@ public class Astar : MonoBehaviour
         {
             curNode = openList[0];
 
-            for (int i = 0; i < openList.Count; i++)
+            for (int i = 1; i < openList.Count; i++)
             {
-                if (openList[i].F <= curNode.F && openList[i].H < curNode.H)
+                if (openList[i].F < curNode.F || (openList[i].F == curNode.F && openList[i].H < curNode.H))
                 {
                     curNode = openList[i];
                 }
@@ -99,32 +99,45 @@ public class Astar : MonoBehaviour
                 return;
             }
 
-            OpenListAdd(curNode.x, curNode.z + cellSize); // 상
-            OpenListAdd(curNode.x + cellSize, curNode.z); // 좌
-            OpenListAdd(curNode.x, curNode.z - cellSize); // 하
-            OpenListAdd(curNode.x - cellSize, curNode.z); // 우
+            int curX = Mathf.RoundToInt((curNode.x - bottomLeft.x) / cellSize);
+            int curZ = Mathf.RoundToInt((curNode.z - bottomLeft.z) / cellSize);
+
+            OpenListAdd(curX, curZ + 1); // 상
+            OpenListAdd(curX + 1, curZ); // 우
+            OpenListAdd(curX, curZ - 1); // 하
+            OpenListAdd(curX - 1, curZ); // 좌
         }
     }
 
-    void OpenListAdd(float checkX, float checkZ)
+    void OpenListAdd(int gridX, int gridZ)
     {
-        int x = Mathf.RoundToInt((checkX - bottomLeft.x) / cellSize);
-        int z = Mathf.RoundToInt((checkZ - bottomLeft.z) / cellSize);
+        if (gridX < 0 || gridX >= sizeX || gridZ < 0 || gridZ >= sizeZ)
+            return;
 
-        if (checkX >= bottomLeft.x && checkX <= topRight.x &&
-            checkZ >= bottomLeft.z && checkZ <= topRight.z && !NodeArray[x, z].isObstacle && !closedList.Contains(NodeArray[x, z]))
-        { 
-            Node neighborNode = NodeArray[x, z];
-            float moveCost = curNode.G + 10;
+        Node neighborNode = NodeArray[gridX, gridZ];
 
-            if (moveCost <= neighborNode.G || !openList.Contains(neighborNode))
-            {
-                neighborNode.G = moveCost;
-                neighborNode.H = (Mathf.Abs(neighborNode.x - targetNode.x) + Mathf.Abs(neighborNode.z - targetNode.z));
-                neighborNode.ParentNode = curNode;
+        if (neighborNode.isObstacle || closedList.Contains(neighborNode))
+            return;
 
-                openList.Add(neighborNode);
-            }
+        float moveCost = curNode.G + 10;
+
+        if (!openList.Contains(neighborNode))
+        {
+            neighborNode.G = moveCost;
+
+            float tileX = Mathf.Abs(neighborNode.x - targetNode.x) / cellSize;
+            float tileZ = Mathf.Abs(neighborNode.z - targetNode.z) / cellSize;
+
+            neighborNode.H = (tileX + tileZ) * 10f;
+
+            neighborNode.ParentNode = curNode;
+
+            openList.Add(neighborNode);
+        }
+        else if (moveCost < neighborNode.G)
+        {
+            neighborNode.G = moveCost;
+            neighborNode.ParentNode = curNode;
         }
     }
 
