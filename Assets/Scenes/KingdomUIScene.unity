@@ -39847,7 +39847,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Kingdom.Tutorial.SceneStartTutorialTrigger
   targetTriggerKey: SCENE_START_INTRO
   delaySeconds: 0.5
-  triggerOnlyOnceEver: 0
+  triggerOnlyOnceEver: 1
 --- !u!4 &550119881
 Transform:
   m_ObjectHideFlags: 0
@@ -103040,7 +103040,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1405363719
 MonoBehaviour:
   m_ObjectHideFlags: 0
