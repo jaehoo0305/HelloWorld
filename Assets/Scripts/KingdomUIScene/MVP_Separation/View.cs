@@ -10,3 +10,5 @@ public class View : MonoBehaviour
         curText.text = displayName;
     }
 }
+
+    
